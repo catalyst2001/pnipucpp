@@ -1,0 +1,10 @@
+Its fields can be divided into theoretical and practical disciplines. For example, the theory of computation concerns abstract
+models of computation and general classes of problems that can be solved using them, while computer graphics or computational
+geometry emphasize more specific applications. Algorithms and data structures have been called the heart of computer science.
+Programming language theory considers approaches to the description of computational processes, while computer programming involves
+the use of them to create complex systems. Computer architecture describes construction of computer components and computer-operated
+equipment. Artificial intelligence aims to synthesize goal-orientated processes such as problem-solving, decision-making,
+environmental adaptation, planning and learning found in humans and animals. A digital computer is capable of simulating various
+information processes. The fundamental concern of computer science is determining what can and cannot be automated.
+Computer scientists usually focus on academic research. The Turing Award is generally recognized as the highest distinction in
+computer sciences.
