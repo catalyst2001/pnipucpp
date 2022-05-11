@@ -11,7 +11,7 @@ int main()
 	std::cout << vec1;
 
 	// test 2
-	std::cout << "Test 2. initializing values\n";
+	std::cout << "Test 2. initializing values in constructor\n";
 	vector2 vec2(10, 0);
 	std::cout << vec2 << "\n";
 
@@ -35,5 +35,14 @@ int main()
 	for (iter it = vec1.first(); it != vec1.last(); it++)
 		std::cout << *it << " ";
 
+	//test 6
+	std::cout << "Test 6. move to left from iterator operator-()\n";
+	iter it = vec1.last();
+	std::cout << "last() iterator = " << *it << "\n";
+	std::cout << "last() (iterator - 4) = " << *(it - 4) << "\n";
+
+	//test 7 multiplication by number
+	std::cout << "Test 7 multiplication by number operator*(int n)\n";
+	std::cout << vec1 * 2 << "\n";
 	return 0;
 }

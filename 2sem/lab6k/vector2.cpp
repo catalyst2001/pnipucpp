@@ -63,7 +63,7 @@ int &vector2::operator[](int idx)
 	return p_data[idx];
 }
 
-vector2 vector2::operator*(const int i)
+vector2 &vector2::operator*(const int i)
 {
 	vector2 t(size);
 	for (int i = 0; i < size; i++)

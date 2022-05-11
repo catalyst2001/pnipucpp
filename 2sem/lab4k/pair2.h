@@ -1,3 +1,4 @@
+#include "..\lab6i\pair2.h"
 #pragma once
 #include <iostream>
 
