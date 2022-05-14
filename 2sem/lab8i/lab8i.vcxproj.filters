@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Dialog.cpp" />
+    <ClCompile Include="object.cpp" />
+    <ClCompile Include="lab8i.cpp" />
+    <ClCompile Include="Person.cpp" />
+    <ClCompile Include="Emloyee.cpp" />
+    <ClCompile Include="Tree.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Dialog.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="object.h" />
+    <ClInclude Include="Person.h" />
+    <ClInclude Include="Emloyee.h" />
+    <ClInclude Include="Tree.h" />
+  </ItemGroup>
+</Project>
