@@ -133,7 +133,6 @@ int delete_range(const char *f_name, Pair r1, Pair r2)
 	if (!stream)
 			return -1;//ошибка открытия файла
 
-	char x;
 	Pair p;
 	int i = 0, deleted_lines = 0;
 	while (stream >> p)
@@ -165,7 +164,6 @@ int addtofile_begin(const char *f_name)
 	cout << "Number of records: ";
 	cin >> count;
 
-	char x;
 	Pair p;
 	int i = 0;
 	for (i = 0; i < count; i++) {
@@ -214,33 +212,6 @@ int delete_greather(const char *f_name, Pair val)
 	return deleted_lines;//количество удаленных элементов
 }
 
-int delete_greather(const char *f_name, Pair val)
-{
-	fstream temp("temp", ios::out);//открыть для записи
-	fstream stream(f_name, ios::in);//открыть для чтения
-	if (!stream)
-		return -1;//ошибка открытия файла
-
-	Pair p;
-	int i = 0, deleted_lines = 0;
-	while (stream >> p)
-	{
-		if (stream.eof())
-			break;
-
-		if (p > val) {
-			deleted_lines++;
-			continue;
-		}
-		temp << p;
-	}
-	stream.close();
-	temp.close();
-	remove(f_name);
-	rename("temp", f_name);
-	return deleted_lines;//количество удаленных элементов
-}
-
 int increment_values(const char *f_name, Pair val)
 {
 	fstream temp("temp", ios::out);//открыть для записи
@@ -253,13 +224,14 @@ int increment_values(const char *f_name, Pair val)
 	cin >> c;
 
 	Pair p;
-	int i = 0, deleted_lines = 0;
+	int i = 0, inc = 0;
 	while (stream >> p)
 	{
 		if (stream.eof())
 			break;
 
 		if (p == val) {
+			inc++;
 			p.add(c);
 			temp << p;
 			continue;
@@ -270,10 +242,10 @@ int increment_values(const char *f_name, Pair val)
 	temp.close();
 	remove(f_name);
 	rename("temp", f_name);
-	return deleted_lines;//количество удаленных элементов
+	return inc;//количество удаленных элементов
 }
 
-int addValsAt(const char *f_name, int k, int at)
+int addValsAt(const char *f_name, int at, int k)
 {
 	fstream temp("temp", ios::out);//открыть для записи
 	fstream stream(f_name, ios::in);//открыть для чтения
@@ -285,22 +257,26 @@ int addValsAt(const char *f_name, int k, int at)
 	cin >> c;
 
 	Pair p;
-	int i = 0, deleted_lines = 0;
-	while (stream >> p)
-	{
-		if (stream.eof())
-			break;
 
-		if (p == val) {
-			p.add(c);
-			temp << p;
-			continue;
-		}
+	// insert first lines
+	int i = 0;
+	for ( ; (stream >> p) && i < at && !stream.eof(); i++)
+		temp << p;
+
+	//insert new lines
+	for (i = 0; i < k; i++) {
+		cout << "Enter line " << (i + 1) << " data: ";
+		cin >> p;
 		temp << p;
 	}
+
+	//write next remainder lines
+	while ((stream >> p) && !stream.eof())
+		temp << p;
+
 	stream.close();
 	temp.close();
 	remove(f_name);
 	rename("temp", f_name);
-	return deleted_lines;//количество удаленных элементов
+	return 1;
 }
