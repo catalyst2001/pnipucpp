@@ -1,60 +1,81 @@
 #include "Time.h"
 
-Time&Time::operator=(const Time&t)
+Time::Time(int seconds)
 {
-	//проверка на самоприсваивание
-	if (&t == this) return *this;
-	min = t.min;
-	sec = t.sec;
-	return *this;
+	min = seconds / 60;
+	sec = seconds % 60;
 }
-//перегрузка глобальной функции-операции ввода
-istream&operator>>(istream&in, Time&t)
+
+void Time::set_sec(int s)
 {
-	cout << "min?"; in >> t.min;
-	cout << "sec?"; in >> t.sec;
+	if (s > 60)
+		s = 60;
+
+	sec = s;
+}
+
+int Time::to_seconds()
+{
+	return min * 60 + sec;
+}
+
+void Time::print()
+{
+	std::cout << min << ":" << sec << std::endl;
+}
+
+bool Time::operator==(const Time &t)
+{
+	return (t.min == min && t.sec == sec);
+}
+
+bool Time::operator!=(const Time &t)
+{
+	return (t.min != min && t.sec != sec);
+}
+
+bool Time::operator<(const Time & t)
+{
+	return (min * 60 + sec) < (t.min * 60 + t.sec);
+}
+
+bool Time::operator>(const Time & t)
+{
+	return (min * 60 + sec) > (t.min * 60 + t.sec);
+}
+
+const Time& Time::operator/(const Time & t)
+{
+	int tempT = (t.min * 60 + t.sec);
+	int totalSec = (min * 60 + sec) / (tempT == 0 ? 1 : tempT);
+	int min = totalSec / 60;
+	return Time(min, totalSec - (60 * min));
+}
+
+const Time& Time::operator/(int i)
+{
+	int totalSec = (min * 60 + sec) / i;
+	int min = totalSec / 60;
+	return Time(min, totalSec - (60 * min));
+}
+
+const Time& Time::operator+(const Time & t)
+{
+	int totalSec = (min * 60 + sec) + (t.min * 60 + t.sec);
+	int min = totalSec / 60;
+	return Time(min, totalSec - (60 * min));
+}
+
+std::istream &operator>>(std::istream &in, Time &t)
+{
+	std::cout << "enter min: ";
+	std::cin >> t.min;
+	std::cout << "enter sec: ";
+	std::cin >> t.sec;
 	return in;
 }
-//перегрузка глобальной функции-операции вывода
-ostream&operator<<(ostream&out, const Time&t)
+
+std::ostream &operator<<(std::ostream &out, const Time &t)
 {
-	return (out << t.min << " : " << t.sec);
-}bool Time::operator <(const Time &t)
-{
-	if (min < t.min)return true;
-	if (min == t.min&&sec < t.sec)return true;
-	return false;
-}
-bool Time::operator >(const Time &t)
-{
-	if (min > t.min)return true;
-	if (min == t.min&&sec > t.sec)return true;
-	return false;
-}
-Time Time::operator+(const Time&t)
-{
-	int temp1 = min * 60 + sec;
-	int temp2 = t.min * 60 + t.sec;
-	Time p;
-	p.min = (temp1 + temp2) / 60;
-	p.sec = (temp1 + temp2) % 60;
-	return p;
-}
-//перегрузка бинарной операции деления
-Time Time::operator/(const Time&t)
-{
-	int temp1 = min * 60 + sec;
-	int temp2 = t.min * 60 + t.sec;
-	Time p;
-	p.min = (temp1 / temp2) / 60;
-	p.sec = (temp1 / temp2) % 60;
-	return p;
-}
-Time Time::operator/(const int&t)
-{
-	int temp1 = min * 60 + sec;
-	Time p;
-	p.min = (temp1 / t) / 60;
-	p.sec = (temp1 / t) % 60;
-	return p;
+	return out << t.min << ":" << t.sec << std::endl;
 }
