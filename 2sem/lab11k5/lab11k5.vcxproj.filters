@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="lab11k5.cpp" />
+    <ClCompile Include="..\lab11k2\Time.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\lab11k2\Time.h" />
+  </ItemGroup>
+</Project>

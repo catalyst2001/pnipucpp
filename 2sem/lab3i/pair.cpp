@@ -5,9 +5,29 @@ bool pair::operator>(const pair &p)
 	return (one > p.one && two > p.two);
 }
 
+bool pair::operator>(const int &p)
+{
+	return two > (double)p;
+}
+
+bool pair::operator>(const double &p)
+{
+	return two > p;
+}
+
 bool pair::operator<(const pair & p)
 {
 	return (one < p.one && two < p.two);
+}
+
+bool pair::operator<(const int &p)
+{
+	return two < (double)p;
+}
+
+bool pair::operator<(const double &p)
+{
+	return two < (double)p;
 }
 
 pair &pair::operator++()
@@ -19,6 +39,24 @@ pair &pair::operator++()
 pair pair::operator++(int)
 {
 	two++;
+	return *this;
+}
+
+pair pair::operator+=(const pair &p)
+{
+	two += p.two;
+	return *this;
+}
+
+pair pair::operator/=(const pair &p)
+{
+	two /= p.two;
+	return *this;
+}
+
+pair pair::operator/=(const int &p)
+{
+	two /= (double)p;
 	return *this;
 }
 

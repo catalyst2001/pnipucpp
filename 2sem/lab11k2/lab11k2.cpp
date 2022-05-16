@@ -1,49 +1,84 @@
 ﻿// lab11k2.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
 #include <iostream>
 #include <vector>
-#include <cstdlib>
-using namespace std;
+#include <intrin.h>
 #include "Time.h"
+using namespace std;
 
-typedef vector<Time> Vec;//определяем тип для работы с вектором
-
-//функция для формирования вектора
-Vec make_vector(int n)
+void print(const vector<Time> &v)
 {
-	Vec v;//пустой вектор
-	for (int i = 0; i < n; i++)
-	{
-		int a = rand() % 100 - 50;
-		int b = rand() % 100;
-		Time temp()
-		
-		v.push_back(a);//добавляем а в конец вектора
-	}
-	return v;//возвращаем вектор как результа работы функции
+	for (auto i : v)
+		cout << i;
 }
 
-//функция для печати вектора
-void print_vector(Vec v)
+void fill_rand(vector<Time> &v)
 {
-	for (int i = 0; i < v.size(); i++)
-		cout << v[i] << " ";
-	cout << endl;
+	for (int i = 0; i < 10; i++) {
+		srand((unsigned int)__rdtsc());
+		v.push_back(Time(rand() % 60, rand() % 60));
+	}
 }
 
-//основная функция
-void main()
+int compute_avg(vector<Time> &vec)
 {
-	try
-	{
-		Vec v;//вектор
-		Vec::iterator vi = v.begin();//итератор
-		int n;
-		cout << "N?"; cin >> n;
-		v = make_vector(n);//формирование вектора
-		print_vector(v);//печать вектора
+	int avg = 0;
+	size_t i;
+	for (i = 0; i < vec.size(); i++)
+		avg += vec[i].to_seconds();
+
+	avg /= vec.size();
+	return avg;
+}
+
+void delete_max(vector<Time> &vec)
+{
+	int max = INT_MIN;
+	int ind = 0;
+	for (size_t i = 0; i < vec.size(); i++) {
+		if (max < vec[i].to_seconds()) {
+			max = vec[i].to_seconds();
+			ind = i;
+		}
 	}
-	catch (int)//блок обработки ошибок
-	{
-		cout << "error!";
+	vec.erase(vec.begin() + ind);
+}
+
+void division_by_min(vector<Time> &vec)
+{
+	int ind = 0;
+	int min = INT_MAX;
+	for (size_t i = 0; i < vec.size(); i++) {
+		if (min > vec[i].to_seconds()) {
+			min = vec[i].to_seconds();
+			ind = i;
+		}
 	}
+
+	//prevent division by zero
+	if (!min)
+		min = 1;
+
+	for (size_t i = 0; i < vec.size(); i++)
+		vec[i] = vec[i] / min;
+}
+
+int main()
+{
+	vector<Time> vec;
+	fill_rand(vec);
+	print(vec);
+
+	int k = rand() % vec.size();
+	cout << "\navg:\nk = " << k << "\n";
+	vec.insert(vec.begin() + k, Time(compute_avg(vec)));
+	print(vec);
+
+	cout << "\ndelete max from vector:\n";
+	delete_max(vec);
+	print(vec);
+
+	cout << "\ndivision element by min:\n";
+	division_by_min(vec);
+	print(vec);
+	return 0;
 }
