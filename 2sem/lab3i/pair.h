@@ -7,11 +7,11 @@ class pair
 	double two;
 public:
 	pair() { one = 0, two = 0.0; }
-	pair(int o, double t) { one = 0, two = t; }
+	pair(int o, double t) { one = o, two = t; }
 
 	void setPair(int o, double t) { one = o, two = t; }
-	int getOne() { return one; }
-	double getTwo() { return two; }
+	int getKey() { return one; }
+	double getValue() { return two; }
 
 	bool operator>(const pair &p);
 	bool operator>(const int &p);

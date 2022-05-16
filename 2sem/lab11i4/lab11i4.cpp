@@ -1,20 +1,18 @@
 ﻿// lab11i4.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
 #include <iostream>
 #include <deque>
-#include <intrin.h>
 #include "../lab3i/pair.h"
-using namespace std;
 
 template<typename T>
-class Stack
+class QueueConcurency
 {
-	deque<T> dqueue;
+	std::deque<T> dqueue;
 public:
-	Stack() {}
-	~Stack() {}
-	Stack(int size) { dqueue.resize(size); }
+	QueueConcurency() {}
+	~QueueConcurency() {}
+	QueueConcurency(int size) { dqueue.resize(size); }
 
-	Stack &operator=(const Stack &from) const {
+	QueueConcurency &operator=(const QueueConcurency &from) const {
 		size_t sz = from.dqueue.size();
 		dqueue.resize(sz);
 		for (size_t i = 0; i < sz; i++)
@@ -38,80 +36,56 @@ public:
 	void push_back_by_ref(T &elem) { dqueue.push_back(elem); }
 };
 
-void print(Stack<Time> &s)
+void print(QueueConcurency<pair> &s)
 {
 	for (size_t i = 0; i < s(); i++)
-		cout << s[i] << endl;
+		std::cout << s[i] << std::endl;
 }
 
-void fill_rand(Stack<Time> &s)
+void fill_rand(QueueConcurency<pair> &s)
 {
 	for (int i = 0; i < 10; i++) {
 		srand((unsigned int)__rdtsc());
-		s.push_back(Time(rand() % 60, rand() % 60));
+		s.push_back(pair(i, rand() % 60));
 	}
 }
 
-int compute_avg(Stack<Time> &s)
+int compute_avg(QueueConcurency<pair> &s)
 {
-	int avg = 0;
+	double avg = 0.;
 	for (size_t i = 0; i < s(); i++)
-		avg += s[i].to_seconds();
+		avg += s[i].getValue();
 
 	avg /= s();
 	return avg;
 }
 
-void delete_max(Stack<Time> &s)
+void delete_elements_by_keyrange(QueueConcurency<pair> &p, int keybegin, int keyend)
 {
-	int max = INT_MIN;
-	int ind = 0;
-
-	for (size_t i = 0; i < s.size(); i++) {
-		if (max < s[i].to_seconds()) {
-			max = s[i].to_seconds();
-			ind = i;
+	int key;
+	for (size_t i = 0; i < p.size(); i++) {
+		key = p[i].getKey();
+		if (key > keybegin && key < keyend) {
+			p.delete_at(i);
 		}
 	}
-	s.delete_at(ind);
 }
 
-void division_by_min(Stack<Time> &vec)
+int random(int min, int max)
 {
-	int ind = 0;
-	int min = INT_MAX;
-	for (size_t i = 0; i < vec.size(); i++) {
-		if (min > vec[i].to_seconds()) {
-			min = vec[i].to_seconds();
-			ind = i;
-		}
-	}
-
-	//prevent division by zero
-	if (!min)
-		min = 1;
-
-	for (size_t i = 0; i < vec.size(); i++)
-		vec[i] = vec[i] / min;
+	return min + (rand() % (max - min + 1));
 }
 
 int main()
 {
-	Stack<Time> vec;
-	fill_rand(vec);
-	print(vec);
+	QueueConcurency<pair> qc;
+	fill_rand(qc);
+	print(qc);
 
-	int k = rand() % vec.size();
-	cout << "\navg:\nk = " << k << "\n";
-	vec.insert_at(k, Time(compute_avg(vec)));
-	print(vec);
-
-	cout << "\ndelete max from vector:\n";
-	delete_max(vec);
-	print(vec);
-
-	cout << "\ndivision element by min:\n";
-	division_by_min(vec);
-	print(vec);
+	int kmin = random(0, qc.size());
+	int kmax = random(kmin + 1, qc.size());
+	std::cout << "Key min: " << kmin << "   Key max: " << kmax << "\n";
+	delete_elements_by_keyrange(qc, kmin, kmax);
+	print(qc);
 	return 0;
 }
