@@ -68,13 +68,17 @@ int main()
 	fill_rand(vec);
 	print(vec);
 
-	cout << "\navg:\n";
-	cout << Time(compute_avg(vec));
+	int k = rand() % vec.size();
+	cout << "\navg:\nk = " << k << "\n";
+	vec.insert(vec.begin() + k, Time(compute_avg(vec)));
+	print(vec);
 
 	cout << "\ndelete max from vector:\n";
 	delete_max(vec);
+	print(vec);
 
 	cout << "\ndivision element by min:\n";
 	division_by_min(vec);
+	print(vec);
 	return 0;
 }

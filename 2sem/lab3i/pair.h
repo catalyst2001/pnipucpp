@@ -14,9 +14,18 @@ public:
 	double getTwo() { return two; }
 
 	bool operator>(const pair &p);
+	bool operator>(const int &p);
+	bool operator>(const double &p);
 	bool operator<(const pair &p);
+	bool operator<(const int &p);
+	bool operator<(const double &p);
+
 	pair &operator++(); //prefix
 	pair operator++(int); //postfix
+	pair operator+=(const pair &p);
+	pair operator/=(const pair &p);
+	pair operator/=(const int &p);
+
 	friend std::istream &operator>>(std::istream &in, pair &p);
 	friend std::ostream &operator<<(std::ostream &out, const pair &p);
 };

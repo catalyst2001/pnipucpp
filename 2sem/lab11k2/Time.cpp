@@ -44,7 +44,7 @@ bool Time::operator>(const Time & t)
 	return (min * 60 + sec) > (t.min * 60 + t.sec);
 }
 
-const Time& Time::operator/(const Time & t)
+const Time Time::operator/(const Time & t)
 {
 	int tempT = (t.min * 60 + t.sec);
 	int totalSec = (min * 60 + sec) / (tempT == 0 ? 1 : tempT);
@@ -52,14 +52,14 @@ const Time& Time::operator/(const Time & t)
 	return Time(min, totalSec - (60 * min));
 }
 
-const Time& Time::operator/(int i)
+const Time Time::operator/(int i)
 {
 	int totalSec = (min * 60 + sec) / i;
 	int min = totalSec / 60;
 	return Time(min, totalSec - (60 * min));
 }
 
-const Time& Time::operator+(const Time & t)
+const Time Time::operator+(const Time & t)
 {
 	int totalSec = (min * 60 + sec) + (t.min * 60 + t.sec);
 	int min = totalSec / 60;

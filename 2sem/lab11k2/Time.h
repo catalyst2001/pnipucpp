@@ -23,9 +23,9 @@ public:
 	bool operator!=(const Time &t);
 	bool operator<(const Time &t);
 	bool operator>(const Time &t);
-	const Time& operator/(const Time &t);
-	const Time& operator/(int i);
-	const Time& operator+(const Time &t);
+	const Time operator/(const Time &t);
+	const Time operator/(int i);
+	const Time operator+(const Time &t);
 	friend std::istream &operator>>(std::istream &in, Time &t);
 	friend std::ostream &operator<<(std::ostream &out, const Time &t);
 };
