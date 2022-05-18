@@ -1,4 +1,4 @@
-#include "..\lab6i\pair2.h"
+#include "../lab3i/pair.h"
 #pragma once
 #include <iostream>
 
