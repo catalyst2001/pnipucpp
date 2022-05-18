@@ -1,9 +1,10 @@
-﻿// lab13k1.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-#include <iostream>
+﻿#include <iostream>
 #include <deque>
 #include <intrin.h>
 #include "../lab12k2/myTime.h"
 #include <algorithm>
+#include <functional>
+#include <numeric>
 
 void print(std::deque<myTime> &q)
 {
@@ -22,32 +23,46 @@ int main()
 	}
 	print(tq);
 
-	auto find_max = [](std::deque<myTime> &tq, myTime max_init) -> myTime
-	{
-		myTime max = max_init;
-		for (size_t i = 0; i < tq.size(); i++)
-			if (max < tq[i])
-				max = tq[i];
+	//1 задание найти макс элемент и добавить его в конец
+	auto max_time = std::max_element(tq.begin(), tq.end(), [](myTime& a, myTime& b)
+		{
+			return a < b;
+		});
+	std::cout << "Max: " << (*max_time).get_min() << ":" << (*max_time).get_sec() << "\n";
 
-		return max;
-	};
-
-	std::cout << "Max out:\n";
-	myTime max_time = find_max(tq, myTime(0, 0));
-	std::cout << "Max: " << max_time.get_min() << ":" << max_time.get_sec() << "\n";
-
-	myTime end_time = tq[tq.size() - 1];
-	struct equal_filter {
-		equal_filter() {}
-		~equal_filter() {}
-		equal_filter(myTime &t) : max(t) {}
-
-		myTime max;
-		bool operator()(myTime a) { return a == max; }
-	};
-	std::replace_if(tq.begin(), tq.end(), equal_filter(end_time), max_time);
+	tq.push_back(*max_time);
 	print(tq);
 
+	//2 задание найти элемент с заданным ключем (больше 30-ти минут) и удалить из контейрера
+	auto tq_new = std::remove_if(tq.begin(), tq.end(), [](myTime& a)
+	{
+		return a.get_min() > 30;
+	});
+	tq.erase(tq_new, tq.end());
+	std::cout << "remove_if\n";
+	print(tq);
+
+	//3 к каждому элементу добавить среднее арифметическое элементов контейнера
+	auto sec_avg = std::accumulate(tq.begin(), tq.end(), 0, [](int accumulator, myTime& a)
+	{
+		return accumulator + ((a.get_min() * 60) + a.get_sec());
+	}) / tq.size();
+	int avg_min = (int)floor(sec_avg / 60);
+	int avg_sec = (sec_avg - (avg_min * 60));
+	std::cout << "time average is " << avg_min << ":" << avg_sec << std::endl;
+
+	std::for_each(tq.begin(), tq.end(), [avg_min, avg_sec](myTime& a) {
+		a.set_min(a.get_min() + avg_min);
+		a.set_sec(a.get_sec() + avg_sec);
+	});
+	print(tq);
+
+
+	std::sort(tq.begin(), tq.end(), [](myTime& a, myTime& b) {
+		return a > b;
+	});
+	std::cout << "sorted:" << std::endl;
+	print(tq);
 
 	return 0;
 }
