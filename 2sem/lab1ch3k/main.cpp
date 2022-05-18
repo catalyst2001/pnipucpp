@@ -15,7 +15,7 @@ int main()
 		int h = p_window->GetWindowHeight();
 		glMatrixMode(GL_PROJECTION);
 		glViewport(0, 0, w, h);
-		glOrtho((double)0, (double)w, (double)h, (double)0, -1.0, 1.0);
+		glOrtho((double)0, (double)w, (double)0, (double)h, -1.0, 1.0);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 	};
@@ -28,10 +28,8 @@ int main()
 		return 1;
 	}
 
-	glEnable(GL_BLEND);
-	glEnable(GL_MULTISAMPLE);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
 	glClearColor(1.f, 1.f, 1.f, 1.f);
 	while (p_window->IsWindowOpened()) {
@@ -39,13 +37,11 @@ int main()
 		glLoadIdentity();
 		
 		glPushAttrib(GL_CURRENT_BIT);
-		glColor4ub(0, 0, 0, 255);
-		glLineWidth(2.5f);
-		p_window->Draw2DCircle(p_window->GetWindowWidth() >> 1, p_window->GetWindowHeight() >> 1, UNFILLED, 100, 200);
-		glColor4ub(0, 0, 0, 128);
-		glLineWidth(4.5f);
-		p_window->Draw2DCircle(p_window->GetWindowWidth() >> 1, p_window->GetWindowHeight() >> 1, UNFILLED, 100, 201);
-		
+		glColor3ub(0, 0, 0);
+		glLineWidth(1.5f);
+		//p_window->Draw2DCircle(p_window->GetWindowWidth() >> 1, p_window->GetWindowHeight() >> 1, UNFILLED, 100, 200);
+
+		p_window->PrintText(200, 200, "1234567890");
 
 		glPointSize(2.0f);
 		glBegin(GL_POINT);

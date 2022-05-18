@@ -18,18 +18,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")
 
-/**
------------------------------------------------
-	типы указателей на функции для dt
-	в проекте могут не использоваться
------------------------------------------------
-*/
+typedef struct gldl_font_s {
+	uint32_t display_lists;
+} gldl_font_t;
+
 typedef void (*begin2d_fn)();
 typedef void (*end2d_fn)();
 typedef void (*sphere_fn)(float x, float y, float z, float radius);
@@ -40,8 +39,14 @@ typedef void (*draw_axises)(float line_width, float axis_length);
 typedef bool (*is_window_active)();
 typedef bool (*is_button_pressed)(int button);
 
-//added 17.05.2022
-typedef void (*draw_2d_circle_fn)(int x, int y, int mode, int nsegs, int radius);
+// 
+// Отрисовка круга в 2d
+// 
+#define FILLED 0   //закрашено
+#define UNFILLED 1 //не закрашено
+typedef void (*draw_2d_circle_fn)(int x, int y, int mode, int nsegs, int radius); //добавлено 17.05.2022
+
+typedef bool (*font_load_fn)(gldl_font_t *p_dstfont, const char *p_fontname, int size, int style);//добавлено 18.05.2022
 
 typedef void (*print_text_fn)(int x, int y, const char *p_text, ...);
 typedef long (*int_return_fn)();
@@ -50,9 +55,6 @@ typedef struct mouse_point_s {
 	long x, y;
 } mouse_point_t;
 typedef void (*point_ptr_fn)(mouse_point_t *p_dest);
-
-#define FILLED 0
-#define UNFILLED 1
 
 typedef struct gldl_dt_s {
 
@@ -87,6 +89,7 @@ typedef struct gldl_dt_s {
 	int_return_fn     GetMouseWheelDelta;
 
 	//печатает текст на экране
+
 	print_text_fn     PrintText;
 
 	//получает позицию курсора внутри окна

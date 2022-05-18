@@ -13,10 +13,14 @@
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="gl_shapes.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gldl.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="gl_shapes.h" />
   </ItemGroup>
 </Project>
