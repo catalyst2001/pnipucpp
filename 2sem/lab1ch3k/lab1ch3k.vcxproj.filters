@@ -21,6 +21,8 @@
     <ClInclude Include="gldl.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="gl_shapes.h" />
+    <ClInclude Include="gl_shapes.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
