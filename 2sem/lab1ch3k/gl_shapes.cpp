@@ -10,7 +10,7 @@ void draw_line(int fromx, int fromy, int tox, int toy)
 
 void draw_circle(int x, int y, int mode, int nsegs, int radius)
 {
-	glBegin(!mode ? GL_POLYGON : GL_LINE_LOOP);
+	glBegin((!mode) ? GL_POLYGON : GL_LINE_LOOP);
 	for (int i = 0; i <= nsegs; i++) {
 		float angle = 2 * FLOAT_PI * i / (float)nsegs;
 		float xofs = cos(angle) * (double)radius;

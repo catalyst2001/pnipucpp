@@ -84,7 +84,7 @@ int main()
 
 	int kmin = random(0, qc.size());
 	int kmax = random(kmin + 1, qc.size());
-	std::cout << "Key min: " << kmin << "   Key max: " << kmax << "\n";
+	std::cout << "key_event min: " << kmin << "   key_event max: " << kmax << "\n";
 	delete_elements_by_keyrange(qc, kmin, kmax);
 	print(qc);
 	return 0;

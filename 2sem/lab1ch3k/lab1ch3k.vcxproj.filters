@@ -7,9 +7,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gldl.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -18,10 +15,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="gldl.h">
+    <ClInclude Include="gl_shapes.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="gl_shapes.h">
+    <ClInclude Include="glut\glut.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
