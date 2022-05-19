@@ -145,7 +145,7 @@ void draw_string(void *p_font, int x, int y, const char *p_format, ...)
 // выполняет отрисовку ноды. 
 // если нодой является корень дерева, то все дерево будет отрисовано целиком 
 //
-void draw_node(node *p_node)
+void draw_node(node *p_node, bool dobuleDraw = false)
 {
 	if (!p_node)
 		return;
@@ -155,9 +155,11 @@ void draw_node(node *p_node)
 
 	//рисуем линию только в случае если текущая нода не является родительской
 	//(т.к нет позиции начала линии - потому что нет родителя)
-	if (p_parent)
+	if (p_parent && !dobuleDraw) {
 		draw_line(p_parent->pos.x, p_parent->pos.y, p_node->pos.x, p_node->pos.y);
 
+		draw_node(p_parent, true);
+	}
 	//поверх линии рисуем круг ноды
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor3ub(255, 255, 255);
@@ -167,11 +169,13 @@ void draw_node(node *p_node)
 	draw_string(GLUT_BITMAP_TIMES_ROMAN_24, p_node->pos.x - 10, p_node->pos.y, "%.1lf", p_node->get_value());
 	glPopAttrib();
 
-	// идем рисовать левую ветвь
-	draw_node(p_node->get_left_node());
+	if (!dobuleDraw) {
+		// идем рисовать левую ветвь
+		draw_node(p_node->get_left_node());
 
-	// затем рисуем правую
-	draw_node(p_node->get_right_node());
+		// затем рисуем правую
+		draw_node(p_node->get_right_node());
+	}
 }
 
 // 
