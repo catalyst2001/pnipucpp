@@ -13,8 +13,8 @@ void draw_circle(int x, int y, int mode, int nsegs, int radius)
 	glBegin((!mode) ? GL_POLYGON : GL_LINE_LOOP);
 	for (int i = 0; i <= nsegs; i++) {
 		float angle = 2 * FLOAT_PI * i / (float)nsegs;
-		float xofs = cos(angle) * (double)radius;
-		float yofs = sin(angle) * (double)radius;
+		float xofs = cos(angle) * (float)radius;
+		float yofs = sin(angle) * (float)radius;
 		glVertex2i(x + (int)xofs, y + (int)yofs);
 	}
 	glEnd();
