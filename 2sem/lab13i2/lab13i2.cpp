@@ -29,6 +29,7 @@ int main()
 	std::priority_queue<pair> tasks;
 
 	std::vector<pair> &tq = Container(tasks);
+	tq.resize(10);
 	for (size_t i = 0; i < 10; i++) {
 		int val1 = rand() % 60;
 		int val2 = rand() % 60;

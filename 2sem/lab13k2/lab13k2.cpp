@@ -23,8 +23,10 @@ int main()
 	}
 	print(tq);
 
+	std::deque<myTime> &container_ref = (std::deque<myTime> &)tq._Get_container();
+
 	//1 задание найти макс элемент и добавить его в конец
-	std::deque<myTime>::const_iterator max_time = std::max_element(tq._Get_container().begin(), tq._Get_container().end(), [](myTime& a, myTime& b)
+	std::deque<myTime>::iterator max_time = std::max_element(container_ref.begin(), container_ref.end(), [](myTime& a, myTime& b)
 	{
 		return a < b;
 	});
@@ -34,16 +36,16 @@ int main()
 	print(tq);
 
 	//2 задание найти элемент с заданным ключем (больше 30-ти минут) и удалить из контейрера
-	auto tq_new = std::remove_if(tq._Get_container().begin(), tq._Get_container().end(), [](myTime& a)
+	auto tq_new = std::remove_if(container_ref.begin(), container_ref.end(), [](myTime a)
 	{
 		return a.get_min() > 30;
 	});
-	tq._Get_container().erase(tq_new, tq._Get_container().end());
+	container_ref.erase(tq_new, container_ref.end());
 	std::cout << "remove_if\n";
 	print(tq);
 
 	//3 к каждому элементу добавить среднее арифметическое элементов контейнера
-	auto sec_avg = std::accumulate(tq._Get_container().begin(), tq._Get_container().end(), 0, [](int accumulator, myTime& a)
+	auto sec_avg = std::accumulate(container_ref.begin(), container_ref.end(), 0, [](int accumulator, myTime& a)
 	{
 		return accumulator + ((a.get_min() * 60) + a.get_sec());
 	}) / tq.size();
@@ -51,14 +53,14 @@ int main()
 	int avg_sec = (sec_avg - (avg_min * 60));
 	std::cout << "time average is " << avg_min << ":" << avg_sec << std::endl;
 
-	std::for_each(tq._Get_container().begin(), tq._Get_container().end(), [avg_min, avg_sec](myTime& a) {
+	std::for_each(container_ref.begin(), container_ref.end(), [avg_min, avg_sec](myTime& a) {
 		a.set_min(a.get_min() + avg_min);
 		a.set_sec(a.get_sec() + avg_sec);
 	});
 	print(tq);
 
 
-	std::sort(tq._Get_container().begin(), tq._Get_container().end(), [](myTime& a, myTime& b) {
+	std::sort(container_ref.begin(), container_ref.end(), [](myTime& a, myTime& b) {
 		return a > b;
 	});
 	std::cout << "sorted:" << std::endl;
