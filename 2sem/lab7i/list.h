@@ -30,7 +30,7 @@ class list
 
 	void initFrom(const list<_T> &c) {
 		size = c.size;
-		node *p_currnode, *p_node = firstnode;
+		node *p_currnode, *p_node = c.firstnode;
 
 		// check for empty list
 		if (!p_node)
