@@ -28,11 +28,6 @@ vector2::vector2(int s, int v)
 
 vector2::~vector2()
 {
-	//std::cout << __FUNCSIG__ " called for object " << this << "\n";
-	if (p_data > 0) {
-		delete[] p_data;
-		p_data = nullptr;
-	}
 }
 
 vector2 vector2::operator=(const vector2 &v)
@@ -63,7 +58,7 @@ int &vector2::operator[](int idx)
 	return p_data[idx];
 }
 
-vector2 &vector2::operator*(const int i)
+vector2 vector2::operator*(const int i)
 {
 	vector2 t(size);
 	for (int i = 0; i < size; i++)
