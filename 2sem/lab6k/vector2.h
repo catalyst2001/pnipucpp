@@ -34,7 +34,7 @@ public:
 
 	vector2 operator=(const vector2 &v);
 	int &operator[](int idx);
-	vector2 &operator*(const int i);
+	vector2 operator*(const int i);
 	int operator()();
 
 	int Size() { return size; };

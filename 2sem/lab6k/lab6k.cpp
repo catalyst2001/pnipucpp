@@ -43,6 +43,6 @@ int main()
 
 	//test 7 multiplication by number
 	std::cout << "Test 7 multiplication by number operator*(int n)\n";
-	std::cout << vec1 * 2 << "\n";
+	std::cout << vector2(vec1 * 2) << "\n";
 	return 0;
 }
