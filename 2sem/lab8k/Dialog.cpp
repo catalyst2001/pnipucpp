@@ -4,6 +4,12 @@
 Dialog::Dialog(void)
 {
 	EndState = 0;
+	std::cout << "+ - add object to grp" << std::endl;
+	std::cout << "- - rem object from grp" << std::endl;
+	std::cout << "/ - get" << std::endl;
+	std::cout << "q - quit" << std::endl;
+	std::cout << "m - mk group" << std::endl;
+	std::cout << "z - show one" << std::endl;
 }
 
 //деструктор
@@ -14,7 +20,7 @@ Dialog::~Dialog(void)
 //получение события
 void Dialog::GetEvent(TEvent &event)
 {
-	string OpInt = "+-?/qam"; //строка содержит коды операций
+	string OpInt = "+-?/qamz"; //строка содержит коды операций
 	string s;
 	string param;
 	char code;
@@ -63,6 +69,9 @@ void Dialog::GetEvent(TEvent &event)
 			int A = atoi(param.c_str());//преобразуем парметр в число
 			event.a = A;//записываем в сообщение
 		}
+		else {
+			event.a = 10;
+		}
 		return;
 	}
 	event.what = evNothing;//пустое событие
@@ -106,6 +115,11 @@ void Dialog::HandleEvent(TEvent& event)
 		{
 		case cmMake://создание группы
 			size = event.a; //размер группы
+			if (!size) {
+				std::cout << "Ne ukazano chislo elementov" << std::endl;
+				ClearEvent(event);//очищаем событие
+				break;
+			}
 			beg = new Object*[size];//выделяем память под массив указателей
 			cur = 0; //текущая позиция
 			ClearEvent(event);//очищаем событие

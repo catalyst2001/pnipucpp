@@ -5,7 +5,7 @@
 class Vector11
 {
 public:
-	Vector11() {}
+	Vector11() : size(0) { }
 	Vector11(int);//конструктор с параметрами
 	~Vector11(void);//деструктор
 	void Add();//добавление элемента в вектор
