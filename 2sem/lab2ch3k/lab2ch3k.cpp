@@ -371,9 +371,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	LRESULT res = 0;
 	static HDC mem_dc;
 	static HBITMAP mem_bitmap;
-
-	static POINT mouse;
-
+	//static BOOL mouse_clicked = FALSE;
+	//static POINT mouse, first_click;
 	switch (message) {
 
 	case WM_CREATE:
@@ -383,11 +382,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		GetClientRect(hWnd, &rect);
 		mem_bitmap = CreateCompatibleBitmap(dc, rect.right, rect.bottom);
 		SelectObject(mem_dc, mem_bitmap);
-
 		SelectObject(mem_dc, GetStockObject(ANSI_VAR_FONT));
-		SetBkColor(mem_dc, RGB(255, 255, 255));
 		SetBkMode(mem_dc, TRANSPARENT);
-
 		ReleaseDC(hWnd, dc);
 		break;
 
@@ -402,12 +398,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 
-	case WM_MOUSEMOVE: {
-		mouse.x = LOWORD(lParam);
-		mouse.y = HIWORD(lParam);
-		InvalidateRect(hWnd, NULL, FALSE);
-		break;
-	}
+	//case WM_LBUTTONDOWN:
+	//	mouse.x = first_click.x = LOWORD(lParam);
+	//	mouse.y = first_click.y = HIWORD(lParam);
+	//	printf("first_click %d %d\n", first_click.x, first_click.y);
+	//	mouse_clicked = TRUE;
+	//	break;
+
+	//case WM_LBUTTONUP:
+	//	mouse_clicked = FALSE;
+	//	break;
+
+	//case WM_MOUSEMOVE: {
+	//	if (mouse_clicked) {
+	//		mouse.x = LOWORD(lParam);
+	//		mouse.y = HIWORD(lParam);
+	//		grph_build.offset_graph(mouse);
+	//		InvalidateRect(hWnd, NULL, FALSE);
+	//	}
+	//	break;
+	//}
 
 	case WM_CLOSE:
 		PostQuitMessage(0);
