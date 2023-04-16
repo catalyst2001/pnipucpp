@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\cgcommon\gl_viewport.cpp" />
+    <ClCompile Include="wavefront_obj.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h" />
+    <ClInclude Include="..\cgcommon\gl_viewport.h" />
+    <ClInclude Include="wavefront_obj.h" />
+    <ClInclude Include="dbg.h" />
+  </ItemGroup>
+</Project>
