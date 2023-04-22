@@ -1,0 +1,14 @@
+#include "gl_exts.h"
+
+PFNGLGENBUFFERSPROC glGenBuffers = NULL;
+PFNGLDELETEBUFFERSPROC glDeleteBuffers = NULL;
+PFNGLBINDBUFFERPROC glBindBuffer = NULL;
+PFNGLBUFFERDATAPROC glBufferData = NULL;
+
+void gl_load_extensions()
+{
+	LOAD_GL_EXTENSION_NEEDED(glGenBuffers, PFNGLGENBUFFERSPROC, "glGenBuffers");
+	LOAD_GL_EXTENSION_NEEDED(glDeleteBuffers, PFNGLDELETEBUFFERSPROC, "glDeleteBuffers");
+	LOAD_GL_EXTENSION_NEEDED(glBindBuffer, PFNGLBINDBUFFERPROC, "glBindBuffer");
+	LOAD_GL_EXTENSION_NEEDED(glBufferData, PFNGLBUFFERDATAPROC, "glBufferData");
+}

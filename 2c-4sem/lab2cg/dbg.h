@@ -18,7 +18,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-#define DBG(x, ...) fprintf(stderr, __PRETTY_FUNCTION__": " x "\n", __VA_ARGS__)
+#define DBG(x, ...) fprintf(stderr, __FUNCTION__": " x "\n", __VA_ARGS__)
 
 inline void initialize_output()
 {

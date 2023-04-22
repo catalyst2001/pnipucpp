@@ -3,12 +3,19 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="..\cgcommon\gl_viewport.cpp" />
-    <ClCompile Include="wavefront_obj.cpp" />
+    <ClCompile Include="..\cgcommon\trackball.cc" />
+    <ClCompile Include="model.cpp" />
+    <ClCompile Include="gl_exts.cpp" />
+    <ClCompile Include="lights.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h" />
     <ClInclude Include="..\cgcommon\gl_viewport.h" />
-    <ClInclude Include="wavefront_obj.h" />
     <ClInclude Include="dbg.h" />
+    <ClInclude Include="..\cgcommon\trackball.h" />
+    <ClInclude Include="..\cgcommon\tiny_obj_loader.h" />
+    <ClInclude Include="model.h" />
+    <ClInclude Include="gl_exts.h" />
+    <ClInclude Include="lights.h" />
   </ItemGroup>
 </Project>

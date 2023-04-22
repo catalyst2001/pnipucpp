@@ -1,91 +1,17 @@
-﻿#include <windows.h>
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <string.h>
-
-#include "main.h"
+#include "gl_exts.h"
 #include "../cgcommon/gl_viewport.h"
-#include "wavefront_obj.h"
+#include "main.h"
 #include "dbg.h"
+#include "model.h"
 
 HINSTANCE g_instance;
 HWND h_main_window;
 HWND h_control_panel;
 GLVIEWPORT gl_viewport;
 
-typedef size_t GLsizeiptr;
-typedef BOOL (WINAPI *wglSwapIntervalEXTPfn)(int interval);
-typedef void (WINAPI *PFNGLGENBUFFERSPROC)(GLsizei n, GLuint *buffers);
-typedef void (WINAPI *PFNGLBINDBUFFERPROC)(GLenum target, GLuint buffer);
-typedef void (WINAPI *PFNGLDELETEBUFFERSPROC)(GLsizei n, const GLuint *buffers);
-typedef void (WINAPI *PFNGLBUFFERDATAPROC)(GLenum target, GLsizeiptr size, const void *data, GLenum usage);
-
-PFNGLGENBUFFERSPROC glGenBuffers = NULL;
-PFNGLDELETEBUFFERSPROC glDeleteBuffers = NULL;
-PFNGLBINDBUFFERPROC glBindBuffer = NULL;
-PFNGLBUFFERDATAPROC glBufferData = NULL;
-
-void compute_centroid(glm::vec3 &dst_vec, const obj_group &group)
-{
-	float num_vertices;
-	dst_vec = glm::vec3(0.f, 0.f, 0.f);
-	for (size_t i = 0; i < group.vertices.size(); i++)
-		dst_vec += group.vertices[i];
-
-	num_vertices = (float)group.vertices.size();
-	dst_vec /= num_vertices;
-}
-
-void obj_group_world_veritces_to_local(obj_group &dst_group, const glm::vec3 begin_of_coords_system)
-{
-	glm::vec3 centroid;
-	compute_centroid(centroid, dst_group);
-	dst_group.position = centroid;
-	centroid = begin_of_coords_system - centroid;
-	for (size_t i = 0; i < dst_group.vertices.size(); i++)
-		dst_group.vertices[i] -= centroid;
-}
-
-struct vertex {
-	glm::vec3 vertex;
-	glm::vec3 normal;
-	glm::vec2 uv;
-};
-
-enum BUFFERS {
-	VBO = 0,
-	IBO,
-	NUM_BUFFERS
-};
-
-struct mesh {
-	union {
-		struct {
-			GLuint vertex_buffer;
-			GLuint index_buffer;
-		};
-
-		struct {
-			GLuint buffers[2];
-		};
-	};
-	glm::vec3 min;
-	glm::vec3 max;
-};
-
-struct model {
-	glm::vec3 min;
-	glm::vec3 max;
-	std::vector<mesh> mesh_groups;
-};
-
-bool load_gl_extensions()
-{
-	glGenBuffers = (PFNGLGENBUFFERSPROC)wglGetProcAddress("glGenBuffers");
-	glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)wglGetProcAddress("glDeleteBuffers");
-	glBindBuffer = (PFNGLBINDBUFFERPROC)wglGetProcAddress("glBindBuffer");
-	glBufferData = (PFNGLBUFFERDATAPROC)wglGetProcAddress("glBufferData");
-	return glGenBuffers && glDeleteBuffers && glBindBuffer && glBufferData;
-}
+typedef BOOL(WINAPI *wglSwapIntervalEXTPfn)(int interval);
 
 void error_msg(const char *p_format, ...)
 {
@@ -161,7 +87,7 @@ bool register_classes(HINSTANCE h_instance)
 	return true;
 }
 
-model machine;
+model scene_model;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -186,11 +112,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		error_msg("Failed to init OpenGL viewport");
 		return 3;
 	}
-
-	if (!load_gl_extensions()) {
-		error_msg("OpenGL version in this machine not support one of extensions");
-		return 3;
-	}
+	gl_load_extensions();
 
 	wglSwapIntervalEXTPfn wglSwapIntervalEXT = (wglSwapIntervalEXTPfn)wglGetProcAddress("wglSwapIntervalEXT");
 	if (wglSwapIntervalEXT)
@@ -201,29 +123,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	ShowWindow(h_main_window, SW_SHOW);
 	UpdateWindow(h_main_window);
 
-	/* LOAD MODEL */
-	std::vector<obj_group *> groups;
-	const char *p_path = "Bed_done.obj";
-	if (!load_wavefront_obj(groups, p_path)) {
-		error_msg("Failed to load model '%s'!", p_path);
+	if (!scene_model.load_model("models/Bed_done.obj")) {
+		printf("Failed to load model!\n");
 		return 1;
 	}
 	
-	DBG("groups count: %zd", groups.size());
-	SuspendThread(GetCurrentThread());
-
-	glm::vec3 begin_coords_system = glm::vec3(0.f, 0.f, 0.f);
-	for (size_t i = 0; i < groups.size(); i++) {
-		
-		// transform vertices
-		obj_group_world_veritces_to_local(*groups[i], begin_coords_system);
-
-		// create buffers
-		mesh mesh_group;
-		glGenBuffers(NUM_BUFFERS, mesh_group.buffers);
-		glBindBuffer(GL_VERTEX_ARRAY, mesh_group.buffers[VBO]);
-		//glBufferData(GL_VERTEX_ARRAY, sizeof(vertex) * groups[i]->vertices.size(), );
-	}
+	//SuspendThread(GetCurrentThread());
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -243,15 +148,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 
-		glTranslatef(0.f, 0.f, -100.f);
-		glRotatef(90.f, 1.f, 0.f, 0.f);
+		glTranslatef(0.0f, -35.0f, -250.0f);
+		glRotatef(-90.0f, 1.0, 0.0, 0.0);
 
-		for (size_t i = 0; i < groups.size(); i++) {
-			glVertexPointer(3, GL_FLOAT, 0, groups[i]->vertices.data());
-			glNormalPointer(GL_FLOAT, 0, groups[i]->normals.data());
-			//glDrawElements(GL_TRIANGLES, )
-		}
-		
+		scene_model.draw_model();
 
 		SwapBuffers(gl_viewport.h_device_context);
 	}
@@ -290,6 +190,16 @@ LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	case WM_ERASEBKGND:
 		return 1;
 
+	case WM_KEYDOWN: {
+		if (wParam == VK_F1) {
+			static bool has_wireframe = true;
+			glPolygonMode(GL_FRONT_AND_BACK, (has_wireframe) ? GL_LINE : GL_FILL);
+			has_wireframe = !has_wireframe;
+		}
+		
+		break;
+	}
+
 	default:
 		return DefWindowProcA(hWnd, message, wParam, lParam);
 	}
@@ -320,6 +230,10 @@ LRESULT CALLBACK wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		resize_ui(&rect);
 		break;
 	}
+
+	case WM_ACTIVATE:
+		SetFocus(gl_viewport.h_viewport);
+		break;
 
     case WM_DESTROY:
         PostQuitMessage(0);
