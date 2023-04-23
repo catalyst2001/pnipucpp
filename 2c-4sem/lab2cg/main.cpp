@@ -1,15 +1,20 @@
 ﻿#include <stdio.h>
 #include <string.h>
+#include <windowsx.h>
 #include "gl_exts.h"
 #include "../cgcommon/gl_viewport.h"
 #include "main.h"
 #include "dbg.h"
 #include "model.h"
+#include "trackball.h"
 
 HINSTANCE g_instance;
 HWND h_main_window;
 HWND h_control_panel;
 GLVIEWPORT gl_viewport;
+
+glm::mat4x4 rotation_matrix;
+glm::quat curr_rot_quat, last_rot_quat;
 
 typedef BOOL(WINAPI *wglSwapIntervalEXTPfn)(int interval);
 
@@ -56,6 +61,7 @@ void resize_ui(const LPRECT p_rect)
 	rect.right = clientrect_width.cx - controls_panel_width - MARGIN_PX;
 	rect.bottom = clientrect_width.cy;
 	MoveWindow(gl_viewport.h_viewport, rect.left, rect.top, rect.right, rect.bottom, FALSE);
+	SetFocus(gl_viewport.h_viewport);
 }
 
 LRESULT CALLBACK wnd_proc(HWND, UINT, WPARAM, LPARAM);
@@ -123,7 +129,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	ShowWindow(h_main_window, SW_SHOW);
 	UpdateWindow(h_main_window);
 
-	if (!scene_model.load_model("models/Bed_done.obj")) {
+	if (!scene_model.load_model("models/machine_done.obj")) {
 		printf("Failed to load model!\n");
 		return 1;
 	}
@@ -132,7 +138,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+	//glEnableClientState(GL_NORMAL_ARRAY);
+
+	GetClientRect(gl_viewport.h_viewport, &rect);
+	glViewport(0, 0, rect.right, rect.bottom);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45.f, rect.right / (double)rect.bottom, 0.1, 1000.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
     MSG msg;
 	while (1) {
@@ -147,9 +161,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		/* DRAW SCENE */
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
+	
+		//GetClientRect(gl_viewport.h_viewport, &rect);
+		//glLoadIdentity();
+		//gluPerspective(45.0f, rect.right / (float)rect.bottom, 0.1f, 2000.f);
 
-		glTranslatef(0.0f, -35.0f, -250.0f);
-		glRotatef(-90.0f, 1.0, 0.0, 0.0);
+		glTranslatef(0.0f, 0.0f, -220.0f);
 
 		scene_model.draw_model();
 
@@ -158,13 +175,41 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+	//glDisableClientState(GL_NORMAL_ARRAY);
 
     return 0;
 }
 
+#define MBUTTON_LEFT (1 << 0)
+#define MBUTTON_RIGHT (1 << 1)
+#define MBUTTON_CENTER (1 << 2)
+
+void build_rotmatrix(glm::mat4 &dst_mat, const glm::quat &rot_quat)
+{
+	float rot_mat[4][4];
+	build_rotmatrix(rot_mat, glm::value_ptr(rot_quat));
+	dst_mat = glm::mat4(rot_mat[0][0], rot_mat[0][1], rot_mat[0][2], rot_mat[0][3],
+		rot_mat[1][0], rot_mat[1][1], rot_mat[1][2], rot_mat[1][3],
+		rot_mat[2][0], rot_mat[2][1], rot_mat[2][2], rot_mat[2][3],
+		rot_mat[3][0], rot_mat[3][1], rot_mat[3][2], rot_mat[3][3]);
+}
+
+void norm_mouse_position(glm::vec2 &dst_mouse_pt, HWND h_wnd, int x, int y)
+{
+	RECT rect;
+	GetClientRect(h_wnd, &rect);
+	dst_mouse_pt.x = x / (float)rect.right;
+	dst_mouse_pt.y = y / (float)rect.bottom;
+}
+
+#define ROTATION_SENSITIVITY (-0.01f)
+
 LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	glm::vec2 curr_pt(0.f, 0.f);
+	static int mbflags = 0;
+	static glm::vec2 last_pt;
+
 	SIZE size;
 	switch (message) {
 	case WM_CREATE: {
@@ -197,6 +242,42 @@ LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 			has_wireframe = !has_wireframe;
 		}
 		
+		break;
+	}
+
+	case WM_LBUTTONDOWN:
+		mbflags |= MBUTTON_LEFT;
+		norm_mouse_position(last_pt, hWnd, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_LBUTTONUP:
+		mbflags &= ~MBUTTON_LEFT;
+		norm_mouse_position(last_pt, hWnd, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_RBUTTONDOWN:
+		mbflags |= MBUTTON_RIGHT;
+		break;
+
+	case WM_RBUTTONUP:
+		mbflags &= ~MBUTTON_RIGHT;
+		break;
+
+	case WM_MBUTTONDOWN:
+		mbflags |= MBUTTON_CENTER;
+		break;
+
+	case WM_MBUTTONUP:
+		mbflags &= ~MBUTTON_CENTER;
+		break;
+
+	case WM_MOUSEMOVE: {
+		norm_mouse_position(curr_pt, hWnd, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		if (mbflags & MBUTTON_LEFT) {
+
+
+		}
+		last_pt = curr_pt;
 		break;
 	}
 

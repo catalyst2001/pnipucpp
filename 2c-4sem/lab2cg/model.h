@@ -11,7 +11,6 @@ using glm::vec3;
 struct vertex_s {
 	glm::vec3 vertex;
 	glm::vec3 normal;
-	//glm::vec2 uv;
 };
 
 struct mesh_s {
