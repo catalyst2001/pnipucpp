@@ -7,6 +7,8 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="gl_exts.cpp" />
     <ClCompile Include="lights.cpp" />
+    <ClCompile Include="modelcache.cpp" />
+    <ClCompile Include="win32_controls.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h" />
@@ -17,5 +19,7 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="gl_exts.h" />
     <ClInclude Include="lights.h" />
+    <ClInclude Include="modelcache.h" />
+    <ClInclude Include="win32_controls.h" />
   </ItemGroup>
 </Project>

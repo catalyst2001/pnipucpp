@@ -7,6 +7,7 @@
 #include "dbg.h"
 #include "model.h"
 #include "trackball.h"
+#include "win32_controls.h"
 
 HINSTANCE g_instance;
 HWND h_main_window;
@@ -66,6 +67,7 @@ void resize_ui(const LPRECT p_rect)
 
 LRESULT CALLBACK wnd_proc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK scene_wnd_proc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK controlpanel_wnd_proc(HWND, UINT, WPARAM, LPARAM);
 
 bool register_classes(HINSTANCE h_instance)
 {
@@ -79,6 +81,13 @@ bool register_classes(HINSTANCE h_instance)
 	wcex.lpfnWndProc = wnd_proc;
 	wcex.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 	wcex.lpszClassName = WC_LAB2;
+	if (!RegisterClassExA(&wcex))
+		return false;
+
+	/* CONTROL PANEL */
+	wcex.lpfnWndProc = controlpanel_wnd_proc;
+	wcex.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+	wcex.lpszClassName = WC_LAB2_CONTROLPANEL;
 	if (!RegisterClassExA(&wcex))
 		return false;
 
@@ -98,6 +107,15 @@ model scene_model;
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	DBG_INIT();
+
+	INITCOMMONCONTROLSEX iccex;
+	iccex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	iccex.dwICC = ICC_WIN95_CLASSES;
+	if (!InitCommonControlsEx(&iccex)) {
+		DWORD error = GetLastError();
+		error_msg("Failed to initialize new version on windows common controls!\r\nError: %d (0x%x)", error, error);
+		return 1;
+	}
 
 	g_instance = hInstance;
 	if (!register_classes(hInstance)) {
@@ -124,16 +142,18 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	if (wglSwapIntervalEXT)
 		wglSwapIntervalEXT(60);
 
-	h_control_panel = CreateWindowExA(WS_EX_DLGMODALFRAME, "static", "", WS_CHILD | WS_VISIBLE, 1, 1, 1, 1, h_main_window, (HMENU)0, NULL, NULL);
+	h_control_panel = CreateWindowExA(WS_EX_DLGMODALFRAME, WC_LAB2_CONTROLPANEL, "", WS_CHILD | WS_VISIBLE, 1, 1, 1, 1, h_main_window, (HMENU)0, NULL, NULL);
+
+	CreateWindowExA(0, WC_BUTTONA, "Button test", WS_VISIBLE | WS_CHILD, 0, 0, 200, 100, h_control_panel, (HMENU)0, 0, 0);
 
 	ShowWindow(h_main_window, SW_SHOW);
 	UpdateWindow(h_main_window);
 
-	if (!scene_model.load_model("models/machine_done.obj")) {
+	if (!scene_model.load_model("models/Bed_done.obj")) {
 		printf("Failed to load model!\n");
 		return 1;
 	}
-	
+
 	//SuspendThread(GetCurrentThread());
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -166,7 +186,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		//glLoadIdentity();
 		//gluPerspective(45.0f, rect.right / (float)rect.bottom, 0.1f, 2000.f);
 
-		glTranslatef(0.0f, 0.0f, -220.0f);
+		glTranslatef(0.0f, 0.0f, -120.0f);
+		glRotatef(90.f, 0.f, 1.f, 0.f);
 
 		scene_model.draw_model();
 
@@ -330,7 +351,32 @@ LRESULT CALLBACK wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
     default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
+        return DefWindowProcA(hWnd, message, wParam, lParam);
     }
     return 0;
+}
+
+LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_COMMAND:
+	{
+		SetFocus(gl_viewport.h_viewport);
+		int wmId = LOWORD(wParam);
+		switch (wmId)
+		{
+		case 1:
+			break;
+
+		default:
+			return DefWindowProcA(hWnd, message, wParam, lParam);
+		}
+	}
+	break;
+
+	default:
+		return DefWindowProcA(hWnd, message, wParam, lParam);
+	}
+	return 0;
 }

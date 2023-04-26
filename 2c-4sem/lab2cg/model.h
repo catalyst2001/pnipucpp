@@ -20,15 +20,69 @@ struct mesh_s {
 	unsigned int num_verts;
 	glm::vec3 min;
 	glm::vec3 max;
-	glm::mat4x4 transform;
+	//glm::mat4x4 transform;
+	glm::vec3 position;
+	glm::vec3 rotation;
 };
+
+/* MODEL CACHE FILE FORMAT */
+#define MDLCACHE_NOTHING(x)
+
+enum MDLCACHE_CHUNKS : int {
+	MDLCACHE_CHUNK_MESHES = 0,
+	MDLCACHE_CHUNK_MATERIALS,
+	MDLCACHE_NUM_CHUNKS
+};
+MDLCACHE_NOTHING(sizeof(MDLCACHE_CHUNKS));
+
+struct mdlcache_chunk {
+	int chunk_size;
+	int data_offset;
+};
+MDLCACHE_NOTHING(sizeof(mdlcache_chunk));
+
+#define MDLCACHE_SIGNATURE (MAKEFOURCC('M', 'D', 'L', 'C'))
+
+struct mdlcache_hdr {
+	int signature;
+	int hashsum;
+	int vertex_size;
+	mdlcache_chunk chunks[MDLCACHE_NUM_CHUNKS];
+};
+MDLCACHE_NOTHING(sizeof(mdlcache_hdr));
+
+struct mdlcache_mesh {
+	int name_offset;
+	int num_vertices;
+	int vertices_offset;
+	glm::vec3 centroid;
+};
+MDLCACHE_NOTHING(sizeof(mdlcache_mesh));
+
+struct memfile_s {
+	size_t size;
+	unsigned char *p_data;
+};
+
+bool memfile_open(memfile_s *p_dst, const char *p_file);
+void memfile_close(memfile_s *p_src);
 
 class model
 {
-	glm::vec3 min;
+	friend class model_cache;
+
+	glm::vec3 min; //COMPUTE MIN/MAX
 	glm::vec3 max;
 
 	std::vector<mesh_s> meshes;
+
+protected:
+	bool file_exists(const char *p_path);
+
+	/* MODEL CACHE HELPER CLASS */
+	bool load_cache(const char *p_filename);
+	bool build_cache(const char *p_objfilename, const char *p_cachefilename);
+
 public:
 	model();
 	~model();

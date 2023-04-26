@@ -1,4 +1,2 @@
-﻿  model.cpp
-d:\github\pnipucpp\2c-4sem\lab2cg\model.cpp(66): warning C4101: ni: неиспользованная локальная переменная
-d:\github\pnipucpp\2c-4sem\lab2cg\model.cpp(68): warning C4101: vn: неиспользованная локальная переменная
+﻿  main.cpp
   lab2cg.vcxproj -> D:\GITHUB\pnipucpp\Debug\lab2cg_k.exe

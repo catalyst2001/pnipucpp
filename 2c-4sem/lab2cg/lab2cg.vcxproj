@@ -162,6 +162,8 @@
     <ClCompile Include="lights.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="modelcache.cpp" />
+    <ClCompile Include="win32_controls.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cgcommon\gl_viewport.h" />
@@ -172,6 +174,8 @@
     <ClInclude Include="lights.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="modelcache.h" />
+    <ClInclude Include="win32_controls.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
