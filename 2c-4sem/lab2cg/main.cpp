@@ -19,6 +19,21 @@ glm::quat curr_rot_quat, last_rot_quat;
 
 typedef BOOL(WINAPI *wglSwapIntervalEXTPfn)(int interval);
 
+ctls::checkbox wireframe_check;
+
+union shade_u {
+	shade_u() {}
+	~shade_u() {}
+
+	struct {
+		ctls::toggle_button flat_shaded;
+		ctls::toggle_button smooth_shaded;
+	};
+	ctls::toggle_button arr[2];
+};
+
+shade_u shading;
+
 void error_msg(const char *p_format, ...)
 {
 	va_list argptr;
@@ -144,7 +159,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	h_control_panel = CreateWindowExA(WS_EX_DLGMODALFRAME, WC_LAB2_CONTROLPANEL, "", WS_CHILD | WS_VISIBLE, 1, 1, 1, 1, h_main_window, (HMENU)0, NULL, NULL);
 
-	CreateWindowExA(0, WC_BUTTONA, "Button test", WS_VISIBLE | WS_CHILD, 0, 0, 200, 100, h_control_panel, (HMENU)0, 0, 0);
+	//CreateWindowExA(0, WC_BUTTONA, "Button test", WS_VISIBLE | WS_CHILD, 0, 0, 200, 100, h_control_panel, (HMENU)0, 0, 0);
+
+	ctls::set_default_font();
+
+	wireframe_check = ctls::checkbox(h_control_panel, IDC_WIREFRAME, "Wireframe", 0, 0, 400, 30);
+
+	glShadeModel(GL_FLAT);
+	shading.flat_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_FLAT, "Flat", 0, 30 + 2, 100, 20, 0, true);
+	shading.smooth_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_SMOOTH, "Smooth", 100+2, 30 + 2, 100, 20);
 
 	ShowWindow(h_main_window, SW_SHOW);
 	UpdateWindow(h_main_window);
@@ -168,6 +191,27 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
+	glClearColor(0.5f, 0.5f, 0.5f, 1.5f);
+	glClearDepth(1.0f);
+
+	GLfloat g_LighPos[] = { 10.0f, 100.0f, 10.0f, 1.0f };
+	GLfloat g_LightAmbient[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+	GLfloat g_LightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	GLfloat g_LightSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	GLfloat g_LighAttenuation0 = 1.0f;
+	GLfloat g_LighAttenuation1 = 0.0f;
+	GLfloat g_LighAttenuation2 = 0.0f;
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_POSITION, g_LighPos);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, g_LightAmbient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, g_LightDiffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, g_LightSpecular);
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, g_LighAttenuation0);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, g_LighAttenuation1);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, g_LighAttenuation2);
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
     MSG msg;
 	while (1) {
 		if (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -181,13 +225,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		/* DRAW SCENE */
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
-	
+
+
 		//GetClientRect(gl_viewport.h_viewport, &rect);
 		//glLoadIdentity();
 		//gluPerspective(45.0f, rect.right / (float)rect.bottom, 0.1f, 2000.f);
 
-		glTranslatef(0.0f, 0.0f, -120.0f);
-		glRotatef(90.f, 0.f, 1.f, 0.f);
+		glTranslatef(0.0f, -20.0f, -320.0f);
+		glRotatef(45.f, 1.f, 1.f, 0.f);
 
 		scene_model.draw_model();
 
@@ -366,7 +411,18 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 		int wmId = LOWORD(wParam);
 		switch (wmId)
 		{
-		case 1:
+		case IDC_WIREFRAME:
+			glPolygonMode(GL_FRONT_AND_BACK, (wireframe_check.is_checked()) ? GL_LINE : GL_FILL);
+			break;
+
+		case IDC_SHADE_MODEL_FLAT:
+			glShadeModel(GL_FLAT);
+			shading.smooth_shaded.set_check(false);
+			break;
+
+		case IDC_SHADE_MODEL_SMOOTH:
+			glShadeModel(GL_SMOOTH);
+			shading.flat_shaded.set_check(false);
 			break;
 
 		default:

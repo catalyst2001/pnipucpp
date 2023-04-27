@@ -17,12 +17,25 @@ HFONT ctls::get_font()
 	return h_global_font;
 }
 
+void ctls::uncheck_except_me(const control_handle *p_cbs, int num_cb, const control_handle &self, int active_id)
+{
+	for (int i = 0; i < num_cb; i++) {
+		if (p_cbs[i].get_handle() != self.get_handle()) {
+			if (SendMessageA(p_cbs[i].get_handle(), BM_GETCHECK, (WPARAM)0, (LPARAM)0) == BST_CHECKED) {
+				SendMessageA(p_cbs[i].get_handle(), BM_SETCHECK, (WPARAM)BST_UNCHECKED, (LPARAM)0);
+			}
+		}
+	}
+}
+
 ctls::checkbox::checkbox()
 {
 }
 
-ctls::checkbox::checkbox(HWND parent, const char * p_label, int x, int y, int width, int height, DWORD dw_style_ex, bool init_state)
+ctls::checkbox::checkbox(HWND parent, int id, const char *p_label, int x, int y, int width, int height, DWORD dw_style_ex, bool init_state)
 {
+	init_handle(CreateWindowExA(0, WC_BUTTONA, p_label, WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX, x, y, width, height, parent, (HMENU)id, NULL, NULL));
+	SendMessageA(get_handle(), BM_SETCHECK, (WPARAM)(init_state) ? BST_CHECKED : BST_UNCHECKED, (LPARAM)0);
 }
 
 ctls::checkbox::~checkbox()
@@ -31,20 +44,22 @@ ctls::checkbox::~checkbox()
 
 bool ctls::checkbox::is_checked()
 {
-	return false;
+	return SendMessageA(get_handle(), BM_GETCHECK, (WPARAM)0, (LPARAM)0) == BST_CHECKED;
 }
 
-bool ctls::checkbox::set_check(bool state)
+void ctls::checkbox::set_check(bool state)
 {
-	return false;
+	SendMessageA(get_handle(), BM_SETCHECK, (WPARAM)(state) ? BST_CHECKED : BST_UNCHECKED, (LPARAM)0);
 }
 
 ctls::toggle_button::toggle_button()
 {
 }
 
-ctls::toggle_button::toggle_button(HWND parent, const char * p_label, int x, int y, int width, int height, DWORD dw_style_ex, bool init_state)
+ctls::toggle_button::toggle_button(HWND parent, int id, const char * p_label, int x, int y, int width, int height, DWORD dw_style_ex, bool init_state)
 {
+	init_handle(CreateWindowExA(0, WC_BUTTONA, p_label, WS_VISIBLE|WS_CHILD|BS_AUTOCHECKBOX|BS_PUSHLIKE, x, y, width, height, parent, (HMENU)id, NULL, NULL));
+	SendMessageA(get_handle(), BM_SETCHECK, (WPARAM)(init_state) ? BST_CHECKED : BST_UNCHECKED, (LPARAM)0);
 }
 
 ctls::toggle_button::~toggle_button()
@@ -53,19 +68,19 @@ ctls::toggle_button::~toggle_button()
 
 bool ctls::toggle_button::is_checked()
 {
-	return false;
+	return SendMessageA(get_handle(), BM_GETCHECK, (WPARAM)0, (LPARAM)0) == BST_CHECKED;
 }
 
-bool ctls::toggle_button::set_check(bool state)
+void ctls::toggle_button::set_check(bool state)
 {
-	return false;
+	SendMessageA(get_handle(), BM_SETCHECK, (WPARAM)(state) ? BST_CHECKED : BST_UNCHECKED, (LPARAM)0);
 }
 
 ctls::static_label::static_label()
 {
 }
 
-ctls::static_label::static_label(HWND parent, const char * p_label, int x, int y, int width, int height, DWORD dw_style_ex)
+ctls::static_label::static_label(HWND parent, int id, const char * p_label, int x, int y, int width, int height, DWORD dw_style_ex)
 {
 }
 
@@ -73,15 +88,15 @@ ctls::static_label::~static_label()
 {
 }
 
-void ctls::static_label::set_text(const char * p_text)
+void ctls::static_label::set_text(const char *p_text)
 {
 }
 
-void ctls::static_label::set_textf(const char * p_format, ...)
+void ctls::static_label::set_textf(const char *p_format, ...)
 {
 }
 
-void ctls::static_label::get_text(char * p_dst, size_t dstlen)
+void ctls::static_label::get_text(char *p_dst, size_t dstlen)
 {
 }
 
@@ -89,7 +104,7 @@ ctls::trackbar::trackbar()
 {
 }
 
-ctls::trackbar::trackbar(HWND parent, const char * p_label, int x, int y, int width, int height, int rmin, int rmax, int pos, DWORD dw_style_ex, DWORD dw_style)
+ctls::trackbar::trackbar(HWND parent, int id, const char * p_label, int x, int y, int width, int height, int rmin, int rmax, int pos, DWORD dw_style_ex, DWORD dw_style)
 {
 }
 
@@ -124,7 +139,7 @@ ctls::editbox::editbox()
 {
 }
 
-ctls::editbox::editbox(HWND parent, const char * p_text, int x, int y, int width, int height, DWORD dw_style_ex, DWORD dw_style)
+ctls::editbox::editbox(HWND parent, int id, const char * p_text, int x, int y, int width, int height, DWORD dw_style_ex, DWORD dw_style)
 {
 }
 
@@ -142,4 +157,20 @@ void ctls::editbox::get_text(char *p_dst, size_t dstlen)
 
 ctls::logbox::~logbox()
 {
+}
+
+void ctls::logbox::log_messagef(const char *p_format, ...)
+{
+}
+
+void ctls::logbox::clear()
+{
+}
+
+inline void ctls::control_handle::init_handle(HWND handle)
+{
+	if (handle)
+		SendMessageA(handle, WM_SETFONT, (WPARAM)h_global_font, (LPARAM)TRUE);
+	
+	set_handle(handle);
 }
