@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="..\cgcommon\gl_viewport.cpp" />
     <ClCompile Include="..\cgcommon\trackball.cc" />
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="gl_exts.cpp" />
     <ClCompile Include="lights.cpp" />
     <ClCompile Include="main.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="..\cgcommon\gl_viewport.h" />
     <ClInclude Include="..\cgcommon\tiny_obj_loader.h" />
     <ClInclude Include="..\cgcommon\trackball.h" />
+    <ClInclude Include="camera.h" />
     <ClInclude Include="dbg.h" />
     <ClInclude Include="gl_exts.h" />
     <ClInclude Include="lights.h" />

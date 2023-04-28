@@ -14,12 +14,22 @@ HWND h_main_window;
 HWND h_control_panel;
 GLVIEWPORT gl_viewport;
 
-glm::mat4x4 rotation_matrix;
-glm::quat curr_rot_quat, last_rot_quat;
+// For trackball.
+double prevMouseX, prevMouseY;
+float cam_curr_quat[4];
+float cam_prev_quat[4];
+float cam_eye[3], cam_lookat[3], cam_up[3];
+const float initial_cam_pos[3] = { 0.0, 0.0, 3.0f };  // World coordinates.
 
 typedef BOOL(WINAPI *wglSwapIntervalEXTPfn)(int interval);
 
 ctls::checkbox wireframe_check;
+ctls::treeview meshes_hierarchy;
+
+
+
+float rotScale = 1.0f;
+float transScale = 15.0f;
 
 union shade_u {
 	shade_u() {}
@@ -31,6 +41,9 @@ union shade_u {
 	};
 	ctls::toggle_button arr[2];
 };
+
+glm::vec3 scene_position = vec3(0.f, 0.f, 0.f);
+glm::vec3 scene_rotation = vec3(0.f, 0.f, 0.f);
 
 shade_u shading;
 
@@ -168,11 +181,34 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	glShadeModel(GL_FLAT);
 	shading.flat_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_FLAT, "Flat", 0, 30 + 2, 100, 20, 0, true);
 	shading.smooth_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_SMOOTH, "Smooth", 100+2, 30 + 2, 100, 20);
+	meshes_hierarchy = ctls::treeview(h_control_panel, IDC_HIERARCHY_TREE, 0, 100, 300, 300);
+
+	meshes_hierarchy.insert_text_item(NULL, "root 0", 0);
+	meshes_hierarchy.insert_text_item(NULL, "root 1", 0);
+	HTREEITEM h_item = meshes_hierarchy.insert_text_item(NULL, "root 2", 0);
+	if (h_item) {
+		for (size_t i = 0; i < 10; i++) {
+			meshes_hierarchy.insert_text_item(h_item, "parent item", 1);
+		}
+	}
+
+	// Initialization for trackball.
+	trackball(cam_curr_quat, 0, 0, 0, 0);
+	cam_eye[0] = initial_cam_pos[0];
+	cam_eye[1] = initial_cam_pos[1];
+	cam_eye[2] = initial_cam_pos[2];
+	cam_lookat[0] = 0.0f;
+	cam_lookat[1] = 0.0f;
+	cam_lookat[2] = 0.0f;
+	cam_up[0] = 0.0f;
+	cam_up[1] = 1.0f;
+	cam_up[2] = 0.0f;
+
 
 	ShowWindow(h_main_window, SW_SHOW);
 	UpdateWindow(h_main_window);
 
-	if (!scene_model.load_model("models/Bed_done.obj")) {
+	if (!scene_model.load_model("models/machine_done.obj")) {
 		printf("Failed to load model!\n");
 		return 1;
 	}
@@ -181,7 +217,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	//glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 
 	GetClientRect(gl_viewport.h_viewport, &rect);
 	glViewport(0, 0, rect.right, rect.bottom);
@@ -212,6 +248,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, g_LighAttenuation1);
 	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, g_LighAttenuation2);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
     MSG msg;
 	while (1) {
 		if (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -226,14 +263,25 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 
+		// View transformation matrix.
+		glm::mat4 viewMat = glm::lookAt(glm::vec3(cam_eye[0], cam_eye[1], cam_eye[2]),
+			glm::vec3(cam_lookat[0], cam_lookat[1], cam_lookat[2]),
+			glm::vec3(cam_up[0], cam_up[1], cam_up[2]));
 
-		//GetClientRect(gl_viewport.h_viewport, &rect);
-		//glLoadIdentity();
-		//gluPerspective(45.0f, rect.right / (float)rect.bottom, 0.1f, 2000.f);
+		// Get the additional camera rotation matrix introduced by trackball.  
+		GLfloat rot[4][4];
+		build_rotmatrix(rot, cam_curr_quat);
+		glm::mat4 camRotMat = glm::mat4(rot[0][0], rot[0][1], rot[0][2], rot[0][3],
+			rot[1][0], rot[1][1], rot[1][2], rot[1][3],
+			rot[2][0], rot[2][1], rot[2][2], rot[2][3],
+			rot[3][0], rot[3][1], rot[3][2], rot[3][3]);
 
-		glTranslatef(0.0f, -20.0f, -320.0f);
-		glRotatef(45.f, 1.f, 1.f, 0.f);
+		// The final view transformation has the additional rotation from trackball.
+		viewMat = viewMat * camRotMat;
+		glMultMatrixf(glm::value_ptr(viewMat));
 
+		//glTranslatef(0.0f, -20.0f, -320.0f);
+		//glRotatef(45.f, 1.f, 1.f, 0.f);
 		scene_model.draw_model();
 
 		SwapBuffers(gl_viewport.h_device_context);
@@ -241,7 +289,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	//glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 
     return 0;
 }
@@ -272,16 +320,11 @@ void norm_mouse_position(glm::vec2 &dst_mouse_pt, HWND h_wnd, int x, int y)
 
 LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	glm::vec2 curr_pt(0.f, 0.f);
-	static int mbflags = 0;
-	static glm::vec2 last_pt;
-
+	RECT rect;
 	SIZE size;
+	static int mbflags = 0;
+	
 	switch (message) {
-	case WM_CREATE: {
-		glEnable(GL_DEPTH_TEST);
-		return 0;
-	}
 
 	case WM_SIZE: {
 		size.cx = LOWORD(lParam);
@@ -313,12 +356,11 @@ LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 
 	case WM_LBUTTONDOWN:
 		mbflags |= MBUTTON_LEFT;
-		norm_mouse_position(last_pt, hWnd, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		break;
 
 	case WM_LBUTTONUP:
 		mbflags &= ~MBUTTON_LEFT;
-		norm_mouse_position(last_pt, hWnd, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		trackball(cam_prev_quat, 0.0, 0.0, 0.0, 0.0);
 		break;
 
 	case WM_RBUTTONDOWN:
@@ -338,12 +380,37 @@ LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 		break;
 
 	case WM_MOUSEMOVE: {
-		norm_mouse_position(curr_pt, hWnd, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		GetClientRect(hWnd, &rect);
+
+		float mouse_x = (float)GET_X_LPARAM(lParam);
+		float mouse_y = (float)GET_Y_LPARAM(lParam);
+		float window_width = (float)rect.right;
+		float window_height = (float)rect.bottom;
+
+		float p1x = rotScale * (2.0f * prevMouseX - window_width) / window_width;
+		float p1y = rotScale * (window_height - 2.0f * prevMouseY) / window_height;
+
+		float p2x = rotScale * (2.0f * mouse_x - window_width) / window_width;
+		float p2y = rotScale * (window_height - 2.0f * mouse_y) / window_height;
+
 		if (mbflags & MBUTTON_LEFT) {
-
-
+			trackball(cam_prev_quat, p1x, p1y, p2x, p2y);
+			add_quats(cam_prev_quat, cam_curr_quat, cam_curr_quat);
 		}
-		last_pt = curr_pt;
+		else if (mbflags & MBUTTON_CENTER) {
+			cam_eye[0] -= transScale * (mouse_x - prevMouseX) / window_width;
+			cam_lookat[0] -= transScale * (mouse_x - prevMouseX) / window_width;
+			cam_eye[1] += transScale * (mouse_y - prevMouseY) / window_height;
+			cam_lookat[1] += transScale * (mouse_y - prevMouseY) / window_height;
+		}
+		else if (mbflags & MBUTTON_RIGHT) {
+			cam_eye[2] += transScale * (mouse_y - prevMouseY) / window_height;
+			cam_lookat[2] += transScale * (mouse_y - prevMouseY) / window_height;
+		}
+
+		// Update mouse point
+		prevMouseX = mouse_x;
+		prevMouseY = mouse_y;
 		break;
 	}
 

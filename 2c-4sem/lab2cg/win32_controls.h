@@ -1,4 +1,5 @@
 #pragma once
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
 /* WINDOWS COMMON CONTROLS */
@@ -103,5 +104,14 @@ namespace ctls {
 		
 		void log_messagef(const char *p_format, ...);
 		void clear();
+	};
+
+	class treeview : public control_handle {
+	public:
+		treeview();
+		treeview(HWND parent, int id, int x, int y, int width, int height, DWORD dw_style_ex = 0, DWORD dw_style = 0);
+		~treeview();
+
+		HTREEITEM insert_text_item(HTREEITEM h_parent_item, const char *p_name, int value);
 	};
 };

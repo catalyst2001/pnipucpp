@@ -207,9 +207,10 @@ bool model::load_model(const char *p_filename)
 
 			// Get the three vertex indexes and coordinates
 			int vi[3], ni[3]; // indexes
-			float v[3][3]; // coords
-			float vn[3][3]; // normals
+			float v[3][3], vn[3][3]; // coords
 			for (int k = 0; k < 3; k++) {
+
+				/* VERTICES */
 				vi[0] = idx0.vertex_index;
 				vi[1] = idx1.vertex_index;
 				vi[2] = idx2.vertex_index;
@@ -220,11 +221,26 @@ bool model::load_model(const char *p_filename)
 				v[0][k] = attribs.vertices[3 * vi[0] + k];
 				v[1][k] = attribs.vertices[3 * vi[1] + k];
 				v[2][k] = attribs.vertices[3 * vi[2] + k];
+
+				/* NORMALS */
+				ni[0] = idx0.normal_index;
+				ni[1] = idx1.normal_index;
+				ni[2] = idx2.normal_index;
+				assert(ni[0] >= 0);
+				assert(ni[1] >= 0);
+				assert(ni[2] >= 0);
+				vn[0][k] = attribs.normals[3 * ni[0] + k];
+				vn[1][k] = attribs.normals[3 * ni[1] + k];
+				vn[2][k] = attribs.normals[3 * ni[2] + k];
 			}
 
 			group_verts.push_back(glm::vec3(v[0][0], v[0][1], v[0][2]));
 			group_verts.push_back(glm::vec3(v[1][0], v[1][1], v[1][2]));
 			group_verts.push_back(glm::vec3(v[2][0], v[2][1], v[2][2]));
+
+			normals.push_back(glm::vec3(vn[0][0], vn[0][1], vn[0][2]));
+			normals.push_back(glm::vec3(vn[1][0], vn[1][1], vn[1][2]));
+			normals.push_back(glm::vec3(vn[2][0], vn[2][1], vn[2][2]));
 		}
 
 		mesh.rotation = glm::vec3(0.f, 0.f, 0.f);
@@ -233,7 +249,7 @@ bool model::load_model(const char *p_filename)
 		for (size_t j = 0; j < group_verts.size(); j++) {
 			vertex_s vert;
 			vert.vertex = group_verts[j];
-			vert.normal = /*(out_normals.size()) ? out_normals[j] : */vec3(0.f, 0.f, 0.f);
+			vert.normal = (normals.size()) ? normals[j] : vec3(0.f, 0.f, 0.f);
 			prepared_verts.push_back(vert);
 		}
 

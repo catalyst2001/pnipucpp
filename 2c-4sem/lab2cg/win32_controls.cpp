@@ -174,3 +174,35 @@ inline void ctls::control_handle::init_handle(HWND handle)
 	
 	set_handle(handle);
 }
+
+ctls::treeview::treeview()
+{
+}
+
+ctls::treeview::treeview(HWND parent, int id, int x, int y, int width, int height, DWORD dw_style_ex, DWORD dw_style)
+{
+	init_handle(CreateWindowExA(dw_style_ex, WC_TREEVIEWA, "", WS_CHILD|WS_VISIBLE|WS_BORDER|TVS_HASLINES, x, y, width, height, parent, (HMENU)id, NULL, NULL));
+}
+
+ctls::treeview::~treeview()
+{
+}
+
+HTREEITEM ctls::treeview::insert_text_item(HTREEITEM h_parent_item, const char *p_name, int value)
+{
+	/* TVI_FIRST, TVI_ROOT, TVI_LAST */
+	TVINSERTSTRUCTA tvins;
+	tvins.item.mask = TVIF_TEXT | TVIF_PARAM;
+	tvins.item.pszText = _strdup(p_name);
+	tvins.item.cchTextMax = sizeof(tvins.item.pszText) / sizeof(tvins.item.pszText[0]);
+	tvins.item.lParam = value;
+	if (!h_parent_item) {
+		tvins.hInsertAfter = TVI_ROOT;
+		tvins.hParent = NULL;
+	}
+	else {
+		tvins.hInsertAfter = TVI_LAST;
+		tvins.hParent = h_parent_item;
+	}
+	return (HTREEITEM)SendMessageA(get_handle(), TVM_INSERTITEMA, (WPARAM)0, (LPARAM)&tvins);
+}

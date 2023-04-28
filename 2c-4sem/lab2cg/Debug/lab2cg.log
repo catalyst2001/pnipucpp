@@ -1,2 +1,10 @@
 ﻿  main.cpp
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(390): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(391): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(401): warning C4244: -=: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(402): warning C4244: -=: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(403): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(404): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(407): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(408): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
   lab2cg.vcxproj -> D:\GITHUB\pnipucpp\Debug\lab2cg_k.exe
