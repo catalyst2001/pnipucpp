@@ -104,42 +104,65 @@ ctls::trackbar::trackbar()
 {
 }
 
-ctls::trackbar::trackbar(HWND parent, int id, const char * p_label, int x, int y, int width, int height, int rmin, int rmax, int pos, DWORD dw_style_ex, DWORD dw_style)
+ctls::trackbar::trackbar(HWND parent, int id, const char *p_description, int x, int y, int width, int height, int def_text_height, int rmin, int rmax, int pos, DWORD dw_style_ex, DWORD dw_style)
 {
+	RECT track_rect;
+	HWND h_static_description = NULL;
+	track_rect.left = x;
+	track_rect.top = y;
+	track_rect.right = width;
+	track_rect.bottom = height;
+	if (p_description) {
+		h_static_description = CreateWindowExA(0, WC_STATICA, p_description, WS_CHILD | WS_VISIBLE,
+			track_rect.left, track_rect.top,
+			track_rect.right, def_text_height, parent, (HMENU)0, NULL, NULL);
+
+		assert(h_static_description);
+		SendMessageA(h_static_description, WM_SETFONT, (WPARAM)h_global_font, (LPARAM)TRUE);
+	}
+
+	init_handle(CreateWindowExA(0, TRACKBAR_CLASSA, "", WS_CHILD | WS_VISIBLE, track_rect.left, track_rect.top + def_text_height,
+		track_rect.right, (track_rect.bottom - def_text_height), parent, (HMENU)id, NULL, NULL));
+
+	if(h_static_description)
+		SetWindowLongPtrA(get_handle(), GWL_USERDATA, (LONG_PTR)h_static_description);
 }
 
 ctls::trackbar::~trackbar()
 {
 }
 
-void ctls::trackbar::set_minmax(int min, int max)
+void ctls::trackbar::set_minmax(int _min, int _max)
 {
+	SendMessageA(get_handle(), TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)_min);
+	SendMessageA(get_handle(), TBM_SETRANGEMAX, (WPARAM)TRUE, (LPARAM)_max);
 }
 
 int ctls::trackbar::get_min()
 {
-	return 0;
+	return SendMessageA(get_handle(), TBM_GETRANGEMIN, (WPARAM)0, (LPARAM)0);
 }
 
 int ctls::trackbar::get_max()
 {
-	return 0;
+	return SendMessageA(get_handle(), TBM_GETRANGEMAX, (WPARAM)0, (LPARAM)0);
 }
 
 void ctls::trackbar::set_pos(int pos)
 {
+	SendMessageA(get_handle(), TBM_SETPOS, (WPARAM)TRUE, (LPARAM)pos);
 }
 
 int ctls::trackbar::get_pos()
 {
-	return 0;
+	return SendMessageA(get_handle(), TBM_GETPOS, (WPARAM)0, (LPARAM)0);
 }
 
 ctls::editbox::editbox()
 {
 }
 
-ctls::editbox::editbox(HWND parent, int id, const char * p_text, int x, int y, int width, int height, DWORD dw_style_ex, DWORD dw_style)
+ctls::editbox::editbox(HWND parent, int id, const char *p_text, int x, int y, int width, int height, DWORD dw_style_ex, DWORD dw_style)
 {
 }
 

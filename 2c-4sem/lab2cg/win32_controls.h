@@ -1,6 +1,7 @@
 #pragma once
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <assert.h>
 
 /* WINDOWS COMMON CONTROLS */
 #include <CommCtrl.h>
@@ -21,9 +22,8 @@ namespace ctls {
 		~control_handle() {}
 
 		inline void init_handle(HWND handle);
-		inline void set_handle(HWND handle) { h_control = handle; }
-
 	public:
+		inline void set_handle(HWND handle) { h_control = handle; }
 		inline HWND get_handle() const { return h_control; }
 		inline bool is_window() const { return IsWindow(h_control); }
 		inline bool is_enabled() const { return IsWindowEnabled(h_control); }
@@ -33,6 +33,13 @@ namespace ctls {
 
 		operator bool() { return h_control != NULL; }
 		operator HWND() { return h_control; }
+		control_handle &operator=(HWND handle) { 
+			set_handle(handle);
+			return *this;
+		}
+
+		bool operator==(control_handle &h_control) { return get_handle() == h_control.get_handle(); }
+		bool operator!=(control_handle &h_control) { return get_handle() != h_control.get_handle(); }
 	};
 
 	void uncheck_except_me(const control_handle *p_cbs, int num_cb, const control_handle &self, int active_id);
@@ -75,7 +82,7 @@ namespace ctls {
 	class trackbar : public control_handle {
 	public:
 		trackbar();
-		trackbar(HWND parent, int id, const char *p_label, int x, int y, int width, int height, int rmin = 0, int rmax = 1, int pos = 0, DWORD dw_style_ex = 0, DWORD dw_style = 0);
+		trackbar(HWND parent, int id, const char *p_description, int x, int y, int width, int height, int def_text_height = 15, int rmin = 0, int rmax = 1, int pos = 0, DWORD dw_style_ex = 0, DWORD dw_style = 0);
 		~trackbar();
 
 		void set_minmax(int min, int max);

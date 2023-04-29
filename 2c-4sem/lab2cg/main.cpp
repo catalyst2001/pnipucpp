@@ -25,11 +25,58 @@ typedef BOOL(WINAPI *wglSwapIntervalEXTPfn)(int interval);
 
 ctls::checkbox wireframe_check;
 ctls::treeview meshes_hierarchy;
+ctls::trackbar support_move_track;
 
+float rotation_sensitivity = 1.0f;
+float translation_sensitivity = 15.0f;
 
+// frame001 - main parent. childs: switch_bottom1
 
-float rotScale = 1.0f;
-float transScale = 15.0f;
+struct mesh_idxs_s {
+	size_t frame; // frame001
+
+	size_t apron_idx; //support001 X
+	size_t apron_tap_idx; //support_tap X
+	size_t support_idx; //support_top, child tap001 XZ
+	size_t support_tap_idx; //support_tap2 XZ
+
+	size_t spindle_idx; //M_TESS_HP rX
+	size_t spindle_back_idx; //BaseMandrino_HP rX
+	size_t spindle_jaw1_idx; //Graffa rX tYZ
+	size_t spindle_jaw2_idx; //Cylinder008 rX tYZ
+	size_t spindle_jaw3_idx; //Cylinder009 rX tYZ
+
+	size_t tailstock_idx; //tailstock tX
+	size_t tailstock_tap_idx; //tailstock_tap rX tX
+
+	size_t switch_bottom1_idx; //switch_bottom1
+	size_t switch_bottom2_idx; //switch_bottom2
+	size_t switch_top1_idx; //switch_top1
+	size_t switch_top2_idx; //switch_top2
+};
+
+model scene_model;
+mesh_idxs_s model_meshes_indices;
+
+bool resolve_model_meshes_indices(mesh_idxs_s &dst_meshes_idxs, model &mdl)
+{
+	return (mdl.find_mesh_by_name(&dst_meshes_idxs.frame, "frame001") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_idx, "support001") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.support_idx, "support_top") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.support_tap_idx, "support_tap2") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_idx, "M_TESS_HP") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_back_idx, "BaseMandrino_HP") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw1_idx, "Graffa") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw2_idx, "Cylinder008") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw3_idx, "Cylinder009") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.tailstock_idx, "tailstock") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.tailstock_tap_idx, "tailstock_tap") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_bottom1_idx, "switch_bottom1") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_bottom2_idx, "switch_bottom2") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_top1_idx, "switch_top1") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_top2_idx, "switch_top2"));
+}
+
 
 union shade_u {
 	shade_u() {}
@@ -130,8 +177,6 @@ bool register_classes(HINSTANCE h_instance)
 	return true;
 }
 
-model scene_model;
-
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	DBG_INIT();
@@ -182,6 +227,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	shading.flat_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_FLAT, "Flat", 0, 30 + 2, 100, 20, 0, true);
 	shading.smooth_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_SMOOTH, "Smooth", 100+2, 30 + 2, 100, 20);
 	meshes_hierarchy = ctls::treeview(h_control_panel, IDC_HIERARCHY_TREE, 0, 100, 300, 300);
+	support_move_track = ctls::trackbar(h_control_panel, IDC_SUPPORTMOVE_TRACK, "Apron move", 0, 400, 300, 50);
+
+
+
 
 	meshes_hierarchy.insert_text_item(NULL, "root 0", 0);
 	meshes_hierarchy.insert_text_item(NULL, "root 1", 0);
@@ -208,7 +257,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	ShowWindow(h_main_window, SW_SHOW);
 	UpdateWindow(h_main_window);
 
-	if (!scene_model.load_model("models/machine_done.obj")) {
+	if (!scene_model.load_model("models/Bed_done.obj")) {
 		printf("Failed to load model!\n");
 		return 1;
 	}
@@ -326,6 +375,25 @@ LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	
 	switch (message) {
 
+	case WM_HSCROLL: {
+		HWND h_scroll_sender = (HWND)lParam;
+
+		/* HANDLE NO-DEFAULT SCROLLS */
+		if (h_scroll_sender) {
+			if (h_scroll_sender == support_move_track) {
+				support_move_track.get_pos();
+
+
+
+			}
+
+			
+
+
+		}
+		break;
+	}
+
 	case WM_SIZE: {
 		size.cx = LOWORD(lParam);
 		size.cy = HIWORD(lParam);
@@ -387,25 +455,25 @@ LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 		float window_width = (float)rect.right;
 		float window_height = (float)rect.bottom;
 
-		float p1x = rotScale * (2.0f * prevMouseX - window_width) / window_width;
-		float p1y = rotScale * (window_height - 2.0f * prevMouseY) / window_height;
+		float p1x = rotation_sensitivity * (2.0f * prevMouseX - window_width) / window_width;
+		float p1y = rotation_sensitivity * (window_height - 2.0f * prevMouseY) / window_height;
 
-		float p2x = rotScale * (2.0f * mouse_x - window_width) / window_width;
-		float p2y = rotScale * (window_height - 2.0f * mouse_y) / window_height;
+		float p2x = rotation_sensitivity * (2.0f * mouse_x - window_width) / window_width;
+		float p2y = rotation_sensitivity * (window_height - 2.0f * mouse_y) / window_height;
 
 		if (mbflags & MBUTTON_LEFT) {
 			trackball(cam_prev_quat, p1x, p1y, p2x, p2y);
 			add_quats(cam_prev_quat, cam_curr_quat, cam_curr_quat);
 		}
 		else if (mbflags & MBUTTON_CENTER) {
-			cam_eye[0] -= transScale * (mouse_x - prevMouseX) / window_width;
-			cam_lookat[0] -= transScale * (mouse_x - prevMouseX) / window_width;
-			cam_eye[1] += transScale * (mouse_y - prevMouseY) / window_height;
-			cam_lookat[1] += transScale * (mouse_y - prevMouseY) / window_height;
+			cam_eye[0] -= translation_sensitivity * (mouse_x - prevMouseX) / window_width;
+			cam_lookat[0] -= translation_sensitivity * (mouse_x - prevMouseX) / window_width;
+			cam_eye[1] += translation_sensitivity * (mouse_y - prevMouseY) / window_height;
+			cam_lookat[1] += translation_sensitivity * (mouse_y - prevMouseY) / window_height;
 		}
 		else if (mbflags & MBUTTON_RIGHT) {
-			cam_eye[2] += transScale * (mouse_y - prevMouseY) / window_height;
-			cam_lookat[2] += transScale * (mouse_y - prevMouseY) / window_height;
+			cam_eye[2] += translation_sensitivity * (mouse_y - prevMouseY) / window_height;
+			cam_lookat[2] += translation_sensitivity * (mouse_y - prevMouseY) / window_height;
 		}
 
 		// Update mouse point

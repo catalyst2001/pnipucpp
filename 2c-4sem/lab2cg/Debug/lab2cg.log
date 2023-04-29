@@ -1,10 +1,12 @@
 ﻿  main.cpp
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(390): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(391): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(401): warning C4244: -=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(402): warning C4244: -=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(403): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(404): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(407): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(408): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(410): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(411): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(421): warning C4244: -=: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(422): warning C4244: -=: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(423): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(424): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(427): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(428): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+  win32_controls.cpp
+  Создание кода...
   lab2cg.vcxproj -> D:\GITHUB\pnipucpp\Debug\lab2cg_k.exe
