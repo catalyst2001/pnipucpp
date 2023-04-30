@@ -13,6 +13,8 @@ struct vertex_s {
 	glm::vec3 normal;
 };
 
+#define MESH_MAX_CHILDS 10
+
 struct mesh_s {
 	bool b_visible;
 	char name[64];
@@ -21,8 +23,13 @@ struct mesh_s {
 	glm::vec3 min;
 	glm::vec3 max;
 	//glm::mat4x4 transform;
+	glm::vec3 pos_of_parent;
 	glm::vec3 position;
 	glm::vec3 rotation;
+
+	int parent_idx;
+	int num_childs;
+	int childs_idxs[MESH_MAX_CHILDS];
 };
 
 /* MODEL CACHE FILE FORMAT */
@@ -90,6 +97,7 @@ public:
 	bool    load_model(const char *p_filename);
 	void    free_model();
 
+	size_t  get_meshes_count();
 	bool    find_mesh_by_name(size_t *p_dst_index, const char *p_meshname);
 	mesh_s *get_mesh_by_index(size_t _index);
 	void    draw_model();

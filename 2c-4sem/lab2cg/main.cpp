@@ -23,28 +23,50 @@ const float initial_cam_pos[3] = { 0.0, 0.0, 3.0f };  // World coordinates.
 
 typedef BOOL(WINAPI *wglSwapIntervalEXTPfn)(int interval);
 
-ctls::checkbox wireframe_check;
-ctls::treeview meshes_hierarchy;
-ctls::trackbar support_move_track;
+#define DECL_HIERARCHY_PARAM(myid, name, parent) (parent)
 
-float rotation_sensitivity = 1.0f;
-float translation_sensitivity = 15.0f;
+int object_hierarchy[] = {
+	DECL_HIERARCHY_PARAM(0, "mainframe", -1), //parent NONE
 
-// frame001 - main parent. childs: switch_bottom1
+	DECL_HIERARCHY_PARAM(1, "apron", 0), //parent "mainframe"
+	DECL_HIERARCHY_PARAM(2, "apron_tap", 1), //parent "apron"
+	DECL_HIERARCHY_PARAM(3, "apron_screw_drive", 0), //parent "mainframe"
+
+	DECL_HIERARCHY_PARAM(4, "support_top", 1), //parent "apron"
+	DECL_HIERARCHY_PARAM(5, "support_move_tap", 1), //parent "apron"
+	DECL_HIERARCHY_PARAM(6, "support_offset_tap", 4), //parent "support_top"
+
+	DECL_HIERARCHY_PARAM(7, "headstock", 0), //parent "mainframe"
+	DECL_HIERARCHY_PARAM(8, "spindle", 7), //parent "headstock"
+	DECL_HIERARCHY_PARAM(9, "spindle_jaw1", 8), //parent "spindle"
+	DECL_HIERARCHY_PARAM(10, "spindle_jaw2", 8), //parent "spindle"
+	DECL_HIERARCHY_PARAM(11, "spindle_jaw3", 8), //parent "spindle"
+
+	DECL_HIERARCHY_PARAM(12, "tailstock", 0), //parent "mainframe"
+	DECL_HIERARCHY_PARAM(13, "tailstock_tap", 12), //parent "tailstock"
+
+	DECL_HIERARCHY_PARAM(14, "switch_bottom1", 0), //parent "mainframe"
+	DECL_HIERARCHY_PARAM(15, "switch_bottom2", 0), //parent "mainframe"
+	DECL_HIERARCHY_PARAM(16, "switch_top1", 12), //parent "tailstock"
+	DECL_HIERARCHY_PARAM(17, "switch_top2", 12) //parent "tailstock"
+};
 
 struct mesh_idxs_s {
-	size_t frame; // frame001
+	size_t frame; // mainframe
+	size_t headstock_idx; //headstock
 
-	size_t apron_idx; //support001 X
-	size_t apron_tap_idx; //support_tap X
-	size_t support_idx; //support_top, child tap001 XZ
-	size_t support_tap_idx; //support_tap2 XZ
+	size_t apron_idx; //apron X
+	size_t apron_tap_idx; //apron_tap X
+	size_t apron_screw_drive_idx; //apron_screw_drive
 
-	size_t spindle_idx; //M_TESS_HP rX
-	size_t spindle_back_idx; //BaseMandrino_HP rX
-	size_t spindle_jaw1_idx; //Graffa rX tYZ
-	size_t spindle_jaw2_idx; //Cylinder008 rX tYZ
-	size_t spindle_jaw3_idx; //Cylinder009 rX tYZ
+	size_t support_idx; //support_top
+	size_t support_tap_idx; //support_move_tap XZ
+	size_t support_offset_tap_idx; //support_offset_tap XZ
+
+	size_t spindle_idx; //spindle rX
+	size_t spindle_jaw1_idx; //spindle_jaw1 rX tYZ
+	size_t spindle_jaw2_idx; //spindle_jaw2 rX tYZ
+	size_t spindle_jaw3_idx; //spindle_jaw3 rX tYZ
 
 	size_t tailstock_idx; //tailstock tX
 	size_t tailstock_tap_idx; //tailstock_tap rX tX
@@ -55,44 +77,53 @@ struct mesh_idxs_s {
 	size_t switch_top2_idx; //switch_top2
 };
 
+ctls::toggle_button flat_shaded;
+ctls::toggle_button smooth_shaded;
+ctls::checkbox wireframe_check;
+ctls::treeview meshes_hierarchy;
+ctls::trackbar apron_move_track_x;
+ctls::trackbar support_move_track_z;
+ctls::trackbar tailstock_z;
+
+float rotation_sensitivity = 1.0f;
+float translation_sensitivity = 15.0f;
+
 model scene_model;
 mesh_idxs_s model_meshes_indices;
 
 bool resolve_model_meshes_indices(mesh_idxs_s &dst_meshes_idxs, model &mdl)
 {
-	return (mdl.find_mesh_by_name(&dst_meshes_idxs.frame, "frame001") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_idx, "support001") &&
+	return (mdl.find_mesh_by_name(&dst_meshes_idxs.frame, "mainframe") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_idx, "apron") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_tap_idx, "apron_tap") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_screw_drive_idx, "apron_screw_drive") &&
+
 		mdl.find_mesh_by_name(&dst_meshes_idxs.support_idx, "support_top") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.support_tap_idx, "support_tap2") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_idx, "M_TESS_HP") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_back_idx, "BaseMandrino_HP") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw1_idx, "Graffa") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw2_idx, "Cylinder008") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw3_idx, "Cylinder009") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.support_tap_idx, "support_move_tap") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.support_offset_tap_idx, "support_offset_tap") &&
+
+		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_idx, "spindle") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw1_idx, "spindle_jaw1") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw2_idx, "spindle_jaw2") &&
+		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw3_idx, "spindle_jaw3") &&
+
 		mdl.find_mesh_by_name(&dst_meshes_idxs.tailstock_idx, "tailstock") &&
 		mdl.find_mesh_by_name(&dst_meshes_idxs.tailstock_tap_idx, "tailstock_tap") &&
+
 		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_bottom1_idx, "switch_bottom1") &&
 		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_bottom2_idx, "switch_bottom2") &&
 		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_top1_idx, "switch_top1") &&
 		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_top2_idx, "switch_top2"));
 }
 
+void compute_positions_of_parents(model &mdl, const mesh_idxs_s &src_meshes_idxs)
+{
+	mesh_s *p_mesh;
+	p_mesh = mdl.get_mesh_by_index(src_meshes_idxs.frame);
+	p_mesh->pos_of_parent = glm::vec3(0.f, 0.f, 0.f);
 
-union shade_u {
-	shade_u() {}
-	~shade_u() {}
-
-	struct {
-		ctls::toggle_button flat_shaded;
-		ctls::toggle_button smooth_shaded;
-	};
-	ctls::toggle_button arr[2];
-};
-
-glm::vec3 scene_position = vec3(0.f, 0.f, 0.f);
-glm::vec3 scene_rotation = vec3(0.f, 0.f, 0.f);
-
-shade_u shading;
+	//TODO: continue
+}
 
 void error_msg(const char *p_format, ...)
 {
@@ -179,9 +210,12 @@ bool register_classes(HINSTANCE h_instance)
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	RECT rect;
+	int posx, posy;
+	INITCOMMONCONTROLSEX iccex;
+
 	DBG_INIT();
 
-	INITCOMMONCONTROLSEX iccex;
 	iccex.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	iccex.dwICC = ICC_WIN95_CLASSES;
 	if (!InitCommonControlsEx(&iccex)) {
@@ -197,7 +231,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	}
 
 	/* CREATE MAIN WINDOW */
-	RECT rect;
 	center_of_screen(&rect, 800, 600);
 	h_main_window = CreateWindowExA(0, WC_LAB2, "Lab2", WS_OVERLAPPEDWINDOW, rect.left, rect.top, rect.right, rect.bottom, NULL, NULL, hInstance, NULL);
 	if (!h_main_window) {
@@ -217,17 +250,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	h_control_panel = CreateWindowExA(WS_EX_DLGMODALFRAME, WC_LAB2_CONTROLPANEL, "", WS_CHILD | WS_VISIBLE, 1, 1, 1, 1, h_main_window, (HMENU)0, NULL, NULL);
 
-	//CreateWindowExA(0, WC_BUTTONA, "Button test", WS_VISIBLE | WS_CHILD, 0, 0, 200, 100, h_control_panel, (HMENU)0, 0, 0);
-
+	posx = posy = 2;
 	ctls::set_default_font();
-
-	wireframe_check = ctls::checkbox(h_control_panel, IDC_WIREFRAME, "Wireframe", 0, 0, 400, 30);
-
-	glShadeModel(GL_FLAT);
-	shading.flat_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_FLAT, "Flat", 0, 30 + 2, 100, 20, 0, true);
-	shading.smooth_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_SMOOTH, "Smooth", 100+2, 30 + 2, 100, 20);
-	meshes_hierarchy = ctls::treeview(h_control_panel, IDC_HIERARCHY_TREE, 0, 100, 300, 300);
-	support_move_track = ctls::trackbar(h_control_panel, IDC_SUPPORTMOVE_TRACK, "Apron move", 0, 400, 300, 50);
+	wireframe_check = ctls::checkbox(h_control_panel, IDC_WIREFRAME, MARGIN_PX, "Wireframe", posx, &posy, 400, 30, 0, false);
+	flat_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_FLAT, "Flat", posx, posy, 50, 20, 0, true);
+	smooth_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_SMOOTH, MARGIN_PX, "Smooth", posx+50+MARGIN_PX, &posy, 50, 20);
+	meshes_hierarchy = ctls::treeview(h_control_panel, IDC_HIERARCHY_TREE, posx, &posy, 300, 300, MARGIN_PX);
+	apron_move_track_x = ctls::trackbar(h_control_panel, IDC_APRONMOVE_TRACK, MARGIN_PX, "Apron move (x)", posx, &posy, 300, 50);
+	support_move_track_z = ctls::trackbar(h_control_panel, IDC_SUPPORTMOVE_TRACK, MARGIN_PX, "Support move (z)", posx, &posy, 300, 50);
+	tailstock_z = ctls::trackbar(h_control_panel, IDC_SUPPORTMOVE_TRACK, MARGIN_PX, "Tailstock move (z)", posx, &posy, 300, 50);
 
 
 
@@ -257,10 +288,21 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	ShowWindow(h_main_window, SW_SHOW);
 	UpdateWindow(h_main_window);
 
-	if (!scene_model.load_model("models/Bed_done.obj")) {
+	if (!scene_model.load_model("models/machine_done2.obj")) {
 		printf("Failed to load model!\n");
 		return 1;
 	}
+
+	if (!resolve_model_meshes_indices(model_meshes_indices, scene_model)) {
+		error_msg("Failed to find one of model mesh!");
+		return 1;
+	}
+
+	mesh_s *p_mesh;
+	p_mesh = scene_model.get_mesh_by_index(model_meshes_indices.apron_idx);
+	apron_move_track_x.set_pos((float)p_mesh->position.z);
+	apron_move_track_x.set_minmax(p_mesh->position.z - 100.f, p_mesh->position.z + 100.f);
+
 
 	//SuspendThread(GetCurrentThread());
 
@@ -276,9 +318,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glClearColor(0.5f, 0.5f, 0.5f, 1.5f);
-	glClearDepth(1.0f);
-
 	GLfloat g_LighPos[] = { 10.0f, 100.0f, 10.0f, 1.0f };
 	GLfloat g_LightAmbient[] = { 0.8f, 0.8f, 0.8f, 1.0f };
 	GLfloat g_LightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -286,6 +325,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	GLfloat g_LighAttenuation0 = 1.0f;
 	GLfloat g_LighAttenuation1 = 0.0f;
 	GLfloat g_LighAttenuation2 = 0.0f;
+	
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -297,6 +337,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, g_LighAttenuation1);
 	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, g_LighAttenuation2);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
+	glClearColor(0.5f, 0.5f, 0.5f, 1.5f);
+	glShadeModel(GL_FLAT);
 
     MSG msg;
 	while (1) {
@@ -374,25 +417,6 @@ LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	static int mbflags = 0;
 	
 	switch (message) {
-
-	case WM_HSCROLL: {
-		HWND h_scroll_sender = (HWND)lParam;
-
-		/* HANDLE NO-DEFAULT SCROLLS */
-		if (h_scroll_sender) {
-			if (h_scroll_sender == support_move_track) {
-				support_move_track.get_pos();
-
-
-
-			}
-
-			
-
-
-		}
-		break;
-	}
 
 	case WM_SIZE: {
 		size.cx = LOWORD(lParam);
@@ -538,8 +562,46 @@ LRESULT CALLBACK wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	float position_z;
+	mesh_s *p_mesh;
 	switch (message)
 	{
+	case WM_HSCROLL: {
+		HWND h_scroll_sender = (HWND)lParam;
+
+		/* HANDLE NO-DEFAULT SCROLLS */
+		if (h_scroll_sender) {
+			if (h_scroll_sender == apron_move_track_x) {
+				position_z = (float)apron_move_track_x.get_pos();
+				p_mesh = scene_model.get_mesh_by_index(model_meshes_indices.apron_idx);
+				p_mesh->position.z = position_z;
+
+				p_mesh = scene_model.get_mesh_by_index(model_meshes_indices.apron_tap_idx);
+				p_mesh->position.z = position_z;
+
+				p_mesh = scene_model.get_mesh_by_index(model_meshes_indices.support_idx);
+				p_mesh->position.z = position_z;
+
+				p_mesh = scene_model.get_mesh_by_index(model_meshes_indices.support_tap_idx);
+				p_mesh->position.z = position_z;
+				break;
+			}
+
+			if (h_scroll_sender == tailstock_z) {
+				position_z = (float)tailstock_z.get_pos();
+				p_mesh = scene_model.get_mesh_by_index(model_meshes_indices.tailstock_idx);
+				p_mesh->position.z = position_z;
+
+				p_mesh = scene_model.get_mesh_by_index(model_meshes_indices.tailstock_tap_idx);
+				p_mesh->position.z = position_z;
+				break;
+			}
+
+
+		}
+		break;
+	}
+
 	case WM_COMMAND:
 	{
 		SetFocus(gl_viewport.h_viewport);
@@ -552,12 +614,12 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 
 		case IDC_SHADE_MODEL_FLAT:
 			glShadeModel(GL_FLAT);
-			shading.smooth_shaded.set_check(false);
+			smooth_shaded.set_check(false);
 			break;
 
 		case IDC_SHADE_MODEL_SMOOTH:
 			glShadeModel(GL_SMOOTH);
-			shading.flat_shaded.set_check(false);
+			flat_shaded.set_check(false);
 			break;
 
 		default:

@@ -19,6 +19,7 @@ namespace ctls {
 	
 	protected:
 		control_handle() {}
+		control_handle(HWND handle) { h_control = handle; }
 		~control_handle() {}
 
 		inline void init_handle(HWND handle);
@@ -49,6 +50,7 @@ namespace ctls {
 	public:
 		checkbox();
 		checkbox(HWND parent, int id, const char *p_label, int x, int y, int width, int height, DWORD dw_style_ex = 0, bool init_state = false);
+		checkbox(HWND parent, int id, int padding, const char *p_label, int x, int *p_y, int width, int height, DWORD dw_style_ex = 0, bool init_state = false);
 		~checkbox();
 
 		bool is_checked();
@@ -60,6 +62,7 @@ namespace ctls {
 	public:
 		toggle_button();
 		toggle_button(HWND parent, int id, const char *p_label, int x, int y, int width, int height, DWORD dw_style_ex = 0, bool init_state = false);
+		toggle_button(HWND parent, int id, int padding, const char *p_label, int x, int *p_y, int width, int height, DWORD dw_style_ex = 0, bool init_state = false);
 		~toggle_button();
 
 		bool is_checked();
@@ -71,6 +74,7 @@ namespace ctls {
 	public:
 		static_label();
 		static_label(HWND parent, int id, const char *p_label, int x, int y, int width, int height, DWORD dw_style_ex = 0);
+		static_label(HWND parent, int id, int padding, const char *p_label, int x, int *p_y, int width, int height, DWORD dw_style_ex = 0);
 		~static_label();
 
 		void set_text(const char *p_text);
@@ -80,9 +84,11 @@ namespace ctls {
 
 	/* TRACKBAR */
 	class trackbar : public control_handle {
+		void baseinit(HWND parent, int id, const char * p_description, int x, int y, int width, int height, int def_text_height, int rmin, int rmax, int pos, DWORD dw_style_ex, DWORD dw_style);
 	public:
 		trackbar();
 		trackbar(HWND parent, int id, const char *p_description, int x, int y, int width, int height, int def_text_height = 15, int rmin = 0, int rmax = 1, int pos = 0, DWORD dw_style_ex = 0, DWORD dw_style = 0);
+		trackbar(HWND parent, int id, int padding, const char *p_description, int x, int *p_y, int width, int height, int def_text_height = 15, int rmin = 0, int rmax = 1, int pos = 0, DWORD dw_style_ex = 0, DWORD dw_style = 0);
 		~trackbar();
 
 		void set_minmax(int min, int max);
@@ -98,6 +104,7 @@ namespace ctls {
 	public:
 		editbox();
 		editbox(HWND parent, int id, const char *p_text, int x, int y, int width, int height, DWORD dw_style_ex = 0, DWORD dw_style = 0);
+		editbox(HWND parent, int id, int padding, const char *p_text, int x, int *p_y, int width, int height, DWORD dw_style_ex = 0, DWORD dw_style = 0);
 		~editbox();
 
 		void set_text(const char *p_text);
@@ -107,6 +114,7 @@ namespace ctls {
 	class logbox : public control_handle {
 		logbox();
 		logbox(HWND parent, int id, const char *p_text, int x, int y, int width, int height, DWORD dw_style_ex = 0, DWORD dw_style = 0);
+		logbox(HWND parent, int id, int padding, const char *p_text, int x, int *p_y, int width, int height, DWORD dw_style_ex = 0, DWORD dw_style = 0);
 		~logbox();
 		
 		void log_messagef(const char *p_format, ...);
@@ -117,6 +125,7 @@ namespace ctls {
 	public:
 		treeview();
 		treeview(HWND parent, int id, int x, int y, int width, int height, DWORD dw_style_ex = 0, DWORD dw_style = 0);
+		treeview(HWND parent, int id, int x, int *p_y, int width, int height, DWORD dw_style_ex = 0, DWORD dw_style = 0, int padding = 2);
 		~treeview();
 
 		HTREEITEM insert_text_item(HTREEITEM h_parent_item, const char *p_name, int value);

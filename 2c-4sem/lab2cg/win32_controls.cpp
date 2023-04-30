@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "win32_controls.h"
 
 HFONT h_global_font;
@@ -36,6 +37,16 @@ ctls::checkbox::checkbox(HWND parent, int id, const char *p_label, int x, int y,
 {
 	init_handle(CreateWindowExA(0, WC_BUTTONA, p_label, WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX, x, y, width, height, parent, (HMENU)id, NULL, NULL));
 	SendMessageA(get_handle(), BM_SETCHECK, (WPARAM)(init_state) ? BST_CHECKED : BST_UNCHECKED, (LPARAM)0);
+
+	printf("-------------------\n");
+}
+
+ctls::checkbox::checkbox(HWND parent, int id, int padding, const char *p_label, int x, int *p_y, int width, int height, DWORD dw_style_ex, bool init_state) : control_handle()
+{
+	printf("PRE 0x%x\n", get_handle());
+	*this = checkbox(parent, id, p_label, x, *p_y, width, height, dw_style_ex, init_state);
+	printf("POST 0x%x\n", get_handle());
+	(*p_y) += height + padding;
 }
 
 ctls::checkbox::~checkbox()
@@ -44,7 +55,9 @@ ctls::checkbox::~checkbox()
 
 bool ctls::checkbox::is_checked()
 {
-	return SendMessageA(get_handle(), BM_GETCHECK, (WPARAM)0, (LPARAM)0) == BST_CHECKED;
+	LRESULT res = SendMessageA(get_handle(), BM_GETCHECK, (WPARAM)0, (LPARAM)0);
+	printf("state: %d\n", res);
+	return res == BST_CHECKED;
 }
 
 void ctls::checkbox::set_check(bool state)
@@ -60,6 +73,12 @@ ctls::toggle_button::toggle_button(HWND parent, int id, const char * p_label, in
 {
 	init_handle(CreateWindowExA(0, WC_BUTTONA, p_label, WS_VISIBLE|WS_CHILD|BS_AUTOCHECKBOX|BS_PUSHLIKE, x, y, width, height, parent, (HMENU)id, NULL, NULL));
 	SendMessageA(get_handle(), BM_SETCHECK, (WPARAM)(init_state) ? BST_CHECKED : BST_UNCHECKED, (LPARAM)0);
+}
+
+ctls::toggle_button::toggle_button(HWND parent, int id, int padding, const char *p_label, int x, int *p_y, int width, int height, DWORD dw_style_ex, bool init_state)
+{
+	*this = toggle_button(parent, id, p_label, x, *p_y, width, height, dw_style_ex, init_state);
+	*p_y += height + padding;
 }
 
 ctls::toggle_button::~toggle_button()
@@ -80,8 +99,14 @@ ctls::static_label::static_label()
 {
 }
 
-ctls::static_label::static_label(HWND parent, int id, const char * p_label, int x, int y, int width, int height, DWORD dw_style_ex)
+ctls::static_label::static_label(HWND parent, int id, const char *p_label, int x, int y, int width, int height, DWORD dw_style_ex)
 {
+}
+
+ctls::static_label::static_label(HWND parent, int id, int padding, const char *p_label, int x, int *p_y, int width, int height, DWORD dw_style_ex)
+{
+	static_label(parent, id, p_label, x, *p_y, width, height, dw_style_ex);
+	*p_y += height + padding;
 }
 
 ctls::static_label::~static_label()
@@ -128,6 +153,12 @@ ctls::trackbar::trackbar(HWND parent, int id, const char *p_description, int x, 
 		SetWindowLongPtrA(get_handle(), GWL_USERDATA, (LONG_PTR)h_static_description);
 }
 
+ctls::trackbar::trackbar(HWND parent, int id, int padding, const char *p_description, int x, int *p_y, int width, int height, int def_text_height, int rmin, int rmax, int pos, DWORD dw_style_ex, DWORD dw_style)
+{
+	*this = trackbar(parent, id, p_description, x, *p_y, width, height, def_text_height, rmin, rmax, pos, dw_style_ex, dw_style);
+	*p_y += height + padding;
+}
+
 ctls::trackbar::~trackbar()
 {
 }
@@ -166,6 +197,12 @@ ctls::editbox::editbox(HWND parent, int id, const char *p_text, int x, int y, in
 {
 }
 
+ctls::editbox::editbox(HWND parent, int id, int padding, const char *p_text, int x, int *p_y, int width, int height, DWORD dw_style_ex, DWORD dw_style)
+{
+	*this = editbox(parent, id, p_text, x, *p_y, width, height, dw_style, dw_style_ex);
+	*p_y += height + padding;
+}
+
 ctls::editbox::~editbox()
 {
 }
@@ -176,6 +213,21 @@ void ctls::editbox::set_text(const char *p_text)
 
 void ctls::editbox::get_text(char *p_dst, size_t dstlen)
 {
+}
+
+ctls::logbox::logbox()
+{
+
+}
+
+ctls::logbox::logbox(HWND parent, int id, const char *p_text, int x, int y, int width, int height, DWORD dw_style_ex, DWORD dw_style)
+{
+}
+
+ctls::logbox::logbox(HWND parent, int id, int padding, const char *p_text, int x, int *p_y, int width, int height, DWORD dw_style_ex, DWORD dw_style)
+{
+	*this = logbox(parent, id, p_text, x, *p_y, width, height, dw_style_ex, dw_style);
+	*p_y += height + padding;
 }
 
 ctls::logbox::~logbox()
@@ -205,6 +257,12 @@ ctls::treeview::treeview()
 ctls::treeview::treeview(HWND parent, int id, int x, int y, int width, int height, DWORD dw_style_ex, DWORD dw_style)
 {
 	init_handle(CreateWindowExA(dw_style_ex, WC_TREEVIEWA, "", WS_CHILD|WS_VISIBLE|WS_BORDER|TVS_HASLINES, x, y, width, height, parent, (HMENU)id, NULL, NULL));
+}
+
+ctls::treeview::treeview(HWND parent, int id, int x, int *p_y, int width, int height, DWORD dw_style_ex, DWORD dw_style, int padding)
+{
+	*this = treeview(parent, id, x, *p_y, width, height, dw_style_ex, dw_style);
+	*p_y += height + padding;
 }
 
 ctls::treeview::~treeview()

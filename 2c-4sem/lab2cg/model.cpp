@@ -271,6 +271,11 @@ void model::free_model()
 		glDeleteBuffers(1, &meshes[i].vbo);
 }
 
+size_t model::get_meshes_count()
+{
+	return meshes.size();
+}
+
 bool model::find_mesh_by_name(size_t *p_dst_index, const char *p_meshname)
 {
 	for (size_t i = 0; i < meshes.size(); i++) {
