@@ -23,7 +23,9 @@ struct mesh_s {
 	glm::vec3 min;
 	glm::vec3 max;
 	//glm::mat4x4 transform;
+
 	glm::vec3 pos_of_parent;
+	glm::vec3 pos_of_parent_curr;
 	glm::vec3 position;
 	glm::vec3 rotation;
 

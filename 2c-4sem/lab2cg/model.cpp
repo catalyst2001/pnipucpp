@@ -299,7 +299,7 @@ mesh_s *model::get_mesh_by_index(size_t _index)
 void model::draw_mesh(mesh_s *p_mesh)
 {
 	glPushMatrix();
-	glTranslatef(p_mesh->pos_of_parent.x, p_mesh->pos_of_parent.y, p_mesh->pos_of_parent.z);
+	glTranslatef(p_mesh->pos_of_parent_curr.x, p_mesh->pos_of_parent_curr.y, p_mesh->pos_of_parent_curr.z);
 	glRotatef(p_mesh->rotation.x, 1.f, 0.f, 0.f);
 	glRotatef(p_mesh->rotation.y, 0.f, 1.f, 0.f);
 	glRotatef(p_mesh->rotation.z, 0.f, 0.f, 1.f);

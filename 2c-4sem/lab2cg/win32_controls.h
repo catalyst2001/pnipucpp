@@ -129,5 +129,7 @@ namespace ctls {
 		~treeview();
 
 		HTREEITEM insert_text_item(HTREEITEM h_parent_item, const char *p_name, int value);
+		bool expand(HTREEITEM h_item);
+		bool collapse(HTREEITEM h_item);
 	};
 };

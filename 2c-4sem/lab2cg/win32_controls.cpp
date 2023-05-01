@@ -287,3 +287,13 @@ HTREEITEM ctls::treeview::insert_text_item(HTREEITEM h_parent_item, const char *
 	}
 	return (HTREEITEM)SendMessageA(get_handle(), TVM_INSERTITEMA, (WPARAM)0, (LPARAM)&tvins);
 }
+
+bool ctls::treeview::expand(HTREEITEM h_item)
+{
+	return !SendMessageA(get_handle(), TVM_EXPAND, (WPARAM)TVE_EXPAND, (LPARAM)h_item);
+}
+
+bool ctls::treeview::collapse(HTREEITEM h_item)
+{
+	return !SendMessageA(get_handle(), TVM_EXPAND, (WPARAM)TVE_COLLAPSE, (LPARAM)h_item);
+}
