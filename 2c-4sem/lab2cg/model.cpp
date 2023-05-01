@@ -1,4 +1,5 @@
 #include "model.h"
+#include "dbg.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "../cgcommon/tiny_obj_loader.h"
@@ -104,12 +105,10 @@ bool model::build_cache(const char *p_objfilename, const char *p_cachefilename)
 	fpos_t offset = sizeof(mdlcache_hdr) + sizeof(mdlcache_mesh) * shapes.size();
 	fsetpos(fp, &offset);
 
+	char name[128];
 	for (size_t ishape = 0; ishape < shapes.size(); ishape++) {
-		tinyobj::shape_t *p_shape = &shapes[ishape];
-
-		mesh_s mesh;
-		strcpy_s(mesh.name, sizeof(mesh.name), p_shape->name.c_str());
-		printf("Preparing group ( %zd / %zd ): %s\n", ishape + 1, shapes.size(), mesh.name);
+		tinyobj::shape_t *p_shape = &shapes[ishape];		
+		strcpy_s(name, sizeof(name), p_shape->name.c_str());
 
 		std::vector<glm::vec3> group_verts;
 		std::vector<glm::vec3> normals;
@@ -152,15 +151,6 @@ bool model::build_cache(const char *p_objfilename, const char *p_cachefilename)
 			vert.normal = /*(out_normals.size()) ? out_normals[j] : */vec3(0.f, 0.f, 0.f);
 			prepared_verts.push_back(vert);
 		}
-
-		// create buffers
-		glGenBuffers(1, &mesh.vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_s) * prepared_verts.size(), (char *)prepared_verts.data(), GL_STATIC_DRAW);
-		assert(glGetError() == GL_NO_ERROR);
-		mesh.num_verts = (unsigned int)prepared_verts.size();
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		meshes.push_back(mesh);
 	}
 
 	return false;
@@ -185,16 +175,20 @@ bool model::load_model(const char *p_filename)
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
 	if (!tinyobj::LoadObj(&attribs, &shapes, &materials, &warnings, &errors, p_filename, NULL, true)) {
-		printf("Failed to load OBJ model. Error: %s\n", warnings.c_str());
+		DBG("Failed to load OBJ model. Error: %s", errors.c_str());
 		return false;
 	}
 
 	for (size_t ishape = 0; ishape < shapes.size(); ishape++) {
 		tinyobj::shape_t *p_shape = &shapes[ishape];
+		mesh_s *p_mesh_object = new mesh_s();
+		if (!p_mesh_object) {
+			DBG("Memory allocation failed");
+			return false;
+		}
 
-		mesh_s mesh;
-		strcpy_s(mesh.name, sizeof(mesh.name), p_shape->name.c_str());
-		printf("Preparing group ( %zd / %zd ): %s\n", ishape+1, shapes.size(), mesh.name);
+		strcpy_s(p_mesh_object->name, sizeof(p_mesh_object->name), p_shape->name.c_str());
+		DBG("Preparing group ( %zd / %zd ): %s", ishape+1, shapes.size(), p_mesh_object->name);
 
 		std::vector<glm::vec3> group_verts;
 		std::vector<glm::vec3> normals;
@@ -243,8 +237,8 @@ bool model::load_model(const char *p_filename)
 			normals.push_back(glm::vec3(vn[2][0], vn[2][1], vn[2][2]));
 		}
 
-		mesh.rotation = glm::vec3(0.f, 0.f, 0.f);
-		move_to_coords_system_start(mesh.position, group_verts, begin_coords_system);
+		p_mesh_object->rotation = glm::vec3(0.f, 0.f, 0.f);
+		move_to_coords_system_start(p_mesh_object->position, group_verts, begin_coords_system);
 
 		for (size_t j = 0; j < group_verts.size(); j++) {
 			vertex_s vert;
@@ -254,21 +248,28 @@ bool model::load_model(const char *p_filename)
 		}
 
 		// create buffers
-		glGenBuffers(1, &mesh.vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
+		glGenBuffers(1, &p_mesh_object->vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, p_mesh_object->vbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_s) * prepared_verts.size(), (char *)prepared_verts.data(), GL_STATIC_DRAW);
 		assert(glGetError() == GL_NO_ERROR);
-		mesh.num_verts = (unsigned int)prepared_verts.size();
+		p_mesh_object->num_verts = (unsigned int)prepared_verts.size();
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		meshes.push_back(mesh);
+		meshes.push_back(p_mesh_object);
 	}
 	return true;
 }
 
 void model::free_model()
 {
-	for (size_t i = 0; i < meshes.size(); i++)
-		glDeleteBuffers(1, &meshes[i].vbo);
+	for (size_t i = 0; i < meshes.size(); i++) {
+		glDeleteBuffers(1, &meshes[i]->vbo);
+		delete meshes[i];
+	}
+}
+
+std::vector<mesh_s *> &model::get_meshes()
+{
+	return meshes;
 }
 
 size_t model::get_meshes_count()
@@ -279,7 +280,7 @@ size_t model::get_meshes_count()
 bool model::find_mesh_by_name(size_t *p_dst_index, const char *p_meshname)
 {
 	for (size_t i = 0; i < meshes.size(); i++) {
-		if (!strcmp(meshes[i].name, p_meshname)) {
+		if (!strcmp(meshes[i]->name, p_meshname)) {
 			*p_dst_index = i;
 			return true;
 		}
@@ -292,26 +293,32 @@ mesh_s *model::get_mesh_by_index(size_t _index)
 	if (_index >= meshes.size())
 		return NULL;
 
-	return &meshes[_index];
+	return meshes[_index];
+}
+
+void model::draw_mesh(mesh_s *p_mesh)
+{
+	glPushMatrix();
+	glTranslatef(p_mesh->pos_of_parent.x, p_mesh->pos_of_parent.y, p_mesh->pos_of_parent.z);
+	glRotatef(p_mesh->rotation.x, 1.f, 0.f, 0.f);
+	glRotatef(p_mesh->rotation.y, 0.f, 1.f, 0.f);
+	glRotatef(p_mesh->rotation.z, 0.f, 0.f, 1.f);
+
+	glBindBuffer(GL_ARRAY_BUFFER, p_mesh->vbo);
+	glVertexPointer(3, GL_FLOAT, sizeof(vertex_s), (void *)offsetof(vertex_s, vertex));
+	glNormalPointer(GL_FLOAT, sizeof(vertex_s), (void *)offsetof(vertex_s, normal));
+	glDrawArrays(GL_TRIANGLES, 0, p_mesh->num_verts);	
+	assert(glGetError() == GL_NO_ERROR);
+
+	for (int i = 0; i < p_mesh->num_childs; i++)
+		draw_mesh(meshes[p_mesh->childs_idxs[i]]);
+
+	glPopMatrix();
 }
 
 void model::draw_model()
 {
-	for (size_t i = 0; i < meshes.size(); i++) {
-		mesh_s *p_currmesh = &meshes[i];
-		glPushMatrix();
-		glTranslatef(p_currmesh->position.x, p_currmesh->position.y, p_currmesh->position.z);
-		glRotatef(p_currmesh->rotation.x, 1.f, 0.f, 0.f);
-		glRotatef(p_currmesh->rotation.y, 0.f, 1.f, 0.f);
-		glRotatef(p_currmesh->rotation.z, 0.f, 0.f, 1.f);
-
-		glBindBuffer(GL_ARRAY_BUFFER, p_currmesh->vbo);
-		glVertexPointer(3, GL_FLOAT, sizeof(vertex_s), (void *)offsetof(vertex_s, vertex));
-		glNormalPointer(GL_FLOAT, sizeof(vertex_s), (void *)offsetof(vertex_s, normal));
-		glDrawArrays(GL_TRIANGLES, 0, p_currmesh->num_verts);
-		glPopMatrix();
-		assert(glGetError() == GL_NO_ERROR);
-	}
+	draw_mesh(meshes[0]);
 }
 
 bool memfile_open(memfile_s *p_dst, const char *p_file)

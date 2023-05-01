@@ -81,7 +81,9 @@ class model
 	glm::vec3 min; //COMPUTE MIN/MAX
 	glm::vec3 max;
 
-	std::vector<mesh_s> meshes;
+	std::vector<mesh_s *> meshes;
+	
+	void draw_mesh(mesh_s *p_mesh);
 
 protected:
 	bool file_exists(const char *p_path);
@@ -96,6 +98,8 @@ public:
 
 	bool    load_model(const char *p_filename);
 	void    free_model();
+
+	std::vector<mesh_s *> &get_meshes();
 
 	size_t  get_meshes_count();
 	bool    find_mesh_by_name(size_t *p_dst_index, const char *p_meshname);

@@ -1,4 +1,6 @@
-﻿#include <stdio.h>
+﻿#define DBG_ALLOW_IN_RELEASE
+
+#include <stdio.h>
 #include <string.h>
 #include <windowsx.h>
 #include "gl_exts.h"
@@ -15,7 +17,7 @@ HWND h_control_panel;
 GLVIEWPORT gl_viewport;
 
 // For trackball.
-double prevMouseX, prevMouseY;
+float prevMouseX, prevMouseY;
 float cam_curr_quat[4];
 float cam_prev_quat[4];
 float cam_eye[3], cam_lookat[3], cam_up[3];
@@ -23,33 +25,101 @@ const float initial_cam_pos[3] = { 0.0, 0.0, 3.0f };  // World coordinates.
 
 typedef BOOL(WINAPI *wglSwapIntervalEXTPfn)(int interval);
 
-#define DECL_HIERARCHY_PARAM(myid, name, parent) (parent)
-
-int object_hierarchy[] = {
-	DECL_HIERARCHY_PARAM(0, "mainframe", -1), //parent NONE
-
-	DECL_HIERARCHY_PARAM(1, "apron", 0), //parent "mainframe"
-	DECL_HIERARCHY_PARAM(2, "apron_tap", 1), //parent "apron"
-	DECL_HIERARCHY_PARAM(3, "apron_screw_drive", 0), //parent "mainframe"
-
-	DECL_HIERARCHY_PARAM(4, "support_top", 1), //parent "apron"
-	DECL_HIERARCHY_PARAM(5, "support_move_tap", 1), //parent "apron"
-	DECL_HIERARCHY_PARAM(6, "support_offset_tap", 4), //parent "support_top"
-
-	DECL_HIERARCHY_PARAM(7, "headstock", 0), //parent "mainframe"
-	DECL_HIERARCHY_PARAM(8, "spindle", 7), //parent "headstock"
-	DECL_HIERARCHY_PARAM(9, "spindle_jaw1", 8), //parent "spindle"
-	DECL_HIERARCHY_PARAM(10, "spindle_jaw2", 8), //parent "spindle"
-	DECL_HIERARCHY_PARAM(11, "spindle_jaw3", 8), //parent "spindle"
-
-	DECL_HIERARCHY_PARAM(12, "tailstock", 0), //parent "mainframe"
-	DECL_HIERARCHY_PARAM(13, "tailstock_tap", 12), //parent "tailstock"
-
-	DECL_HIERARCHY_PARAM(14, "switch_bottom1", 0), //parent "mainframe"
-	DECL_HIERARCHY_PARAM(15, "switch_bottom2", 0), //parent "mainframe"
-	DECL_HIERARCHY_PARAM(16, "switch_top1", 12), //parent "tailstock"
-	DECL_HIERARCHY_PARAM(17, "switch_top2", 12) //parent "tailstock"
+struct mesh_hierarchy {
+	const char *p_name;
+	int parent;
 };
+
+enum MESHES {
+	MESH_MAINFRAME = 0,
+	MESH_APRON,
+	MESH_APRON_TAP,
+	MESH_SCENE_SCREW_DRIVE,
+	MESH_SUPPORT_TOP,
+	MESH_SUPPORT_MOVE_TAP,
+	MESH_SUPPORT_OFFSET_TAP,
+
+	MESH_HEADSTOCK,
+	MESH_SPINDLE,
+	MESH_SPINDLE_JAW1,
+	MESH_SPINDLE_JAW2,
+	MESH_SPINDLE_JAW3,
+
+	MESH_TAILSTOCK,
+	MESH_TAILSTOCK_TAP,
+
+	MESH_SWITCH_BOTTOM1,
+	MESH_SWITCH_BOTTOM2,
+	MESH_SWITCH_TOP1,
+	MESH_SWITCH_TOP2
+};
+
+#define DECL_HIERARCHY_PARAM(myid, name, parent) { name, parent }
+
+mesh_hierarchy object_hierarchy[] = {
+	DECL_HIERARCHY_PARAM(MESH_MAINFRAME, "mainframe", -1), //parent NONE
+
+	DECL_HIERARCHY_PARAM(MESH_APRON, "apron", MESH_MAINFRAME), //parent "mainframe"
+	DECL_HIERARCHY_PARAM(MESH_APRON_TAP, "apron_tap", MESH_APRON), //parent "apron"
+	DECL_HIERARCHY_PARAM(MESH_SCENE_SCREW_DRIVE, "apron_screw_drive", MESH_MAINFRAME), //parent "mainframe"
+
+	DECL_HIERARCHY_PARAM(MESH_SUPPORT_TOP, "support_top", MESH_APRON), //parent "apron"
+	DECL_HIERARCHY_PARAM(MESH_SUPPORT_MOVE_TAP, "support_move_tap", MESH_APRON), //parent "apron"
+	DECL_HIERARCHY_PARAM(MESH_SUPPORT_OFFSET_TAP, "support_offset_tap", MESH_SUPPORT_TOP), //parent "support_top"
+
+	DECL_HIERARCHY_PARAM(MESH_HEADSTOCK, "headstock", MESH_MAINFRAME), //parent "mainframe"
+	DECL_HIERARCHY_PARAM(MESH_SPINDLE, "spindle", MESH_HEADSTOCK), //parent "headstock"
+	DECL_HIERARCHY_PARAM(MESH_SPINDLE_JAW1, "spindle_jaw1", MESH_SPINDLE), //parent "spindle"
+	DECL_HIERARCHY_PARAM(MESH_SPINDLE_JAW2, "spindle_jaw2", MESH_SPINDLE), //parent "spindle"
+	DECL_HIERARCHY_PARAM(MESH_SPINDLE_JAW3, "spindle_jaw3", MESH_SPINDLE), //parent "spindle"
+
+	DECL_HIERARCHY_PARAM(MESH_TAILSTOCK, "tailstock", 0), //parent "mainframe"
+	DECL_HIERARCHY_PARAM(MESH_TAILSTOCK_TAP, "tailstock_tap", MESH_TAILSTOCK), //parent "tailstock"
+
+	DECL_HIERARCHY_PARAM(MESH_SWITCH_BOTTOM1, "switch_bottom1", MESH_MAINFRAME), //parent "mainframe"
+	DECL_HIERARCHY_PARAM(MESH_SWITCH_BOTTOM2, "switch_bottom2", MESH_MAINFRAME), //parent "mainframe"
+	DECL_HIERARCHY_PARAM(MESH_SWITCH_TOP1, "switch_top1", MESH_HEADSTOCK), //parent "headstock"
+	DECL_HIERARCHY_PARAM(MESH_SWITCH_TOP2, "switch_top2", MESH_HEADSTOCK) //parent "headstock"
+};
+
+#define CNT(a) (sizeof(a) / sizeof(a[0]))
+
+template<typename _type>
+void my_swap(_type &a, _type &b)
+{
+	_type temp = a;
+	a = b;
+	b = temp;
+}
+
+void sort_meshes_by_hierarchy(model &mdl, const mesh_hierarchy *p_hierarchy, size_t count)
+{
+	mesh_s *p_mesh;
+	std::vector<mesh_s *> &meshes = mdl.get_meshes();
+
+	/* HIERARCHY DATA */
+	for (size_t i = 0; i < count; i++) {
+
+		/* EACH MESH */
+		for (size_t j = i; j < meshes.size(); j++) {
+			if (!strcmp(p_hierarchy[i].p_name, meshes[j]->name)) {
+				my_swap<mesh_s *>(meshes[j], meshes[i]);
+				goto __leave_cycle;
+			}
+		}
+	__leave_cycle:;
+	}
+}
+
+#if defined(_DEBUG) || defined(DBG_ALLOW_IN_RELEASE)
+void print_meshes(model &mdl)
+{
+	for (size_t i = 0; i < mdl.get_meshes_count(); i++) {
+		mesh_s *p_mesh = mdl.get_mesh_by_index(i);
+		DBG("Mesh %d : (%s)", i, (p_mesh) ? p_mesh->name : "NULL");
+	}
+}
+#endif
 
 struct mesh_idxs_s {
 	size_t frame; // mainframe
@@ -91,38 +161,84 @@ float translation_sensitivity = 15.0f;
 model scene_model;
 mesh_idxs_s model_meshes_indices;
 
-bool resolve_model_meshes_indices(mesh_idxs_s &dst_meshes_idxs, model &mdl)
+//bool resolve_model_meshes_indices(mesh_idxs_s &dst_meshes_idxs, model &mdl)
+//{
+//	return (mdl.find_mesh_by_name(&dst_meshes_idxs.frame, "mainframe") &&
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_idx, "apron") &&
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_tap_idx, "apron_tap") &&
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_screw_drive_idx, "apron_screw_drive") &&
+//
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.support_idx, "support_top") &&
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.support_tap_idx, "support_move_tap") &&
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.support_offset_tap_idx, "support_offset_tap") &&
+//
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_idx, "spindle") &&
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw1_idx, "spindle_jaw1") &&
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw2_idx, "spindle_jaw2") &&
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw3_idx, "spindle_jaw3") &&
+//
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.tailstock_idx, "tailstock") &&
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.tailstock_tap_idx, "tailstock_tap") &&
+//
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_bottom1_idx, "switch_bottom1") &&
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_bottom2_idx, "switch_bottom2") &&
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_top1_idx, "switch_top1") &&
+//		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_top2_idx, "switch_top2"));
+//}
+
+void compute_positions_of_parents(model &mdl, const mesh_hierarchy *p_hierarchy, size_t count)
 {
-	return (mdl.find_mesh_by_name(&dst_meshes_idxs.frame, "mainframe") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_idx, "apron") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_tap_idx, "apron_tap") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_screw_drive_idx, "apron_screw_drive") &&
+	std::vector<mesh_s *> &meshes = mdl.get_meshes();
+	for (size_t i = 0; i < meshes.size() && i < count; i++) {
+		if (p_hierarchy[i].parent == -1) {
+			meshes[i]->pos_of_parent = glm::vec3(0.f, 0.f, 0.f);
+			continue;
+		}
 
-		mdl.find_mesh_by_name(&dst_meshes_idxs.support_idx, "support_top") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.support_tap_idx, "support_move_tap") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.support_offset_tap_idx, "support_offset_tap") &&
+		meshes[i]->pos_of_parent = meshes[i]->position - meshes[p_hierarchy[i].parent]->position;
 
-		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_idx, "spindle") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw1_idx, "spindle_jaw1") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw2_idx, "spindle_jaw2") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw3_idx, "spindle_jaw3") &&
-
-		mdl.find_mesh_by_name(&dst_meshes_idxs.tailstock_idx, "tailstock") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.tailstock_tap_idx, "tailstock_tap") &&
-
-		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_bottom1_idx, "switch_bottom1") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_bottom2_idx, "switch_bottom2") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_top1_idx, "switch_top1") &&
-		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_top2_idx, "switch_top2"));
+#if defined(_DEBUG) || defined(DBG_ALLOW_IN_RELEASE)
+		glm::vec3 *p_pos_of_parent = &meshes[i]->pos_of_parent;
+		glm::vec3 *p_parent_pos = &meshes[p_hierarchy[i].parent]->position;
+		glm::vec3 *p_my_pos = &meshes[i]->position;
+		DBG("(%f %f %f) - (%f %f %f) = ( %f %f %f )", p_parent_pos->x, p_parent_pos->y, p_parent_pos->z,
+			p_my_pos->x, p_my_pos->y, p_my_pos->z,
+			p_pos_of_parent->x, p_pos_of_parent->y, p_pos_of_parent->z);
+#endif
+	}
 }
 
-void compute_positions_of_parents(model &mdl, const mesh_idxs_s &src_meshes_idxs)
+bool prepare_childs_indices(model &mdl, const mesh_hierarchy *p_hierarchy, size_t count)
 {
-	mesh_s *p_mesh;
-	p_mesh = mdl.get_mesh_by_index(src_meshes_idxs.frame);
-	p_mesh->pos_of_parent = glm::vec3(0.f, 0.f, 0.f);
+	std::vector<mesh_s *> &meshes = mdl.get_meshes();
 
-	//TODO: continue
+	/* PARENT */
+	for (size_t i = 0; i < meshes.size() && i < count; i++) {
+		mesh_s *p_parent = meshes[i];
+		p_parent->num_childs = 0;
+
+		/* CHILDS REFS TO PARENT (ME) */
+		for (size_t j = 0; j < meshes.size() && i < count; j++) {
+			if (p_hierarchy[j].parent == i) {
+				if (p_parent->num_childs == MESH_MAX_CHILDS) {
+					DBG("Mesh (%s) childs array overflowed", p_parent->name);
+					return false;
+				}
+				p_parent->childs_idxs[p_parent->num_childs] = (int)j;
+				p_parent->num_childs++;
+			}
+		}
+
+#if defined(_DEBUG) || defined(DBG_ALLOW_IN_RELEASE)
+		if (p_parent->num_childs) {
+			DBG("");
+			DBG("------ (%s) CHILDS ------", p_parent->name);
+			for (int i = 0; i < p_parent->num_childs; i++)
+				DBG("  %d: (%s) child", i, meshes[p_parent->childs_idxs[i]]->name);
+		}
+#endif
+	}
+	return true;
 }
 
 void error_msg(const char *p_format, ...)
@@ -293,16 +409,26 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		return 1;
 	}
 
-	if (!resolve_model_meshes_indices(model_meshes_indices, scene_model)) {
-		error_msg("Failed to find one of model mesh!");
+	printf("---------- PRE MESHES ------------\n");
+	print_meshes(scene_model);
+	sort_meshes_by_hierarchy(scene_model, object_hierarchy, CNT(object_hierarchy));
+	printf("---------- POST MESHES ------------\n");
+	print_meshes(scene_model);
+
+	compute_positions_of_parents(scene_model, object_hierarchy, CNT(object_hierarchy));
+	if (!prepare_childs_indices(scene_model, object_hierarchy, CNT(object_hierarchy))) {
 		return 1;
 	}
+
+	//if (!resolve_model_meshes_indices(model_meshes_indices, scene_model)) {
+	//	error_msg("Failed to find one of model mesh!");
+	//	return 1;
+	//}
 
 	mesh_s *p_mesh;
 	p_mesh = scene_model.get_mesh_by_index(model_meshes_indices.apron_idx);
 	apron_move_track_x.set_pos((float)p_mesh->position.z);
 	apron_move_track_x.set_minmax(p_mesh->position.z - 100.f, p_mesh->position.z + 100.f);
-
 
 	//SuspendThread(GetCurrentThread());
 

@@ -1,16 +1,9 @@
 ﻿  main.cpp
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(274): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(275): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(95): warning C4101: p_mesh: неиспользованная локальная переменная
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(375): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(376): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
           with
           [
               T=float
           ]
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(453): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(454): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(464): warning C4244: -=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(465): warning C4244: -=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(466): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(467): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(470): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(471): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
   lab2cg.vcxproj -> D:\GITHUB\pnipucpp\Debug\lab2cg_k.exe

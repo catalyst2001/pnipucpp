@@ -13,7 +13,7 @@
 
 #include <stdio.h>
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DBG_ALLOW_IN_RELEASE)
 #ifdef _WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>

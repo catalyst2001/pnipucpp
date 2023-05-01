@@ -1,21 +1,14 @@
 ﻿  main.cpp
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(294): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(295): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(97): warning C4101: p_mesh: неиспользованная локальная переменная
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(430): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(431): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
           with
           [
               T=float
           ]
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(473): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(474): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(484): warning C4244: -=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(485): warning C4244: -=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(486): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(487): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(490): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(491): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
   Создание кода
-  48 of 2240 functions ( 2.1%) were compiled, the rest were copied from previous compilation.
-    6 functions were new in current compilation
-    10 functions had inline decision re-evaluated but remain unchanged
+  2 of 2247 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
   lab2cg.vcxproj -> D:\GITHUB\pnipucpp\Release\lab2cg_k.exe
