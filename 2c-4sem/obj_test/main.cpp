@@ -131,6 +131,52 @@ void fn_windowclose(HWND hWnd)
 
 int main()
 {
+	glm::vec2 v1 = glm::vec2(-5.3f, -3.2f);
+	glm::vec2 v2 = glm::vec2(5.6f, -3.1f);
+	glm::vec2 v3 = glm::vec2(0.5f, 5.2f);
+	printf(
+		"v1 ( %f %f )\n"
+		"v2 ( %f %f )\n"
+		"v3 ( %f %f )\n",
+		v1.x, v1.y,
+		v2.x, v2.y,
+		v3.x, v3.y);
+
+	glm::vec2 center = (v1 + v2 + v3) / 3.f;
+	printf("center( %f %f )\n", center.x, center.y);
+
+	glm::vec2 nv1 = glm::normalize(v1 - center);
+	glm::vec2 nv2 = glm::normalize(v2 - center);
+	glm::vec2 nv3 = glm::normalize(v3 - center);
+	printf(
+		"\n-------- direction ----------\n"
+		"nv1 ( %f %f ) length: %f\n"
+		"nv2 ( %f %f ) length: %f\n"
+		"nv3 ( %f %f ) length: %f\n",
+		nv1.x, nv1.y, glm::length(v1),
+		nv2.x, nv2.y, glm::length(v2),
+		nv3.x, nv3.y, glm::length(v3));
+
+	float scale = 15.f;
+	nv1 *= scale;
+	nv2 *= scale;
+	nv3 *= scale;
+	printf(
+		"\n-------- direction multiplied with %f ----------\n"
+		"nv1 ( %f %f )\n"
+		"nv2 ( %f %f )\n"
+		"nv3 ( %f %f )\n",
+		scale,
+		nv1.x, nv1.y,
+		nv2.x, nv2.y,
+		nv3.x, nv3.y);
+
+
+
+
+
+	return 0;
+
 	create_window("Test OBJ model loading", __FILE__ __TIME__,
 		24,					  //Colors bits
 		32,					  //Depth bits

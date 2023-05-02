@@ -765,27 +765,26 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 				break;
 			}
 
-			//if (h_scroll_sender == spindle_jaws_move) {
-			//	value = (float)spindle_jaws_move.get_pos();
-			//	mesh_s *p_spindle = scene_model.get_mesh_by_index(MESH_SPINDLE);
-			//	mesh_s *p_spindle_jaw1 = scene_model.get_mesh_by_index(MESH_SPINDLE_JAW1);
-			//	mesh_s *p_spindle_jaw2 = scene_model.get_mesh_by_index(MESH_SPINDLE_JAW2);
-			//	mesh_s *p_spindle_jaw3 = scene_model.get_mesh_by_index(MESH_SPINDLE_JAW3);
+			if (h_scroll_sender == spindle_jaws_move) {
+				value = (float)spindle_jaws_move.get_pos() * 0.01f;
+				mesh_s *p_spindle_jaw1 = scene_model.get_mesh_by_index(MESH_SPINDLE_JAW1);
+				mesh_s *p_spindle_jaw2 = scene_model.get_mesh_by_index(MESH_SPINDLE_JAW2);
+				mesh_s *p_spindle_jaw3 = scene_model.get_mesh_by_index(MESH_SPINDLE_JAW3);
+				glm::vec2 spindle_jaw1_pos = glm::vec2(p_spindle_jaw1->pos_of_parent.x, p_spindle_jaw1->pos_of_parent.y);
+				glm::vec2 spindle_jaw2_pos = glm::vec2(p_spindle_jaw2->pos_of_parent.x, p_spindle_jaw2->pos_of_parent.y);
+				glm::vec2 spindle_jaw3_pos = glm::vec2(p_spindle_jaw3->pos_of_parent.x, p_spindle_jaw3->pos_of_parent.y);
+				glm::vec2 center = (spindle_jaw1_pos + spindle_jaw2_pos + spindle_jaw3_pos) / 3.f;
+				spindle_jaw1_pos = glm::normalize(spindle_jaw1_pos - center) * value;
+				spindle_jaw2_pos = glm::normalize(spindle_jaw2_pos - center) * value;
+				spindle_jaw3_pos = glm::normalize(spindle_jaw3_pos - center) * value;
 
-			//	//glm::vec3 diff = p_spindle_jaw1->pos_of_parent_curr - p_spindle->position;
-			//	//float factor = value / diff.length();
-			//	//diff *= factor;
+				//float length 
 
-			//	p_spindle_jaw1->pos_of_parent_curr.x = center_of_jaws.x + value;
-			//	p_spindle_jaw1->pos_of_parent_curr.y = center_of_jaws.y + value;
-			//										
-			//	p_spindle_jaw2->pos_of_parent_curr.x = center_of_jaws.x + value;
-			//	p_spindle_jaw2->pos_of_parent_curr.y = center_of_jaws.y + value;
-			//										
-			//	p_spindle_jaw3->pos_of_parent_curr.x = center_of_jaws.x + value;
-			//	p_spindle_jaw3->pos_of_parent_curr.y = center_of_jaws.y + value;
-			//	break;
-			//}
+				p_spindle_jaw1->pos_of_parent_curr = glm::vec3(spindle_jaw1_pos.x, spindle_jaw1_pos.y, p_spindle_jaw1->pos_of_parent.z);
+				p_spindle_jaw2->pos_of_parent_curr = glm::vec3(spindle_jaw2_pos.x, spindle_jaw2_pos.y, p_spindle_jaw2->pos_of_parent.z);
+				p_spindle_jaw3->pos_of_parent_curr = glm::vec3(spindle_jaw3_pos.x, spindle_jaw3_pos.y, p_spindle_jaw3->pos_of_parent.z);
+				break;
+			}
 		}
 		break;
 	}
