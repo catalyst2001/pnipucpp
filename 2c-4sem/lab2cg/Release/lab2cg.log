@@ -1,23 +1,6 @@
-﻿  main.cpp
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(104): warning C4101: p_mesh: неиспользованная локальная переменная
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(739): warning C4244: =: преобразование "double" в "T", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(749): warning C4244: =: преобразование "double" в "T", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(759): warning C4244: =: преобразование "double" в "T", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-  Создание кода
-  2 of 2264 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+﻿  Создание кода
+  0 of 2264 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
   lab2cg.vcxproj -> D:\GITHUB\pnipucpp\Release\lab2cg_k.exe
