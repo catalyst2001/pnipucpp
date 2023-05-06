@@ -1,0 +1,23 @@
+﻿  Dijkstra.cpp
+  Graph.cpp
+  GraphVisualizer.cpp
+e:\github\pnipucpp\2sem\lab2 chast3i\graphvisualizer.cpp(48): warning C4018: <: несоответствие типов со знаком и без знака
+e:\github\pnipucpp\2sem\lab2 chast3i\graphvisualizer.cpp(88): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+e:\github\pnipucpp\2sem\lab2 chast3i\graphvisualizer.cpp(97): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+e:\github\pnipucpp\2sem\lab2 chast3i\graphvisualizer.cpp(96): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+e:\github\pnipucpp\2sem\lab2 chast3i\graphvisualizer.cpp(105): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+e:\github\pnipucpp\2sem\lab2 chast3i\graphvisualizer.cpp(106): warning C4244: аргумент: преобразование "int" в "T", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+e:\github\pnipucpp\2sem\lab2 chast3i\graphvisualizer.cpp(121): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+e:\github\pnipucpp\2sem\lab2 chast3i\graphvisualizer.cpp(123): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
+e:\github\pnipucpp\2sem\lab2 chast3i\graphvisualizer.cpp(122): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
+  Source.cpp
+  Создание кода...
+  lab2 chast3i.vcxproj -> E:\GitHub\pnipucpp\2sem\lab2 chast3i\Debug\lab2 chast3i.exe

@@ -1,0 +1,7 @@
+﻿  myTime.cpp
+  lab13k1.cpp
+  Создание кода...
+e:\github\pnipucpp\2sem\lab12k2\mytime.cpp(41): warning C4172: возвращение адреса локальной или временной переменной
+e:\github\pnipucpp\2sem\lab12k2\mytime.cpp(55): warning C4172: возвращение адреса локальной или временной переменной
+e:\github\pnipucpp\2sem\lab12k2\mytime.cpp(48): warning C4172: возвращение адреса локальной или временной переменной
+  lab13k1.vcxproj -> E:\GitHub\pnipucpp\2sem\Debug\lab13k1.exe

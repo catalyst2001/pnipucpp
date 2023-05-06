@@ -37,7 +37,7 @@ int main()
 	list<int> list1;
 	srand(time(NULL));
 	for (i = 0; i < 10; i++)
-		list1.push_back((rand() % 100) - 50);
+		list1.push_back((rand() % 100));
 
 	print(list1);
 
