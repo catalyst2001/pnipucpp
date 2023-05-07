@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "win32_controls.h"
+#include "dbg.h"
 
 HFONT h_global_font;
 
@@ -38,14 +39,14 @@ ctls::checkbox::checkbox(HWND parent, int id, const char *p_label, int x, int y,
 	init_handle(CreateWindowExA(0, WC_BUTTONA, p_label, WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX, x, y, width, height, parent, (HMENU)id, NULL, NULL));
 	SendMessageA(get_handle(), BM_SETCHECK, (WPARAM)(init_state) ? BST_CHECKED : BST_UNCHECKED, (LPARAM)0);
 
-	printf("-------------------\n");
+	DBG("-------------------\n");
 }
 
 ctls::checkbox::checkbox(HWND parent, int id, int padding, const char *p_label, int x, int *p_y, int width, int height, DWORD dw_style_ex, bool init_state) : control_handle()
 {
-	printf("PRE 0x%x\n", get_handle());
+	//DBG("PRE 0x%x\n", get_handle());
 	*this = checkbox(parent, id, p_label, x, *p_y, width, height, dw_style_ex, init_state);
-	printf("POST 0x%x\n", get_handle());
+	//DBG("POST 0x%x\n", get_handle());
 	(*p_y) += height + padding;
 }
 
@@ -56,7 +57,7 @@ ctls::checkbox::~checkbox()
 bool ctls::checkbox::is_checked()
 {
 	LRESULT res = SendMessageA(get_handle(), BM_GETCHECK, (WPARAM)0, (LPARAM)0);
-	printf("state: %d\n", res);
+	//DBG("state: %d\n", res);
 	return res == BST_CHECKED;
 }
 

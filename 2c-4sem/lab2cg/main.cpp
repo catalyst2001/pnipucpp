@@ -1,6 +1,4 @@
-﻿#define DBG_ALLOW_IN_RELEASE
-
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <math.h>
 #include <string.h>
 #include <windowsx.h>
@@ -14,23 +12,48 @@
 #include "win32_controls.h"
 
 #define FLT_PI   (3.14159265358979323846f)
-#define RAD2DEG  (57.2957795)
+#define RAD2DEG  (57.2957795f)
 #define DEG2RAD  (0.0174532925f)
 #define ROTBYR(r) ((sinf(r) * RAD2DEG) * 2.0f)
+#define ROTBYD(r) ((sinf(r * DEG2RAD) * RAD2DEG) * 2.0f)
+
+typedef BOOL(WINAPI *wglSwapIntervalEXTPfn)(int interval);
 
 HINSTANCE g_instance;
 HWND h_main_window;
 HWND h_control_panel;
 GLVIEWPORT gl_viewport;
+ctls::toggle_button flat_shaded;
+ctls::toggle_button smooth_shaded;
+ctls::checkbox wireframe_check;
+ctls::treeview meshes_hierarchy;
+ctls::trackbar apron_move_track_x;
+ctls::trackbar support_move_track_z;
+ctls::trackbar tailstock_z;
+ctls::trackbar spindle_rotation;
+ctls::trackbar spindle_jaws_move;
+ctls::trackbar support_head_rotation;
+ctls::trackbar support_head_offset;
+ctls::trackbar support_head_bolts_move;
+ctls::trackbar apron_screw_drive;
 
-// For trackball.
+// TRACKBALL
 float prevMouseX, prevMouseY;
 float cam_curr_quat[4];
 float cam_prev_quat[4];
 float cam_eye[3], cam_lookat[3], cam_up[3];
-const float initial_cam_pos[3] = { 0.0, 0.0, 3.0f };  // World coordinates.
+const float initial_cam_pos[3] = { 0.0, 0.0, 3.0f };
 
-typedef BOOL(WINAPI *wglSwapIntervalEXTPfn)(int interval);
+float rotation_sensitivity = 1.0f;
+float translation_sensitivity = 15.0f;
+
+model scene_model;
+
+double last_time = 1.0;
+double curr_time = 1.0;
+
+float jaws_distance_of_center = 0.f;
+glm::vec2 center_of_jaws;
 
 struct mesh_hierarchy {
 	const char *p_name;
@@ -45,6 +68,9 @@ enum MESHES {
 	MESH_SUPPORT_TOP,
 	MESH_SUPPORT_MOVE_TAP,
 	MESH_SUPPORT_OFFSET_TAP,
+	MESH_SUPPORT_HEAD,
+	MESH_SUPPORT_HEAD_KNIFE,
+	MESH_SUPPORT_HEAD_BOLTS,
 
 	MESH_HEADSTOCK,
 	MESH_SPINDLE,
@@ -73,6 +99,9 @@ mesh_hierarchy object_hierarchy[] = {
 	DECL_HIERARCHY_PARAM(MESH_SUPPORT_TOP, "support_top", MESH_APRON), //parent "apron"
 	DECL_HIERARCHY_PARAM(MESH_SUPPORT_MOVE_TAP, "support_move_tap", MESH_APRON), //parent "apron"
 	DECL_HIERARCHY_PARAM(MESH_SUPPORT_OFFSET_TAP, "support_offset_tap", MESH_SUPPORT_TOP), //parent "support_top"
+	DECL_HIERARCHY_PARAM(MESH_SUPPORT_HEAD, "support_head", MESH_SUPPORT_TOP), // parent "support_top"
+	DECL_HIERARCHY_PARAM(MESH_SUPPORT_HEAD_BOLTS, "support_head_bolts", MESH_SUPPORT_HEAD), // parent "support_head"
+	DECL_HIERARCHY_PARAM(MESH_SUPPORT_HEAD_KNIFE, "knife", MESH_SUPPORT_HEAD), // parent "support_head"
 
 	DECL_HIERARCHY_PARAM(MESH_HEADSTOCK, "headstock", MESH_MAINFRAME), //parent "mainframe"
 	DECL_HIERARCHY_PARAM(MESH_SPINDLE, "spindle", MESH_HEADSTOCK), //parent "headstock"
@@ -80,7 +109,7 @@ mesh_hierarchy object_hierarchy[] = {
 	DECL_HIERARCHY_PARAM(MESH_SPINDLE_JAW2, "spindle_jaw2", MESH_SPINDLE), //parent "spindle"
 	DECL_HIERARCHY_PARAM(MESH_SPINDLE_JAW3, "spindle_jaw3", MESH_SPINDLE), //parent "spindle"
 
-	DECL_HIERARCHY_PARAM(MESH_TAILSTOCK, "tailstock", 0), //parent "mainframe"
+	DECL_HIERARCHY_PARAM(MESH_TAILSTOCK, "tailstock", MESH_MAINFRAME), //parent "mainframe"
 	DECL_HIERARCHY_PARAM(MESH_TAILSTOCK_TAP, "tailstock_tap", MESH_TAILSTOCK), //parent "tailstock"
 
 	DECL_HIERARCHY_PARAM(MESH_SWITCH_BOTTOM1, "switch_bottom1", MESH_MAINFRAME), //parent "mainframe"
@@ -101,7 +130,7 @@ void my_swap(_type &a, _type &b)
 
 void sort_meshes_by_hierarchy(model &mdl, const mesh_hierarchy *p_hierarchy, size_t count)
 {
-	mesh_s *p_mesh;
+	char buffer[512];
 	std::vector<mesh_s *> &meshes = mdl.get_meshes();
 
 	/* HIERARCHY DATA */
@@ -114,7 +143,11 @@ void sort_meshes_by_hierarchy(model &mdl, const mesh_hierarchy *p_hierarchy, siz
 				goto __leave_cycle;
 			}
 		}
-	__leave_cycle:;
+		sprintf_s(buffer, sizeof(buffer), "Mesh group %s not found in loaded OBJ model!", p_hierarchy[i].p_name);
+		MessageBoxA(HWND_DESKTOP, buffer, "Hierarchy sort warning!", MB_OK | MB_ICONWARNING);
+
+	__leave_cycle:
+		(void)0;
 	}
 }
 
@@ -127,78 +160,6 @@ void print_meshes(model &mdl)
 	}
 }
 #endif
-
-struct mesh_idxs_s {
-	size_t frame; // mainframe
-	size_t headstock_idx; //headstock
-
-	size_t apron_idx; //apron X
-	size_t apron_tap_idx; //apron_tap X
-	size_t apron_screw_drive_idx; //apron_screw_drive
-
-	size_t support_idx; //support_top
-	size_t support_tap_idx; //support_move_tap XZ
-	size_t support_offset_tap_idx; //support_offset_tap XZ
-
-	size_t spindle_idx; //spindle rX
-	size_t spindle_jaw1_idx; //spindle_jaw1 rX tYZ
-	size_t spindle_jaw2_idx; //spindle_jaw2 rX tYZ
-	size_t spindle_jaw3_idx; //spindle_jaw3 rX tYZ
-
-	size_t tailstock_idx; //tailstock tX
-	size_t tailstock_tap_idx; //tailstock_tap rX tX
-
-	size_t switch_bottom1_idx; //switch_bottom1
-	size_t switch_bottom2_idx; //switch_bottom2
-	size_t switch_top1_idx; //switch_top1
-	size_t switch_top2_idx; //switch_top2
-};
-
-ctls::toggle_button flat_shaded;
-ctls::toggle_button smooth_shaded;
-ctls::checkbox wireframe_check;
-ctls::treeview meshes_hierarchy;
-ctls::trackbar apron_move_track_x;
-ctls::trackbar support_move_track_z;
-ctls::trackbar tailstock_z;
-ctls::trackbar spindle_rotation;
-ctls::trackbar spindle_jaws_move;
-
-float rotation_sensitivity = 1.0f;
-float translation_sensitivity = 15.0f;
-
-model scene_model;
-mesh_idxs_s model_meshes_indices;
-
-double last_time = 1.0;
-double curr_time = 1.0;
-
-glm::vec3 center_of_jaws;
-
-//bool resolve_model_meshes_indices(mesh_idxs_s &dst_meshes_idxs, model &mdl)
-//{
-//	return (mdl.find_mesh_by_name(&dst_meshes_idxs.frame, "mainframe") &&
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_idx, "apron") &&
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_tap_idx, "apron_tap") &&
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.apron_screw_drive_idx, "apron_screw_drive") &&
-//
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.support_idx, "support_top") &&
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.support_tap_idx, "support_move_tap") &&
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.support_offset_tap_idx, "support_offset_tap") &&
-//
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_idx, "spindle") &&
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw1_idx, "spindle_jaw1") &&
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw2_idx, "spindle_jaw2") &&
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.spindle_jaw3_idx, "spindle_jaw3") &&
-//
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.tailstock_idx, "tailstock") &&
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.tailstock_tap_idx, "tailstock_tap") &&
-//
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_bottom1_idx, "switch_bottom1") &&
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_bottom2_idx, "switch_bottom2") &&
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_top1_idx, "switch_top1") &&
-//		mdl.find_mesh_by_name(&dst_meshes_idxs.switch_top2_idx, "switch_top2"));
-//}
 
 void get_time_milliseconds(double *p_dst)
 {
@@ -331,7 +292,6 @@ bool register_classes(HINSTANCE h_instance)
 
 	/* CONTROL PANEL */
 	wcex.lpfnWndProc = controlpanel_wnd_proc;
-	wcex.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 	wcex.lpszClassName = WC_LAB2_CONTROLPANEL;
 	if (!RegisterClassExA(&wcex))
 		return false;
@@ -410,18 +370,31 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	flat_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_FLAT, "Flat", posx, posy, 50, 20, 0, true);
 	smooth_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_SMOOTH, MARGIN_PX, "Smooth", posx+50+MARGIN_PX, &posy, 50, 20);
 	meshes_hierarchy = ctls::treeview(h_control_panel, IDC_HIERARCHY_TREE, posx, &posy, 300, 300, MARGIN_PX);
-	apron_move_track_x = ctls::trackbar(h_control_panel, IDC_APRONMOVE_TRACK, MARGIN_PX, "Apron move (x)", posx, &posy, 300, 50);
-	support_move_track_z = ctls::trackbar(h_control_panel, IDC_SUPPORTMOVE_TRACK, MARGIN_PX, "Support move (z)", posx, &posy, 300, 50);
-	tailstock_z = ctls::trackbar(h_control_panel, IDC_TAILSTOCKMOVE_TRACK, MARGIN_PX, "Tailstock move (z)", posx, &posy, 300, 50);
+	apron_move_track_x = ctls::trackbar(h_control_panel, IDC_APRONMOVE_TRACK, MARGIN_PX, "Apron move", posx, &posy, 300, 50);
+	support_move_track_z = ctls::trackbar(h_control_panel, IDC_SUPPORTMOVE_TRACK, MARGIN_PX, "Support move", posx, &posy, 300, 50);
+	tailstock_z = ctls::trackbar(h_control_panel, IDC_TAILSTOCKMOVE_TRACK, MARGIN_PX, "Tailstock move", posx, &posy, 300, 50);
 	spindle_rotation = ctls::trackbar(h_control_panel, IDC_SPINDLEROTATION_TRACK, MARGIN_PX, "Spindle rotation", posx, &posy, 300, 50);
-	spindle_jaws_move = ctls::trackbar(h_control_panel, IDC_SPINDLEJAWSMOVE_TRACK, MARGIN_PX, "Sinndle jaws move", posx, &posy, 300, 50);
+	spindle_jaws_move = ctls::trackbar(h_control_panel, IDC_SPINDLEJAWSMOVE_TRACK, MARGIN_PX, "Spindle jaws move", posx, &posy, 300, 50);
+	support_head_rotation = ctls::trackbar(h_control_panel, IDC_SUPPORT_HEAD_MOVE_TRACK, MARGIN_PX, "Support head rotation", posx, &posy, 300, 50);
+	support_head_offset = ctls::trackbar(h_control_panel, IDC_SUPPORT_OFFSET_TRACK, MARGIN_PX, "Support head offset", posx, &posy, 300, 50);
+	support_head_bolts_move = ctls::trackbar(h_control_panel, IDC_SUPPORT_OFFSET_TRACK, MARGIN_PX, "Support head unscrew/screw bolts", posx, &posy, 300, 50);
+	apron_screw_drive = ctls::trackbar(h_control_panel, IDC_SUPPORT_OFFSET_TRACK, MARGIN_PX, "Apron screw drive move", posx, &posy, 300, 50);
 	
+	apron_move_track_x.set_minmax(0, 78);
 	apron_move_track_x.set_pos(0);
-	apron_move_track_x.set_minmax(-100, 100);
+	tailstock_z.set_minmax(0, 85);
+	tailstock_z.set_pos(0);
 	spindle_rotation.set_minmax(0, 720);
 	spindle_jaws_move.set_minmax(0, 20);
+	support_head_rotation.set_minmax(-45, 45);
+	support_head_rotation.set_pos(0);
+	support_head_offset.set_minmax(0, 20);
+	support_head_bolts_move.set_minmax(0, 10);
+	support_head_bolts_move.set_pos(0);
+	apron_screw_drive.set_minmax(0, 1780);
+	apron_screw_drive.set_pos(0);
 
-	// Initialization for trackball.
+	// TRACKBALL INIT
 	trackball(cam_curr_quat, 0, 0, 0, 0);
 	cam_eye[0] = initial_cam_pos[0];
 	cam_eye[1] = initial_cam_pos[1];
@@ -436,15 +409,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	ShowWindow(h_main_window, SW_SHOW);
 	UpdateWindow(h_main_window);
 
-	if (!scene_model.load_model("models/machine_done2.obj")) {
-		printf("Failed to load model!\n");
+	if (!scene_model.load_model("models/machine_done3.obj")) {
+		error_msg("Failed to load model!");
 		return 1;
 	}
 
-	printf("---------- PRE MESHES ------------\n");
+	ShowWindow(h_main_window, SW_SHOWMAXIMIZED);
+
+	DBG("---------- PRE MESHES ------------\n");
 	print_meshes(scene_model);
 	sort_meshes_by_hierarchy(scene_model, object_hierarchy, CNT(object_hierarchy));
-	printf("---------- POST MESHES ------------\n");
+	DBG("---------- POST MESHES ------------\n");
 	print_meshes(scene_model);
 
 	compute_positions_of_parents(scene_model, object_hierarchy, CNT(object_hierarchy));
@@ -454,14 +429,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	build_hierarchy_tree(meshes_hierarchy, scene_model);
 
-	mesh_s *p_spindle = scene_model.get_mesh_by_index(MESH_SPINDLE);
 	mesh_s *p_spindle_jaw1 = scene_model.get_mesh_by_index(MESH_SPINDLE_JAW1);
 	mesh_s *p_spindle_jaw2 = scene_model.get_mesh_by_index(MESH_SPINDLE_JAW2);
 	mesh_s *p_spindle_jaw3 = scene_model.get_mesh_by_index(MESH_SPINDLE_JAW3);
-
 	center_of_jaws.x = (p_spindle_jaw1->pos_of_parent.x + p_spindle_jaw2->pos_of_parent.x + p_spindle_jaw3->pos_of_parent.x) / 3.f;
 	center_of_jaws.y = (p_spindle_jaw1->pos_of_parent.y + p_spindle_jaw2->pos_of_parent.y + p_spindle_jaw3->pos_of_parent.y) / 3.f;
-	center_of_jaws.z = (p_spindle_jaw1->pos_of_parent.z + p_spindle_jaw2->pos_of_parent.z + p_spindle_jaw3->pos_of_parent.z) / 3.f;
+	jaws_distance_of_center = glm::length(glm::vec2(p_spindle_jaw1->pos_of_parent.x, p_spindle_jaw1->pos_of_parent.y) - center_of_jaws);
+	//DBG("Distance of center: %f\n", jaws_distance_of_center);
 
 	//SuspendThread(GetCurrentThread());
 
@@ -766,7 +740,7 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 			}
 
 			if (h_scroll_sender == spindle_jaws_move) {
-				value = (float)spindle_jaws_move.get_pos() * 0.01f;
+				value = ((float)spindle_jaws_move.get_pos() * 0.08f) + jaws_distance_of_center;
 				mesh_s *p_spindle_jaw1 = scene_model.get_mesh_by_index(MESH_SPINDLE_JAW1);
 				mesh_s *p_spindle_jaw2 = scene_model.get_mesh_by_index(MESH_SPINDLE_JAW2);
 				mesh_s *p_spindle_jaw3 = scene_model.get_mesh_by_index(MESH_SPINDLE_JAW3);
@@ -778,11 +752,24 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 				spindle_jaw2_pos = glm::normalize(spindle_jaw2_pos - center) * value;
 				spindle_jaw3_pos = glm::normalize(spindle_jaw3_pos - center) * value;
 
-				//float length 
-
 				p_spindle_jaw1->pos_of_parent_curr = glm::vec3(spindle_jaw1_pos.x, spindle_jaw1_pos.y, p_spindle_jaw1->pos_of_parent.z);
 				p_spindle_jaw2->pos_of_parent_curr = glm::vec3(spindle_jaw2_pos.x, spindle_jaw2_pos.y, p_spindle_jaw2->pos_of_parent.z);
 				p_spindle_jaw3->pos_of_parent_curr = glm::vec3(spindle_jaw3_pos.x, spindle_jaw3_pos.y, p_spindle_jaw3->pos_of_parent.z);
+				break;
+			}
+
+			if (h_scroll_sender == support_head_rotation) {
+				p_mesh = scene_model.get_mesh_by_index(MESH_SUPPORT_HEAD);
+				p_mesh->rotation.y = (float)support_head_rotation.get_pos();
+				break;
+			}
+
+			if (h_scroll_sender == support_head_offset) {
+				value = (float)support_head_offset.get_pos();
+				mesh_s *p_support_offset_tap = scene_model.get_mesh_by_index(MESH_SUPPORT_OFFSET_TAP);
+				p_mesh = scene_model.get_mesh_by_index(MESH_SUPPORT_HEAD);
+				p_mesh->pos_of_parent_curr.z = p_mesh->pos_of_parent.z + value * 0.01f;
+				p_support_offset_tap->rotation.z = ROTBYR(value);
 				break;
 			}
 		}

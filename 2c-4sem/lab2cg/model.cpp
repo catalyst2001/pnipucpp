@@ -44,13 +44,13 @@ bool model::load_cache(const char *p_filename)
 
 	mdlcache_hdr *p_header = (mdlcache_hdr *)memmdl.p_data;
 	if (p_header->signature != MDLCACHE_SIGNATURE) {
-		printf("Model cache file signature mistmatch!\n");
+		DBG("Model cache file signature mistmatch!\n");
 		memfile_close(&memmdl);
 		return false;
 	}
 
 	if (p_header->vertex_size != sizeof(vertex_s)) {
-		printf("Vertex size mistmatch!\n");
+		DBG("Vertex size mistmatch!\n");
 		memfile_close(&memmdl);
 		return false;
 	}
@@ -58,7 +58,7 @@ bool model::load_cache(const char *p_filename)
 	int num_meshes;
 	mdlcache_chunk *p_meshes_hdrs = (mdlcache_chunk *)&p_header->chunks[MDLCACHE_CHUNK_MESHES];
 	if ((p_meshes_hdrs->chunk_size % sizeof(mdlcache_mesh))) {
-		printf("Chunk size not multiple mdlcache_mesh size!\n");
+		DBG("Chunk size not multiple mdlcache_mesh size!\n");
 		memfile_close(&memmdl);
 		return false;
 	}
@@ -92,12 +92,12 @@ bool model::build_cache(const char *p_objfilename, const char *p_cachefilename)
 	FILE *fp = NULL;
 	fopen_s(&fp, p_cachefilename, "wb");
 	if (!fp) {
-		printf("Failed to create file '%s'\n", p_cachefilename);
+		DBG("Failed to create file '%s'\n", p_cachefilename);
 		return false;
 	}
 
 	if (!tinyobj::LoadObj(&attribs, &shapes, &materials, &warnings, &errors, p_objfilename, NULL, true)) {
-		printf("model::build_cache(): WARNINGS: \n%s\n", warnings.c_str());
+		DBG("model::build_cache(): WARNINGS: \n%s\n", warnings.c_str());
 		fclose(fp);
 		return false;
 	}
@@ -168,7 +168,7 @@ model::~model()
 bool model::load_model(const char *p_filename)
 {
 	/* LOAD MODEL */
-	printf("Loading model...\n");
+	DBG("Loading model...\n");
 	glm::vec3 begin_coords_system = glm::vec3(0.f, 0.f, 0.f);
 	tinyobj::attrib_t attribs;
 	std::string warnings, errors;

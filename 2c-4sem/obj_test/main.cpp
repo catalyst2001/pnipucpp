@@ -70,13 +70,13 @@ void fn_windowcreate(HWND hWnd)
 	std::vector<shape_t> shapes;
 	std::vector<material_t> materials;
 	if (!tinyobj::LoadObj(&attribs, &shapes, &materials, &warnings, &errors, "cube_obj.obj", NULL, true)) {
-		printf("Failed to load OBJ model. Error: %s\n", warnings.c_str());
+		DBG("Failed to load OBJ model. Error: %s\n", warnings.c_str());
 		return;
 	}
 
 	for (size_t ishape = 0; ishape < shapes.size(); ishape++) {
 		tinyobj::shape_t *p_shape = &shapes[ishape];
-		printf("Shape: %s\n", p_shape->name.c_str());
+		DBG("Shape: %s\n", p_shape->name.c_str());
 
 		std::vector<glm::vec3> group_verts;
 		tinyobj::mesh_t *p_mesh = &p_shape->mesh;
@@ -134,7 +134,7 @@ int main()
 	glm::vec2 v1 = glm::vec2(-5.3f, -3.2f);
 	glm::vec2 v2 = glm::vec2(5.6f, -3.1f);
 	glm::vec2 v3 = glm::vec2(0.5f, 5.2f);
-	printf(
+	DBG(
 		"v1 ( %f %f )\n"
 		"v2 ( %f %f )\n"
 		"v3 ( %f %f )\n",
@@ -143,12 +143,12 @@ int main()
 		v3.x, v3.y);
 
 	glm::vec2 center = (v1 + v2 + v3) / 3.f;
-	printf("center( %f %f )\n", center.x, center.y);
+	DBG("center( %f %f )\n", center.x, center.y);
 
 	glm::vec2 nv1 = glm::normalize(v1 - center);
 	glm::vec2 nv2 = glm::normalize(v2 - center);
 	glm::vec2 nv3 = glm::normalize(v3 - center);
-	printf(
+	DBG(
 		"\n-------- direction ----------\n"
 		"nv1 ( %f %f ) length: %f\n"
 		"nv2 ( %f %f ) length: %f\n"
@@ -161,7 +161,7 @@ int main()
 	nv1 *= scale;
 	nv2 *= scale;
 	nv3 *= scale;
-	printf(
+	DBG(
 		"\n-------- direction multiplied with %f ----------\n"
 		"nv1 ( %f %f )\n"
 		"nv2 ( %f %f )\n"

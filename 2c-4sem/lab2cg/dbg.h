@@ -27,6 +27,7 @@ inline void initialize_output()
 		freopen_s(&p_conout, "conout$", "w", stdout);
 		freopen_s(&p_conout, "conout$", "w", stderr);
 		freopen_s(&p_conout, "conin$", "w", stdin);
+		SetConsoleTitleA("Debug messages console");
 	}
 }
 

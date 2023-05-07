@@ -6,7 +6,7 @@
 INT Width, Height;
 const float sensitivity = 1.0f;
 Camera camera(true, glm::vec3(0.f, 0.f, 0.f));
-float eyes_distance = 5.f;
+float eyes_distance = 10.f;
 
 void scale_model(float size)
 {
