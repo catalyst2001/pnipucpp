@@ -1,5 +1,0 @@
-﻿  lab11i1.cpp
-e:\github\pnipucpp\2sem\lab11i1\lab11i1.cpp(16): warning C4018: <: несоответствие типов со знаком и без знака
-e:\github\pnipucpp\2sem\lab11i1\lab11i1.cpp(26): warning C4018: <: несоответствие типов со знаком и без знака
-e:\github\pnipucpp\2sem\lab11i1\lab11i1.cpp(38): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-  lab11i1.vcxproj -> E:\GitHub\pnipucpp\2sem\Debug\lab11i1.exe

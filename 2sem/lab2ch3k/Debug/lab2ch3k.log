@@ -1,7 +1,0 @@
-﻿  lab2ch3k.cpp
-e:\github\pnipucpp\2sem\lab2ch3k\lab2ch3k.cpp(97): warning C4018: <: несоответствие типов со знаком и без знака
-e:\github\pnipucpp\2sem\lab2ch3k\lab2ch3k.cpp(101): warning C4018: <: несоответствие типов со знаком и без знака
-e:\github\pnipucpp\2sem\lab2ch3k\lab2ch3k.cpp(115): warning C4018: <: несоответствие типов со знаком и без знака
-e:\github\pnipucpp\2sem\lab2ch3k\lab2ch3k.cpp(171): warning C4244: *=: преобразование "float" в "LONG", возможна потеря данных
-e:\github\pnipucpp\2sem\lab2ch3k\lab2ch3k.cpp(172): warning C4244: *=: преобразование "float" в "LONG", возможна потеря данных
-  lab2ch3k.vcxproj -> E:\GitHub\pnipucpp\2sem\Debug\lab2ch3k.exe

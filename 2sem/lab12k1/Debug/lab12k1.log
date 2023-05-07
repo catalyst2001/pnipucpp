@@ -1,7 +1,0 @@
-﻿  lab12k1.cpp
-e:\github\pnipucpp\2sem\lab12k1\lab12k1.cpp(25): warning C4018: <: несоответствие типов со знаком и без знака
-e:\github\pnipucpp\2sem\lab12k1\lab12k1.cpp(32): warning C4018: <: несоответствие типов со знаком и без знака
-e:\github\pnipucpp\2sem\lab12k1\lab12k1.cpp(40): warning C4018: <: несоответствие типов со знаком и без знака
-e:\github\pnipucpp\2sem\lab12k1\lab12k1.cpp(85): warning C4018: <: несоответствие типов со знаком и без знака
-e:\github\pnipucpp\2sem\lab12k1\lab12k1.cpp(91): warning C4326: возвращаемый тип "main" должен быть "int", а не "void"
-  lab12k1.vcxproj -> E:\GitHub\pnipucpp\2sem\Debug\lab12k1.exe

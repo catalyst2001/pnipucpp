@@ -1,9 +1,0 @@
-﻿  main.cpp
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(95): warning C4101: p_mesh: неиспользованная локальная переменная
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(375): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(376): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-  lab2cg.vcxproj -> D:\GITHUB\pnipucpp\Debug\lab2cg_k.exe
