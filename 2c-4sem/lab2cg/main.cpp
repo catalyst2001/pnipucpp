@@ -35,7 +35,7 @@ ctls::trackbar spindle_jaws_move;
 ctls::trackbar support_head_rotation;
 ctls::trackbar support_head_offset;
 ctls::trackbar support_head_bolts_move;
-ctls::trackbar apron_screw_drive;
+//ctls::trackbar apron_screw_drive;
 
 // TRACKBALL
 float prevMouseX, prevMouseY;
@@ -62,9 +62,9 @@ struct mesh_hierarchy {
 
 enum MESHES {
 	MESH_MAINFRAME = 0,
+	MESH_APRON_SCREW_DRIVE,
 	MESH_APRON,
 	MESH_APRON_TAP,
-	MESH_SCENE_SCREW_DRIVE,
 	MESH_SUPPORT_TOP,
 	MESH_SUPPORT_MOVE_TAP,
 	MESH_SUPPORT_OFFSET_TAP,
@@ -92,16 +92,16 @@ enum MESHES {
 mesh_hierarchy object_hierarchy[] = {
 	DECL_HIERARCHY_PARAM(MESH_MAINFRAME, "mainframe", -1), //parent NONE
 
+	DECL_HIERARCHY_PARAM(MESH_APRON_SCREW_DRIVE, "apron_screw_drive", MESH_MAINFRAME), //parent "mainframe"
 	DECL_HIERARCHY_PARAM(MESH_APRON, "apron", MESH_MAINFRAME), //parent "mainframe"
 	DECL_HIERARCHY_PARAM(MESH_APRON_TAP, "apron_tap", MESH_APRON), //parent "apron"
-	DECL_HIERARCHY_PARAM(MESH_SCENE_SCREW_DRIVE, "apron_screw_drive", MESH_MAINFRAME), //parent "mainframe"
 
 	DECL_HIERARCHY_PARAM(MESH_SUPPORT_TOP, "support_top", MESH_APRON), //parent "apron"
 	DECL_HIERARCHY_PARAM(MESH_SUPPORT_MOVE_TAP, "support_move_tap", MESH_APRON), //parent "apron"
 	DECL_HIERARCHY_PARAM(MESH_SUPPORT_OFFSET_TAP, "support_offset_tap", MESH_SUPPORT_TOP), //parent "support_top"
 	DECL_HIERARCHY_PARAM(MESH_SUPPORT_HEAD, "support_head", MESH_SUPPORT_TOP), // parent "support_top"
-	DECL_HIERARCHY_PARAM(MESH_SUPPORT_HEAD_BOLTS, "support_head_bolts", MESH_SUPPORT_HEAD), // parent "support_head"
 	DECL_HIERARCHY_PARAM(MESH_SUPPORT_HEAD_KNIFE, "knife", MESH_SUPPORT_HEAD), // parent "support_head"
+	DECL_HIERARCHY_PARAM(MESH_SUPPORT_HEAD_BOLTS, "support_head_bolts", MESH_SUPPORT_HEAD), // parent "support_head"
 
 	DECL_HIERARCHY_PARAM(MESH_HEADSTOCK, "headstock", MESH_MAINFRAME), //parent "mainframe"
 	DECL_HIERARCHY_PARAM(MESH_SPINDLE, "spindle", MESH_HEADSTOCK), //parent "headstock"
@@ -377,8 +377,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	spindle_jaws_move = ctls::trackbar(h_control_panel, IDC_SPINDLEJAWSMOVE_TRACK, MARGIN_PX, "Spindle jaws move", posx, &posy, 300, 50);
 	support_head_rotation = ctls::trackbar(h_control_panel, IDC_SUPPORT_HEAD_MOVE_TRACK, MARGIN_PX, "Support head rotation", posx, &posy, 300, 50);
 	support_head_offset = ctls::trackbar(h_control_panel, IDC_SUPPORT_OFFSET_TRACK, MARGIN_PX, "Support head offset", posx, &posy, 300, 50);
-	support_head_bolts_move = ctls::trackbar(h_control_panel, IDC_SUPPORT_OFFSET_TRACK, MARGIN_PX, "Support head unscrew/screw bolts", posx, &posy, 300, 50);
-	apron_screw_drive = ctls::trackbar(h_control_panel, IDC_SUPPORT_OFFSET_TRACK, MARGIN_PX, "Apron screw drive move", posx, &posy, 300, 50);
+	support_head_bolts_move = ctls::trackbar(h_control_panel, IDC_SUPPORT_HEAD_BOLTS, MARGIN_PX, "Support head unscrew/screw bolts", posx, &posy, 300, 50);
+	//apron_screw_drive = ctls::trackbar(h_control_panel, IDC_SUPPORT_OFFSET_TRACK, MARGIN_PX, "Apron screw drive move", posx, &posy, 300, 50);
 	
 	apron_move_track_x.set_minmax(0, 78);
 	apron_move_track_x.set_pos(0);
@@ -388,11 +388,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	spindle_jaws_move.set_minmax(0, 20);
 	support_head_rotation.set_minmax(-45, 45);
 	support_head_rotation.set_pos(0);
-	support_head_offset.set_minmax(0, 20);
+	support_head_offset.set_minmax(0, 100);
 	support_head_bolts_move.set_minmax(0, 10);
 	support_head_bolts_move.set_pos(0);
-	apron_screw_drive.set_minmax(0, 1780);
-	apron_screw_drive.set_pos(0);
+	//apron_screw_drive.set_minmax(0, 720);
+	//apron_screw_drive.set_pos(0);
 
 	// TRACKBALL INIT
 	trackball(cam_curr_quat, 0, 0, 0, 0);
@@ -772,6 +772,20 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 				p_support_offset_tap->rotation.z = ROTBYR(value);
 				break;
 			}
+			
+			if (h_scroll_sender == support_head_bolts_move) {
+				p_mesh = scene_model.get_mesh_by_index(MESH_SUPPORT_HEAD_BOLTS);
+				p_mesh->pos_of_parent_curr.y = p_mesh->pos_of_parent.y + (float)support_head_bolts_move.get_pos() * 0.1f;
+				break;
+			}
+
+			//if (h_scroll_sender == apron_screw_drive) {
+			//	value = (float)apron_screw_drive.get_pos();
+			//	mesh_s *p_apron_screw_drive = scene_model.get_mesh_by_index(MESH_APRON_SCREW_DRIVE);
+			//	p_apron_screw_drive->rotation.z = value;
+			//	printf("%f\n", apron_screw_drive.get_pos() * 1.f);
+			//	break;
+			//}
 		}
 		break;
 	}
