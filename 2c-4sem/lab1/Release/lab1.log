@@ -1,0 +1,10 @@
+﻿  main.c
+d:\github\pnipucpp\2c-4sem\lab1\main.c(21): warning C4013: time: нет определения; предполагается "extern" с возвратом типа "int"
+d:\github\pnipucpp\2c-4sem\lab1\main.c(58): warning C4033: "find_min" должен возвращать значение
+  Создание кода
+d:\github\pnipucpp\2c-4sem\lab1\main.c(64): warning C4715: find_min: значение возвращается не при всех путях выполнения
+  2 of 6 functions (33.3%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
+  Создание кода завершено
+  lab1.vcxproj -> D:\GITHUB\pnipucpp\Release\lab1.exe
