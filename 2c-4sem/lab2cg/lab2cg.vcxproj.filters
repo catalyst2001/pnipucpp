@@ -6,10 +6,7 @@
     <ClCompile Include="..\cgcommon\trackball.cc" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="gl_exts.cpp" />
-    <ClCompile Include="lights.cpp" />
-    <ClCompile Include="modelcache.cpp" />
     <ClCompile Include="win32_controls.cpp" />
-    <ClCompile Include="camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h" />
@@ -19,9 +16,6 @@
     <ClInclude Include="..\cgcommon\tiny_obj_loader.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="gl_exts.h" />
-    <ClInclude Include="lights.h" />
-    <ClInclude Include="modelcache.h" />
     <ClInclude Include="win32_controls.h" />
-    <ClInclude Include="camera.h" />
   </ItemGroup>
 </Project>

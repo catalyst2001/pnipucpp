@@ -22,6 +22,8 @@ typedef BOOL(WINAPI *wglSwapIntervalEXTPfn)(int interval);
 HINSTANCE g_instance;
 HWND h_main_window;
 HWND h_control_panel;
+HWND h_anim_control_panel;
+
 GLVIEWPORT gl_viewport;
 ctls::toggle_button flat_shaded;
 ctls::toggle_button smooth_shaded;
@@ -36,6 +38,11 @@ ctls::trackbar support_head_rotation;
 ctls::trackbar support_head_offset;
 ctls::trackbar support_head_bolts_move;
 //ctls::trackbar apron_screw_drive;
+
+// ANIM PANEL
+ctls::trackbar keyframes_switch;
+ctls::trackbar anim_fps_switch;
+ctls::checkbox anim_loop_play;
 
 // TRACKBALL
 float prevMouseX, prevMouseY;
@@ -86,6 +93,17 @@ enum MESHES {
 	MESH_SWITCH_TOP1,
 	MESH_SWITCH_TOP2
 };
+
+struct bone_transform {
+	vec3 position;
+	vec3 rotation;
+};
+
+struct keyframe_s {
+	std::vector<bone_transform> bones_positions;
+};
+
+vector<keyframe_s> recorded_keyframes;
 
 #define DECL_HIERARCHY_PARAM(myid, name, parent) { name, parent }
 
@@ -266,9 +284,18 @@ void resize_ui(const LPRECT p_rect)
 	rect.left = p_rect->left + MARGIN_PX;
 	rect.top = p_rect->top + MARGIN_PX;
 	rect.right = clientrect_width.cx - controls_panel_width - MARGIN_PX;
-	rect.bottom = clientrect_width.cy;
+	rect.bottom = CLAMPMIN(clientrect_width.cy - ANIM_CONTROL_PANEL_HEIGHT - MARGIN_PX, 0);
 	MoveWindow(gl_viewport.h_viewport, rect.left, rect.top, rect.right, rect.bottom, FALSE);
 	SetFocus(gl_viewport.h_viewport);
+
+
+	/* RECOMPUTE ANIM CONTROL WINDOW SIZE */
+	rect.left = p_rect->left + MARGIN_PX;
+	rect.top = rect.bottom + MARGIN_PX;
+	//rect.right = clientrect_width.cx - controls_panel_width - MARGIN_PX;
+	rect.bottom = rect.top + ANIM_CONTROL_PANEL_HEIGHT - MARGIN_PX;
+	MoveWindow(h_anim_control_panel, rect.left, rect.top, rect.right, rect.bottom, TRUE);
+	MoveWindow(keyframes_switch, MARGIN_PX, 20+40+MARGIN_PX, rect.right - MARGIN_PX, 40, TRUE);
 }
 
 LRESULT CALLBACK wnd_proc(HWND, UINT, WPARAM, LPARAM);
@@ -293,6 +320,12 @@ bool register_classes(HINSTANCE h_instance)
 	/* CONTROL PANEL */
 	wcex.lpfnWndProc = controlpanel_wnd_proc;
 	wcex.lpszClassName = WC_LAB2_CONTROLPANEL;
+	if (!RegisterClassExA(&wcex))
+		return false;
+	
+	/* ANIM CONTROL PANEL */
+	wcex.lpfnWndProc = controlpanel_wnd_proc;
+	wcex.lpszClassName = WC_LAB2_ANIMPANEL;
 	if (!RegisterClassExA(&wcex))
 		return false;
 
@@ -322,6 +355,12 @@ void build_hierarchy_tree(ctls::treeview &tree, model &mdl)
 	build_tree_node(tree, NULL, meshes, meshes[0]);
 }
 
+inline void prepare_keyframe_track(ctls::trackbar &h_track, int pos, int num_frames)
+{
+	h_track.set_minmax(0, num_frames);
+	h_track.set_pos(pos);
+}
+
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	RECT rect;
@@ -344,6 +383,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		return 1;
 	}
 
+
 	/* CREATE MAIN WINDOW */
 	center_of_screen(&rect, 800, 600);
 	h_main_window = CreateWindowExA(0, WC_LAB2, "Lab2", WS_OVERLAPPEDWINDOW, rect.left, rect.top, rect.right, rect.bottom, NULL, NULL, hInstance, NULL);
@@ -356,16 +396,40 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		error_msg("Failed to init OpenGL viewport");
 		return 3;
 	}
-	gl_load_extensions();
 
+	gl_load_extensions();
 	wglSwapIntervalEXTPfn wglSwapIntervalEXT = (wglSwapIntervalEXTPfn)wglGetProcAddress("wglSwapIntervalEXT");
 	if (wglSwapIntervalEXT)
 		wglSwapIntervalEXT(60);
 
+	ctls::set_default_font();
+
+	/* ANIM PANEL */
+	posx = MARGIN_PX;
+	posy = 20;
+	h_anim_control_panel = CreateWindowExA(WS_EX_DLGMODALFRAME, WC_LAB2_ANIMPANEL, "", WS_VISIBLE | WS_CHILD, 0, 0, 1, 1, h_main_window, (HMENU)0, NULL, NULL);
+	ctls::button(h_anim_control_panel, IDC_IMPORT_ANIM, "Import ANM", posx, posy, 80, 20);
+	ctls::button(h_anim_control_panel, IDC_EXPORT_ANIM, "Export ANM", posx += 80 + MARGIN_PX, posy, 80, 20);
+	ctls::button(h_anim_control_panel, IDC_KEYFRAME_SET, "Set KF", posx += 100 + MARGIN_PX, posy, 80, 20);
+	ctls::button(h_anim_control_panel, IDC_KEYFRAME_UNDO, "Undo KF", posx += 80 + MARGIN_PX, posy, 80, 20);
+	ctls::button(h_anim_control_panel, IDC_KEYFRAMES_CLEAR, "Clear KFs", posx += 80 + MARGIN_PX, posy, 80, 20);
+	ctls::button(h_anim_control_panel, IDC_KEYFRAME_SET_AS_ENDFRAME, "Set KF as END", posx += 80 + MARGIN_PX, posy, 80, 20);
+	anim_loop_play = ctls::checkbox(h_anim_control_panel, IDC_HAS_LOOP_PLAYING, "Loop playing?", posx += 100 + MARGIN_PX, posy, 80, 20, 0, true);
+	anim_fps_switch = ctls::trackbar(h_anim_control_panel, IDC_PLAYING_FPS_TRACK, "Anim FPS", posx += 80 + MARGIN_PX, posy-20, 80, 40, 0, -100, 100, 0, 0, WS_VISIBLE|WS_CHILD|TBS_AUTOTICKS);
+	ctls::button(h_anim_control_panel, IDC_ANIM_PLAY, "Play", posx += 80 + MARGIN_PX, posy, 50, 20);
+	ctls::button(h_anim_control_panel, IDC_ANIM_PAUSE, "Pause", posx += 50 + MARGIN_PX, posy, 50, 20);
+	ctls::button(h_anim_control_panel, IDC_ANIM_STOP, "Stop", posx += 50 + MARGIN_PX, posy, 50, 20);
+	posx = MARGIN_PX;
+	posy += 40 + MARGIN_PX;
+	keyframes_switch = ctls::trackbar(h_anim_control_panel, IDC_KEYFRAME_SWITCH, NULL, posx, posy, 1, 40, 0, 0, 0, 0, 0, WS_VISIBLE|WS_CHILD|TBS_TOP|TBS_AUTOTICKS);
+	keyframes_switch.set_minmax(0, 0);
+	keyframes_switch.set_tick_freq(1);
+	anim_fps_switch.set_tick_freq(10);
+
+	/* CREATE CONTROL PANEL */
 	h_control_panel = CreateWindowExA(WS_EX_DLGMODALFRAME, WC_LAB2_CONTROLPANEL, "", WS_CHILD | WS_VISIBLE, 1, 1, 1, 1, h_main_window, (HMENU)0, NULL, NULL);
 
 	posx = posy = 2;
-	ctls::set_default_font();
 	wireframe_check = ctls::checkbox(h_control_panel, IDC_WIREFRAME, MARGIN_PX, "Wireframe", posx, &posy, 400, 30, 0, false);
 	flat_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_FLAT, "Flat", posx, posy, 50, 20, 0, true);
 	smooth_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_SMOOTH, MARGIN_PX, "Smooth", posx+50+MARGIN_PX, &posy, 50, 20);
@@ -645,24 +709,37 @@ LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	return 0;
 }
 
+void grab_keyframe(model &mdl, keyframe_s &kf)
+{
+	mesh_s *p_mesh;
+	bone_transform transform;
+	kf.bones_positions.reserve(mdl.get_meshes_count());
+	for (size_t i = 0; i < mdl.get_meshes_count(); i++) {
+		p_mesh = mdl.get_mesh_by_index(i);
+		transform.position = p_mesh->pos_of_parent;
+		transform.rotation = p_mesh->rotation;
+		kf.bones_positions.push_back(transform);
+	}
+}
+
 LRESULT CALLBACK wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	RECT rect;
     switch (message)
     {
-    case WM_COMMAND:
-        {
-            int wmId = LOWORD(wParam);
-            switch (wmId)
-            {
-			case 1:
-				break;
+	case WM_COMMAND:
+	{
+		int wmId = LOWORD(wParam);
+		switch (wmId)
+		{
+		case 0:
+			break;
 
-            default:
-                return DefWindowProcA(hWnd, message, wParam, lParam);
-            }
-        }
-        break;
+		default:
+			return DefWindowProcA(hWnd, message, wParam, lParam);
+		}
+	}
+	break;
 
 	case WM_SIZE: {
 		GetClientRect(hWnd, &rect);
@@ -696,6 +773,7 @@ LRESULT CALLBACK wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	float value;
+	char buffer[128];
 	mesh_s *p_mesh;
 	switch (message)
 	{
@@ -796,6 +874,7 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 		int wmId = LOWORD(wParam);
 		switch (wmId)
 		{
+		/* CONTROL PANEL */
 		case IDC_WIREFRAME:
 			glPolygonMode(GL_FRONT_AND_BACK, (wireframe_check.is_checked()) ? GL_LINE : GL_FILL);
 			break;
@@ -808,6 +887,57 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 		case IDC_SHADE_MODEL_SMOOTH:
 			glShadeModel(GL_SMOOTH);
 			flat_shaded.set_check(false);
+			break;
+
+		/* ANIMATION */
+		case IDC_IMPORT_ANIM:
+			break;
+
+		case IDC_EXPORT_ANIM:
+			break;
+
+		case IDC_KEYFRAME_SET: {
+			//__asm int 3h;
+			keyframe_s kf;
+			int num_of_frames;
+			int current_keyframe;
+			grab_keyframe(scene_model, kf);
+			recorded_keyframes.push_back(kf);
+			num_of_frames = (int)recorded_keyframes.size();
+			current_keyframe = keyframes_switch.get_pos();
+			if (keyframes_switch.get_max() == current_keyframe && keyframes_switch.get_max() < num_of_frames) {
+				keyframes_switch.set_max(num_of_frames);
+				keyframes_switch.set_pos(num_of_frames);
+				DBG("created new keyframe");
+			}
+			else {
+				recorded_keyframes[current_keyframe] = kf;
+				keyframes_switch.set_pos(current_keyframe + 1);
+				DBG("overwrited exists keyframe");
+			}
+			DBG("IDC_KEYFRAME_SET: num_frames: %d", recorded_keyframes.size());
+			break;
+		}
+
+		case IDC_KEYFRAME_UNDO:
+			break;
+
+		case IDC_KEYFRAMES_CLEAR:
+			break;
+
+		case IDC_KEYFRAME_SET_AS_ENDFRAME:
+			break;
+
+		case IDC_HAS_LOOP_PLAYING:
+			break;
+
+		case IDC_ANIM_PLAY:
+			break;
+
+		case IDC_ANIM_PAUSE:
+			break;
+
+		case IDC_ANIM_STOP:
 			break;
 
 		default:

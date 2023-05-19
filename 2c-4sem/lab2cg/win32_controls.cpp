@@ -30,6 +30,7 @@ void ctls::uncheck_except_me(const control_handle *p_cbs, int num_cb, const cont
 	}
 }
 
+
 ctls::checkbox::checkbox()
 {
 }
@@ -147,7 +148,10 @@ ctls::trackbar::trackbar(HWND parent, int id, const char *p_description, int x, 
 		SendMessageA(h_static_description, WM_SETFONT, (WPARAM)h_global_font, (LPARAM)TRUE);
 	}
 
-	init_handle(CreateWindowExA(0, TRACKBAR_CLASSA, "", WS_CHILD | WS_VISIBLE, track_rect.left, track_rect.top + def_text_height,
+	if (!dw_style)
+		dw_style = (WS_CHILD | WS_VISIBLE);
+
+	init_handle(CreateWindowExA(dw_style_ex, TRACKBAR_CLASSA, "", dw_style, track_rect.left, track_rect.top + def_text_height,
 		track_rect.right, (track_rect.bottom - def_text_height), parent, (HMENU)id, NULL, NULL));
 
 	if(h_static_description)
@@ -162,6 +166,16 @@ ctls::trackbar::trackbar(HWND parent, int id, int padding, const char *p_descrip
 
 ctls::trackbar::~trackbar()
 {
+}
+
+void ctls::trackbar::set_min(int n)
+{
+	SendMessageA(get_handle(), TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)n);
+}
+
+void ctls::trackbar::set_max(int n)
+{
+	SendMessageA(get_handle(), TBM_SETRANGEMAX, (WPARAM)TRUE, (LPARAM)n);
 }
 
 void ctls::trackbar::set_minmax(int _min, int _max)
@@ -188,6 +202,11 @@ void ctls::trackbar::set_pos(int pos)
 int ctls::trackbar::get_pos()
 {
 	return SendMessageA(get_handle(), TBM_GETPOS, (WPARAM)0, (LPARAM)0);
+}
+
+void ctls::trackbar::set_tick_freq(int n)
+{
+	SendMessageA(get_handle(), TBM_SETTICFREQ, (WPARAM)n, (LPARAM)0);
 }
 
 ctls::editbox::editbox()
@@ -297,4 +316,23 @@ bool ctls::treeview::expand(HTREEITEM h_item)
 bool ctls::treeview::collapse(HTREEITEM h_item)
 {
 	return !SendMessageA(get_handle(), TVM_EXPAND, (WPARAM)TVE_COLLAPSE, (LPARAM)h_item);
+}
+
+ctls::button::button()
+{
+}
+
+ctls::button::button(HWND parent, int id, const char *p_label, int x, int y, int width, int height, DWORD dw_style_ex)
+{
+	init_handle(CreateWindowExA(0, WC_BUTTONA, p_label, WS_VISIBLE|WS_CHILD, x, y, width, height, parent, (HMENU)id, NULL, NULL));
+}
+
+ctls::button::button(HWND parent, int id, int padding, const char * p_label, int x, int * p_y, int width, int height, DWORD dw_style_ex)
+{
+	*this = button(parent, id, p_label, x, *p_y, width, height, dw_style_ex);
+	*p_y += height + padding;
+}
+
+ctls::button::~button()
+{
 }

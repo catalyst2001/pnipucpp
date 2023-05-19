@@ -5,7 +5,7 @@
 
 /* WINDOWS COMMON CONTROLS */
 #include <CommCtrl.h>
-#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+//#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #pragma comment(lib, "comctl32.lib")
 
 namespace ctls {
@@ -57,6 +57,15 @@ namespace ctls {
 		void set_check(bool state);
 	};
 
+	/* BUTTON */
+	class button : public control_handle {
+	public:
+		button();
+		button(HWND parent, int id, const char *p_label, int x, int y, int width, int height, DWORD dw_style_ex = 0);
+		button(HWND parent, int id, int padding, const char *p_label, int x, int *p_y, int width, int height, DWORD dw_style_ex = 0);
+		~button();
+	};
+
 	/* TOGGLE BUTTON */
 	class toggle_button : public control_handle {
 	public:
@@ -91,12 +100,16 @@ namespace ctls {
 		trackbar(HWND parent, int id, int padding, const char *p_description, int x, int *p_y, int width, int height, int def_text_height = 15, int rmin = 0, int rmax = 1, int pos = 0, DWORD dw_style_ex = 0, DWORD dw_style = 0);
 		~trackbar();
 
+		void set_min(int n);
+		void set_max(int n);
 		void set_minmax(int min, int max);
 		int get_min();
 		int get_max();
 
 		void set_pos(int pos);
 		int get_pos();
+		void set_tick_freq(int n);
+		//int get_tick_freq();
 	};
 
 	/* EDITBOX */
