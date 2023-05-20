@@ -62,6 +62,9 @@ double curr_time = 1.0;
 float jaws_distance_of_center = 0.f;
 glm::vec2 center_of_jaws;
 
+int current_keyframe;
+int animation_flags = 0;
+
 struct mesh_hierarchy {
 	const char *p_name;
 	int parent;
@@ -100,7 +103,29 @@ struct bone_transform {
 };
 
 struct keyframe_s {
+private:
+	bool keyframes_equals(keyframe_s &kf) {
+		size_t num_bones = bones_positions.size();
+		if (num_bones != kf.bones_positions.size())
+			return false;
+
+		for (size_t i = 0; i < num_bones; i++) {
+			if (bones_positions[i].position != kf.bones_positions[i].position ||
+				bones_positions[i].rotation != kf.bones_positions[i].rotation) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+public:
+	keyframe_s() {}
+	~keyframe_s() {}
+
 	std::vector<bone_transform> bones_positions;
+
+	inline bool operator==(keyframe_s &kf) { return keyframes_equals(kf); }
+	inline bool operator!=(keyframe_s &kf) { return !keyframes_equals(kf); }
 };
 
 vector<keyframe_s> recorded_keyframes;
@@ -709,16 +734,36 @@ LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	return 0;
 }
 
-void grab_keyframe(model &mdl, keyframe_s &kf)
+bool keyframe_is_new(model &mdl, keyframe_s &new_keyframe)
+{
+	size_t size = recorded_keyframes.size();
+	if (!size)
+		return true;
+
+	keyframe_s &last_keyframe = recorded_keyframes[size - 1];
+	return last_keyframe != new_keyframe;
+}
+
+void keyframe_grab(keyframe_s &kf, model &mdl)
 {
 	mesh_s *p_mesh;
 	bone_transform transform;
 	kf.bones_positions.reserve(mdl.get_meshes_count());
 	for (size_t i = 0; i < mdl.get_meshes_count(); i++) {
 		p_mesh = mdl.get_mesh_by_index(i);
-		transform.position = p_mesh->pos_of_parent;
+		transform.position = p_mesh->pos_of_parent_curr;
 		transform.rotation = p_mesh->rotation;
 		kf.bones_positions.push_back(transform);
+	}
+}
+
+void keyframe_put(model &mdl, keyframe_s &kf)
+{
+	mesh_s *p_mesh;
+	for (size_t i = 0; i < mdl.get_meshes_count(); i++) {
+		p_mesh = mdl.get_mesh_by_index(i);
+		p_mesh->pos_of_parent_curr = kf.bones_positions[i].position;
+		p_mesh->rotation = kf.bones_positions[i].rotation;
 	}
 }
 
@@ -864,6 +909,13 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 			//	printf("%f\n", apron_screw_drive.get_pos() * 1.f);
 			//	break;
 			//}
+
+			if (h_scroll_sender == keyframes_switch && recorded_keyframes.size()) {
+				int keyframe_idx = keyframes_switch.get_pos();
+				keyframe_put(scene_model, recorded_keyframes[keyframe_idx]);
+				DBG("Keyframe %d is apply to model", keyframe_idx);
+				break;
+			}
 		}
 		break;
 	}
@@ -901,20 +953,22 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 			keyframe_s kf;
 			int num_of_frames;
 			int current_keyframe;
-			grab_keyframe(scene_model, kf);
-			recorded_keyframes.push_back(kf);
+			keyframe_grab(kf, scene_model);
 			num_of_frames = (int)recorded_keyframes.size();
 			current_keyframe = keyframes_switch.get_pos();
-			if (keyframes_switch.get_max() == current_keyframe && keyframes_switch.get_max() < num_of_frames) {
-				keyframes_switch.set_max(num_of_frames);
-				keyframes_switch.set_pos(num_of_frames);
-				DBG("created new keyframe");
-			}
-			else {
-				recorded_keyframes[current_keyframe] = kf;
-				keyframes_switch.set_pos(current_keyframe + 1);
-				DBG("overwrited exists keyframe");
-			}
+			//if (keyframe_is_new(scene_model, kf)) {
+				if (keyframes_switch.get_max() == current_keyframe) {
+					keyframes_switch.set_max(num_of_frames);
+					keyframes_switch.set_pos(num_of_frames);
+					recorded_keyframes.push_back(kf);
+					DBG("created new keyframe");
+				}
+				else {
+					recorded_keyframes[current_keyframe] = kf;
+					keyframes_switch.set_pos(current_keyframe + 1);
+					DBG("overwrited exists keyframe");
+				}
+			//}
 			DBG("IDC_KEYFRAME_SET: num_frames: %d", recorded_keyframes.size());
 			break;
 		}
@@ -923,21 +977,38 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 			break;
 
 		case IDC_KEYFRAMES_CLEAR:
+			recorded_keyframes.clear();
+			keyframes_switch.set_max(0);
+			keyframes_switch.set_pos(0);
 			break;
 
 		case IDC_KEYFRAME_SET_AS_ENDFRAME:
+			int keyframe_idx;
+			keyframe_idx = keyframes_switch.get_pos();
+			recorded_keyframes.resize(keyframe_idx);
+			keyframes_switch.set_max(keyframe_idx);
 			break;
 
 		case IDC_HAS_LOOP_PLAYING:
+			if (anim_loop_play.is_checked()) {
+				animation_flags |= AF_LOOP;
+			}
+			else {
+				animation_flags &= ~AF_LOOP;
+			}
 			break;
 
 		case IDC_ANIM_PLAY:
+			animation_flags |= AF_ANIMATE;
 			break;
 
 		case IDC_ANIM_PAUSE:
+			animation_flags &= ~AF_ANIMATE;
 			break;
 
 		case IDC_ANIM_STOP:
+			current_keyframe = 0;
+			animation_flags &= ~AF_ANIMATE;
 			break;
 
 		default:

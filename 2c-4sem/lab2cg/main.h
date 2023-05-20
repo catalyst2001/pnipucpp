@@ -51,3 +51,7 @@ enum CONTROLS_IDS {
 #define CLAMP(x, mn, mx)   (((x) < mn) ? mn : ((x) > mx) ? mx : (x))
 #define CLAMPMIN(x, mn)    (((x) < mn) ? mn : x)
 #define CLAMPMAX(x, mx)    (((x) > mx) ? mx : x)
+
+/* ANIM FLAGS */
+#define AF_ANIMATE (1 << 0)
+#define AF_LOOP (1 << 1)
