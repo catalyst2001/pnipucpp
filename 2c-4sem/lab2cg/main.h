@@ -43,6 +43,7 @@ enum CONTROLS_IDS {
 	IDC_ANIM_STOP
 };
 
+#define CNT(a)             (sizeof(a) / sizeof(a[0]))
 #define ABS(x)             (((x) < 0) ? -x : x)
 #define CLAMP(x, mn, mx)   (((x) < mn) ? mn : ((x) > mx) ? mx : (x))
 #define CLAMPMIN(x, mn)    (((x) < mn) ? mn : x)
@@ -52,3 +53,5 @@ enum CONTROLS_IDS {
 /* ANIM FLAGS */
 #define AF_ANIMATE (1 << 0)
 #define AF_LOOP (1 << 1)
+
+#define ANIM_VERSION 1

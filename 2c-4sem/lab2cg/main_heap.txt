@@ -1,4 +1,4 @@
-п»ї#include <stdio.h>
+#include <stdio.h>
 #include <math.h>
 #include <string.h>
 #include <windowsx.h>
@@ -136,7 +136,7 @@ public:
 	inline bool operator!=(keyframe_s &kf) { return !keyframes_equals(kf); }
 };
 
-vector<keyframe_s> recorded_keyframes;
+vector<keyframe_s *> recorded_keyframes;
 
 #define DECL_HIERARCHY_PARAM(myid, name, parent) { name, parent }
 
@@ -328,7 +328,7 @@ void resize_ui(const LPRECT p_rect)
 	//rect.right = clientrect_width.cx - controls_panel_width - MARGIN_PX;
 	rect.bottom = rect.top + ANIM_CONTROL_PANEL_HEIGHT - MARGIN_PX;
 	MoveWindow(h_anim_control_panel, rect.left, rect.top, rect.right, rect.bottom, TRUE);
-	MoveWindow(keyframes_switch, MARGIN_PX, 20+40+MARGIN_PX, rect.right - MARGIN_PX, 40, TRUE);
+	MoveWindow(keyframes_switch, MARGIN_PX, 20 + 40 + MARGIN_PX, rect.right - MARGIN_PX, 40, TRUE);
 }
 
 LRESULT CALLBACK wnd_proc(HWND, UINT, WPARAM, LPARAM);
@@ -341,7 +341,7 @@ bool register_classes(HINSTANCE h_instance)
 	WNDCLASSEXA wcex;
 	memset(&wcex, 0, sizeof(wcex));
 	wcex.cbSize = sizeof(WNDCLASSEXA);
-	wcex.style = CS_HREDRAW|CS_VREDRAW;
+	wcex.style = CS_HREDRAW | CS_VREDRAW;
 	wcex.hInstance = h_instance;
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wcex.lpfnWndProc = wnd_proc;
@@ -355,7 +355,7 @@ bool register_classes(HINSTANCE h_instance)
 	wcex.lpszClassName = WC_LAB2_CONTROLPANEL;
 	if (!RegisterClassExA(&wcex))
 		return false;
-	
+
 	/* ANIM CONTROL PANEL */
 	wcex.lpfnWndProc = controlpanel_wnd_proc;
 	wcex.lpszClassName = WC_LAB2_ANIMPANEL;
@@ -448,13 +448,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	ctls::button(h_anim_control_panel, IDC_KEYFRAMES_CLEAR, "Clear KFs", posx += 80 + MARGIN_PX, posy, 80, 20);
 	ctls::button(h_anim_control_panel, IDC_KEYFRAME_SET_AS_ENDFRAME, "Set KF as END", posx += 80 + MARGIN_PX, posy, 80, 20);
 	anim_loop_play = ctls::checkbox(h_anim_control_panel, IDC_HAS_LOOP_PLAYING, "Loop playing?", posx += 100 + MARGIN_PX, posy, 80, 20, 0, true);
-	anim_fps_switch = ctls::trackbar(h_anim_control_panel, IDC_PLAYING_FPS_TRACK, "Anim FPS", posx += 80 + MARGIN_PX, posy-20, 80, 40, 0, -100, 100, 0, 0, WS_VISIBLE|WS_CHILD|TBS_AUTOTICKS);
+	anim_fps_switch = ctls::trackbar(h_anim_control_panel, IDC_PLAYING_FPS_TRACK, "Anim FPS", posx += 80 + MARGIN_PX, posy - 20, 80, 40, 0, -100, 100, 0, 0, WS_VISIBLE | WS_CHILD | TBS_AUTOTICKS);
 	ctls::button(h_anim_control_panel, IDC_ANIM_PLAY, "Play", posx += 80 + MARGIN_PX, posy, 50, 20);
 	ctls::button(h_anim_control_panel, IDC_ANIM_PAUSE, "Pause", posx += 50 + MARGIN_PX, posy, 50, 20);
 	ctls::button(h_anim_control_panel, IDC_ANIM_STOP, "Stop", posx += 50 + MARGIN_PX, posy, 50, 20);
 	posx = MARGIN_PX;
 	posy += 40 + MARGIN_PX;
-	keyframes_switch = ctls::trackbar(h_anim_control_panel, IDC_KEYFRAME_SWITCH, NULL, posx, posy, 1, 40, 0, 0, 0, 0, 0, WS_VISIBLE|WS_CHILD|TBS_TOP|TBS_AUTOTICKS);
+	keyframes_switch = ctls::trackbar(h_anim_control_panel, IDC_KEYFRAME_SWITCH, NULL, posx, posy, 1, 40, 0, 0, 0, 0, 0, WS_VISIBLE | WS_CHILD | TBS_TOP | TBS_AUTOTICKS);
 	keyframes_switch.set_minmax(0, 0);
 	keyframes_switch.set_tick_freq(1);
 	anim_fps_switch.set_tick_freq(10);
@@ -469,7 +469,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	posx = posy = 2;
 	wireframe_check = ctls::checkbox(h_control_panel, IDC_WIREFRAME, MARGIN_PX, "Wireframe", posx, &posy, 400, 30, 0, false);
 	flat_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_FLAT, "Flat", posx, posy, 50, 20, 0, true);
-	smooth_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_SMOOTH, MARGIN_PX, "Smooth", posx+50+MARGIN_PX, &posy, 50, 20);
+	smooth_shaded = ctls::toggle_button(h_control_panel, IDC_SHADE_MODEL_SMOOTH, MARGIN_PX, "Smooth", posx + 50 + MARGIN_PX, &posy, 50, 20);
 	meshes_hierarchy = ctls::treeview(h_control_panel, IDC_HIERARCHY_TREE, posx, &posy, 300, 300, MARGIN_PX);
 	apron_move_track_x = ctls::trackbar(h_control_panel, IDC_APRONMOVE_TRACK, MARGIN_PX, "Apron move", posx, &posy, 300, 50);
 	support_move_track_z = ctls::trackbar(h_control_panel, IDC_SUPPORTMOVE_TRACK, MARGIN_PX, "Support move", posx, &posy, 300, 50);
@@ -480,7 +480,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	support_head_offset = ctls::trackbar(h_control_panel, IDC_SUPPORT_OFFSET_TRACK, MARGIN_PX, "Support head offset", posx, &posy, 300, 50);
 	support_head_bolts_move = ctls::trackbar(h_control_panel, IDC_SUPPORT_HEAD_BOLTS, MARGIN_PX, "Support head unscrew/screw bolts", posx, &posy, 300, 50);
 	//apron_screw_drive = ctls::trackbar(h_control_panel, IDC_SUPPORT_OFFSET_TRACK, MARGIN_PX, "Apron screw drive move", posx, &posy, 300, 50);
-	
+
 	apron_move_track_x.set_minmax(0, 78);
 	apron_move_track_x.set_pos(0);
 	tailstock_z.set_minmax(0, 85);
@@ -559,7 +559,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	GLfloat g_LighAttenuation0 = 1.0f;
 	GLfloat g_LighAttenuation1 = 0.0f;
 	GLfloat g_LighAttenuation2 = 0.0f;
-	
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -575,7 +575,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	glClearColor(0.5f, 0.5f, 0.5f, 1.5f);
 	glShadeModel(GL_FLAT);
 
-    MSG msg;
+	MSG msg;
 	while (1) {
 		get_time_milliseconds(&curr_time);
 		if (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -587,13 +587,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			break;
 
 		/* DRAW SCENE */
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 
 		glm::mat4 viewMat = glm::lookAt(glm::vec3(cam_eye[0], cam_eye[1], cam_eye[2]),
 			glm::vec3(cam_lookat[0], cam_lookat[1], cam_lookat[2]),
 			glm::vec3(cam_up[0], cam_up[1], cam_up[2]));
- 
+
 		GLfloat rot[4][4];
 		build_rotmatrix(rot, cam_curr_quat);
 		glm::mat4 camRotMat = glm::mat4(rot[0][0], rot[0][1], rot[0][2], rot[0][3],
@@ -609,7 +609,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			double delta_time = curr_time - last_time;
 			anim_last_time += delta_time;
 			if (anim_last_time >= anim_time_interval) {
-				
+
 
 				printf(
 					"curr_time: %lf\n"
@@ -645,12 +645,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			// interpolate frames
 			if (animation_flags & AF_ANIMATE) {
 				float interp = (float)delta_time * anim_time_interval;
-				keyframe_s &current_kf = recorded_keyframes[anim_current_frame];
-				keyframe_s &next_kf = recorded_keyframes[anim_next_frame];
+				keyframe_s *current_kf = recorded_keyframes[anim_current_frame];
+				keyframe_s *next_kf = recorded_keyframes[anim_next_frame];
 				for (size_t i = 0; i < num_bones; i++) {
 					mesh_s *p_mesh = scene_model.get_mesh_by_index(i);
-					bone_transform &curr_kf_bone_transform = current_kf.bones_positions[i];
-					bone_transform &next_kf_bone_transform = next_kf.bones_positions[i];
+					bone_transform &curr_kf_bone_transform = current_kf->bones_positions[i];
+					bone_transform &next_kf_bone_transform = next_kf->bones_positions[i];
 					p_mesh->pos_of_parent_curr.x = SLERP(curr_kf_bone_transform.position.x, next_kf_bone_transform.position.x, interp);
 					p_mesh->pos_of_parent_curr.y = SLERP(curr_kf_bone_transform.position.y, next_kf_bone_transform.position.y, interp);
 					p_mesh->pos_of_parent_curr.z = SLERP(curr_kf_bone_transform.position.z, next_kf_bone_transform.position.z, interp);
@@ -671,7 +671,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 
-    return 0;
+	return 0;
 }
 
 #define MBUTTON_LEFT (1 << 0)
@@ -703,7 +703,7 @@ LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	RECT rect;
 	SIZE size;
 	static int mbflags = 0;
-	
+
 	switch (message) {
 
 	case WM_SIZE: {
@@ -730,7 +730,7 @@ LRESULT CALLBACK scene_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 			glPolygonMode(GL_FRONT_AND_BACK, (has_wireframe) ? GL_LINE : GL_FILL);
 			has_wireframe = !has_wireframe;
 		}
-		
+
 		break;
 	}
 
@@ -806,30 +806,30 @@ bool keyframe_is_new(model &mdl, keyframe_s &new_keyframe)
 	if (!size)
 		return true;
 
-	keyframe_s &last_keyframe = recorded_keyframes[size - 1];
-	return last_keyframe != new_keyframe;
+	keyframe_s *last_keyframe = recorded_keyframes[size - 1];
+	return *last_keyframe != new_keyframe;
 }
 
-void keyframe_grab(keyframe_s &kf, model &mdl)
+void keyframe_grab(keyframe_s *p_kf, model &mdl)
 {
 	mesh_s *p_mesh;
 	bone_transform transform;
-	kf.bones_positions.reserve(num_bones);
+	p_kf->bones_positions.reserve(num_bones);
 	for (size_t i = 0; i < num_bones; i++) {
 		p_mesh = mdl.get_mesh_by_index(i);
 		transform.position = p_mesh->pos_of_parent_curr;
 		transform.rotation = p_mesh->rotation;
-		kf.bones_positions.push_back(transform);
+		p_kf->bones_positions.push_back(transform);
 	}
 }
 
-void keyframe_put(model &mdl, keyframe_s &kf)
+void keyframe_put(model &mdl, keyframe_s *p_kf)
 {
 	mesh_s *p_mesh;
 	for (size_t i = 0; i < num_bones; i++) {
 		p_mesh = mdl.get_mesh_by_index(i);
-		p_mesh->pos_of_parent_curr = kf.bones_positions[i].position;
-		p_mesh->rotation = kf.bones_positions[i].rotation;
+		p_mesh->pos_of_parent_curr = p_kf->bones_positions[i].position;
+		p_mesh->rotation = p_kf->bones_positions[i].rotation;
 	}
 }
 
@@ -841,8 +841,8 @@ enum ANIM_LDR_STATUS {
 
 const char *p_anim_ldr_errors[] = {
 	"No errors",
-	"РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ РёР»Рё РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р»",
-	"Р¤Р°Р№Р» Р°РЅРёРјР°С†РёРё РїРѕРІРµСЂР¶РґРµРЅ РёР»Рё РЅРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ С‚СЂРµР±СѓРµРјРѕРјСѓ СЃРєРµР»РµС‚Сѓ"
+	"Не удалось создать или открыть файл",
+	"Файл анимации повержден или не соответствует требуемому скелету"
 };
 
 #define CSTRWL(str) str, sizeof(str) - 1
@@ -923,56 +923,56 @@ ANIM_LDR_STATUS animation_import(const char *p_path)
 		if (buffer[0] == '/' || buffer[0] == '\n')
 			continue;
 
-/*		if (!strncmp(buffer, CSTRWL("hierarchy"))) {
-			do {
-				fgets(buffer, sizeof(buffer), fp);
-				if (buffer[0] == '/' || buffer[0] == '\n')
-					continue;
+		/*		if (!strncmp(buffer, CSTRWL("hierarchy"))) {
+					do {
+						fgets(buffer, sizeof(buffer), fp);
+						if (buffer[0] == '/' || buffer[0] == '\n')
+							continue;
 
-				if (sscanf(buffer, " %s %d", bonename, &parent_id) != 2) {
-					fclose(fp);
-					return ALDR_ERROR_ANIM_MISTMATCH;
+						if (sscanf(buffer, " %s %d", bonename, &parent_id) != 2) {
+							fclose(fp);
+							return ALDR_ERROR_ANIM_MISTMATCH;
+						}
+
+						if (strcmp(object_hierarchy[curr_bone].p_name, bonename) != 0 || object_hierarchy[curr_bone].parent != parent_id) {
+							fclose(fp);
+							return ALDR_ERROR_ANIM_MISTMATCH;
+						}
+						curr_bone++;
+					} while (!feof(fp) && !ferror(fp) && buffer[0] != '}' && curr_bone < bones_count);
 				}
+				else */if (!strncmp(buffer, CSTRWL("frame")) && sscanf(buffer, "frame %d {", &frame_idx) == 1) {
+					bone_transform transform;
+					keyframe_s *p_keyframe = new (std::nothrow)keyframe_s;
 
-				if (strcmp(object_hierarchy[curr_bone].p_name, bonename) != 0 || object_hierarchy[curr_bone].parent != parent_id) {
-					fclose(fp);
-					return ALDR_ERROR_ANIM_MISTMATCH;
+					printf("!!!!!!!! %d !!!!!!!\n", bones_count);
+					for (int i = 0; i < bones_count; i++) {
+
+						if (sscanf(buffer, " ( %f %f %f ) ( %f %f %f )",
+							&transform.position.x, &transform.position.y, &transform.position.z,
+							transform.rotation.x, transform.rotation.y, transform.rotation.z) == 6) {
+							p_keyframe->bones_positions.push_back(transform);
+						}
+					}
+
+					//if (keyframe.bones_positions.size() != bones_count) {
+					//	DBG("frames block corrupted");
+					//	recorded_keyframes.clear();
+					//	fclose(fp);
+					//	printf("if (keyframe.bones_positions.size() != bones_count) {");
+					//	return ALDR_ERROR_ANIM_MISTMATCH;
+					//}
+
+					recorded_keyframes.push_back(p_keyframe);
+					printf("FRAME %d\n", recorded_keyframes.size());
+					//printf("keyframe %d\n", keyframe.bones_positions.size());
 				}
-				curr_bone++;
-			} while (!feof(fp) && !ferror(fp) && buffer[0] != '}' && curr_bone < bones_count);
-		}
-		else */if (!strncmp(buffer, CSTRWL("frame")) && sscanf(buffer, "frame %d {", &frame_idx) == 1) {
-			
-			keyframe_s keyframe;
-			keyframe.bones_positions.reserve(bones_count);
-			bone_transform transform;
-			for (int i = 0; i < bones_count; i++) {
-				
-				if (sscanf(buffer, " ( %f %f %f ) ( %f %f %f )",
-					&transform.position.x, &transform.position.y, &transform.position.z,
-					transform.rotation.x, transform.rotation.y, transform.rotation.z) == 6) {
-					keyframe.bones_positions.push_back(transform);
-				}
-			}
-
-			//if (keyframe.bones_positions.size() != bones_count) {
-			//	DBG("frames block corrupted");
-			//	recorded_keyframes.clear();
-			//	fclose(fp);
-			//	printf("if (keyframe.bones_positions.size() != bones_count) {");
-			//	return ALDR_ERROR_ANIM_MISTMATCH;
-			//}
-
-			recorded_keyframes.push_back(keyframe);
-			printf("FRAME %d\n", recorded_keyframes.size());
-			printf("keyframe %d\n", keyframe.bones_positions.size());
-		}
 	}
 
 	for (size_t i = 0; i < recorded_keyframes.size(); i++)
 	{
 		printf("KF %d {\n", i);
-		for (size_t j = 0; j < recorded_keyframes[i].bones_positions.size(); j++)
+		for (size_t j = 0; j < recorded_keyframes[i]->bones_positions.size(); j++)
 		{
 			printf(" bone %d\n", j);
 		}
@@ -1007,7 +1007,7 @@ ANIM_LDR_STATUS animation_export(const char *p_path)
 	fputs("hierarchy {\n", fp);
 	for (i = 0; i < num_bones; i++)
 		fprintf(fp, "\t%s %d // parent %s\n", object_hierarchy[i].p_name, object_hierarchy[i].parent, (object_hierarchy[i].parent == -1) ? "none" : object_hierarchy[object_hierarchy[i].parent].p_name);
-	
+
 	fputs("}\n\n", fp);
 
 	/* write animation */
@@ -1019,7 +1019,7 @@ ANIM_LDR_STATUS animation_export(const char *p_path)
 	for (i = 0; i < (int)recorded_keyframes.size(); i++) {
 		fprintf(fp, "frame %d {\n", i);
 		for (size_t j = 0; j < num_bones; j++) {
-			bone_transform &transform = recorded_keyframes[i].bones_positions[j];
+			bone_transform &transform = recorded_keyframes[i]->bones_positions[j];
 			fprintf(fp, "\t( %f %f %f ) ( %f %f %f )\n",
 				transform.position.x, transform.position.y, transform.position.z,
 				transform.rotation.x, transform.rotation.y, transform.rotation.z
@@ -1034,8 +1034,8 @@ ANIM_LDR_STATUS animation_export(const char *p_path)
 LRESULT CALLBACK wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	RECT rect;
-    switch (message)
-    {
+	switch (message)
+	{
 	case WM_COMMAND:
 	{
 		int wmId = LOWORD(wParam);
@@ -1060,9 +1060,9 @@ LRESULT CALLBACK wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		SetFocus(gl_viewport.h_viewport);
 		break;
 
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
 
 	case WM_LBUTTONDOWN:
 		break;
@@ -1073,10 +1073,10 @@ LRESULT CALLBACK wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONUP:
 		break;
 
-    default:
-        return DefWindowProcA(hWnd, message, wParam, lParam);
-    }
-    return 0;
+	default:
+		return DefWindowProcA(hWnd, message, wParam, lParam);
+	}
+	return 0;
 }
 
 LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -1161,7 +1161,7 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 				p_support_offset_tap->rotation.z = ROTBYR(value);
 				break;
 			}
-			
+
 			if (h_scroll_sender == support_head_bolts_move) {
 				p_mesh = scene_model.get_mesh_by_index(MESH_SUPPORT_HEAD_BOLTS);
 				p_mesh->pos_of_parent_curr.y = p_mesh->pos_of_parent.y + (float)support_head_bolts_move.get_pos() * 0.1f;
@@ -1188,7 +1188,7 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 				int curr_fps = anim_fps_switch.get_pos();
 				anim_time_interval = 1.0 / ABS(curr_fps);
 				if (curr_fps >= 0) {
-				
+
 				}
 				else {
 					//INVERSE PLAYING
@@ -1205,7 +1205,7 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 		int wmId = LOWORD(wParam);
 		switch (wmId)
 		{
-		/* CONTROL PANEL */
+			/* CONTROL PANEL */
 		case IDC_WIREFRAME:
 			glPolygonMode(GL_FRONT_AND_BACK, (wireframe_check.is_checked()) ? GL_LINE : GL_FILL);
 			break;
@@ -1220,17 +1220,17 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 			flat_shaded.set_check(false);
 			break;
 
-		/* ANIMATION */
-		case IDC_IMPORT_ANIM:		
+			/* ANIMATION */
+		case IDC_IMPORT_ANIM:
 			GetCurrentDirectoryA(sizeof(current_dir), current_dir);
 			status = ctls::dialog_open_file(buffer, sizeof(buffer), HWND_DESKTOP, current_dir, ".ANM file (*.anm)\0*.txt\0All Files (*.*)\0*.*\0");
 			if (status == ctls::FD_STATUS_ERROR) {
-				MessageBoxA(0, "РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РїСЂРё РІС‹Р±РѕСЂРµ РїСѓС‚Рё", "GetOpenFileName error", MB_ICONERROR | MB_OK);
+				MessageBoxA(0, "Произошла ошибка при выборе пути", "GetOpenFileName error", MB_ICONERROR | MB_OK);
 				break;
 			}
 
 			status = animation_import(buffer);
-			if(status != ALDR_OK)
+			if (status != ALDR_OK)
 				MessageBoxA(HWND_DESKTOP, p_anim_ldr_errors[status], "Import error", MB_OK | MB_ICONERROR);
 
 			break;
@@ -1240,10 +1240,10 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 			GetCurrentDirectoryA(sizeof(current_dir), current_dir);
 			status = ctls::dialog_save_file(buffer, sizeof(buffer), HWND_DESKTOP, current_dir, ".ANM file (*.anm)\0*.txt\0All Files (*.*)\0*.*\0");
 			if (status == ctls::FD_STATUS_ERROR) {
-				MessageBoxA(0, "РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РїСЂРё РІС‹Р±РѕСЂРµ РїСѓС‚Рё", "GetSaveFileName error", MB_ICONERROR | MB_OK);
+				MessageBoxA(0, "Произошла ошибка при выборе пути", "GetSaveFileName error", MB_ICONERROR | MB_OK);
 				break;
 			}
-			
+
 			status = animation_export(buffer);
 			if (status != ALDR_OK)
 				MessageBoxA(HWND_DESKTOP, p_anim_ldr_errors[status], "Export error", MB_OK | MB_ICONERROR);
@@ -1252,24 +1252,26 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 
 		case IDC_KEYFRAME_SET: {
 			//__asm int 3h;
-			keyframe_s kf;
+			keyframe_s *p_keyframe;
 			int num_of_frames;
 			int current_keyframe;
-			keyframe_grab(kf, scene_model);
 			num_of_frames = (int)recorded_keyframes.size();
 			current_keyframe = keyframes_switch.get_pos();
 			//if (keyframe_is_new(scene_model, kf)) {
-				if (keyframes_switch.get_max() == current_keyframe) {
-					keyframes_switch.set_max(num_of_frames);
-					keyframes_switch.set_pos(num_of_frames);
-					recorded_keyframes.push_back(kf);
-					DBG("created new keyframe");
-				}
-				else {
-					recorded_keyframes[current_keyframe] = kf;
-					keyframes_switch.set_pos(current_keyframe + 1);
-					DBG("overwrited exists keyframe");
-				}
+			if (keyframes_switch.get_max() == current_keyframe) {
+				keyframes_switch.set_max(num_of_frames);
+				keyframes_switch.set_pos(num_of_frames);
+
+				p_keyframe = new keyframe_s;
+				keyframe_grab(p_keyframe, scene_model);
+				recorded_keyframes.push_back(p_keyframe);
+				DBG("created new keyframe");
+			}
+			else {
+				keyframe_grab(recorded_keyframes[current_keyframe], scene_model);
+				keyframes_switch.set_pos(current_keyframe + 1);
+				DBG("overwrited exists keyframe");
+			}
 			//}
 			anim_max_frames = (int)recorded_keyframes.size(); // update animation max frames
 			DBG("IDC_KEYFRAME_SET: num_frames: %d", anim_max_frames);
@@ -1280,10 +1282,13 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 			size_t size;
 			size = recorded_keyframes.size();
 			if (size) {
+				if (recorded_keyframes[size - 1])
+					delete recorded_keyframes[size - 1]; //TODO: !!!
+
 				recorded_keyframes.pop_back();
 				keyframes_switch.set_max(size);
 			}
-			
+
 			size = recorded_keyframes.size();
 			anim_max_frames = (int)size;
 			if (size)
@@ -1292,13 +1297,18 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 			break;
 
 		case IDC_KEYFRAMES_CLEAR:
+			for (size_t i = 0; i < recorded_keyframes.size(); i++) {
+				if (recorded_keyframes[i])
+					delete recorded_keyframes[i];
+			}
 			recorded_keyframes.clear();
+
 			keyframes_switch.set_max(0);
 			keyframes_switch.set_pos(0);
 			anim_max_frames = (int)recorded_keyframes.size(); // update animation max frames
 			break;
 
-		case IDC_KEYFRAME_SET_AS_ENDFRAME:
+		case IDC_KEYFRAME_SET_AS_ENDFRAME: //TODO: MEMORY LEAK. FREE HEAP BLOCKS BEFORE RESIZING!!!
 			int keyframe_idx;
 			keyframe_idx = keyframes_switch.get_pos();
 			recorded_keyframes.resize(keyframe_idx);

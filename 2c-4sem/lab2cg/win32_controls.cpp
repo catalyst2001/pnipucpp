@@ -30,6 +30,54 @@ void ctls::uncheck_except_me(const control_handle *p_cbs, int num_cb, const cont
 	}
 }
 
+int ctls::dialog_open_file(char *p_dst_path, int maxlen, HWND parent, const char *p_initdir, const char *p_filter)
+{
+	OPENFILENAMEA ofn;
+	memset(&ofn, 0, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = parent;
+	ofn.hInstance = (HINSTANCE)GetModuleHandleW(NULL);
+	ofn.lpstrFilter = p_filter;
+	ofn.lpstrFile = p_dst_path;
+	ofn.lpstrFile[0] = '\0';
+	ofn.nMaxFile = maxlen;
+	ofn.lpstrInitialDir = p_initdir;
+	ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;
+	if(!GetOpenFileNameA(&ofn)) {
+		if (CommDlgExtendedError() != 0)
+			return FD_STATUS_ERROR;
+
+		return FD_STATUS_WINDOW_CLOSED_WITHOUT_FILE_SELECT;
+	}
+	return FD_STATUS_OK;
+}
+
+int ctls::dialog_save_file(char *p_dst_path, int maxlen, HWND parent, const char *p_initdir, const char *p_filter)
+{
+	OPENFILENAME ofn;
+	memset(&ofn, 0, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = parent;
+	ofn.hInstance = (HINSTANCE)GetModuleHandleW(NULL);
+	ofn.lpstrFilter = p_filter;
+	ofn.lpstrFile = p_dst_path;
+	ofn.nMaxFile = maxlen;
+	ofn.lpstrInitialDir = p_initdir;
+	ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;
+
+	DWORD error;
+	if (!GetSaveFileNameA(&ofn)) {
+		error = CommDlgExtendedError();
+		if (error != 0) {
+			DBG("CommDlgExtendedError: %d (0x%x)", error, error);
+			return FD_STATUS_ERROR;
+		}
+
+		return FD_STATUS_WINDOW_CLOSED_WITHOUT_FILE_SELECT;
+	}
+	return FD_STATUS_OK;
+}
+
 
 ctls::checkbox::checkbox()
 {

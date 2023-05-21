@@ -1,5 +1,4 @@
 #pragma once
-#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <assert.h>
 
@@ -145,4 +144,14 @@ namespace ctls {
 		bool expand(HTREEITEM h_item);
 		bool collapse(HTREEITEM h_item);
 	};
+
+	enum FILE_DIALOG_STATUS {
+		FD_STATUS_OK = 0,
+		FD_STATUS_WINDOW_CLOSED_WITHOUT_FILE_SELECT,
+		FD_STATUS_ERROR
+	};
+
+	int dialog_open_file(char *p_dst_path, int maxlen, HWND parent, const char *p_initdir, const char *p_filter);
+
+	int dialog_save_file(char *p_dst_path, int maxlen, HWND parent, const char *p_initdir, const char *p_filter);
 };
