@@ -62,8 +62,13 @@ double curr_time = 1.0;
 float jaws_distance_of_center = 0.f;
 glm::vec2 center_of_jaws;
 
-int current_keyframe;
+/* ANIMATION */
 int animation_flags = 0;
+double anim_time_interval = 0.0;
+double anim_last_time = 0.0;
+int anim_current_frame = 0;
+int anim_next_frame = 0;
+int anim_max_frames = 0;
 
 struct mesh_hierarchy {
 	const char *p_name;
@@ -450,6 +455,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	keyframes_switch.set_minmax(0, 0);
 	keyframes_switch.set_tick_freq(1);
 	anim_fps_switch.set_tick_freq(10);
+	anim_fps_switch.set_minmax(-100, 100);
+	anim_fps_switch.set_pos(24);
+	anim_time_interval = 1.0 / ABS(anim_fps_switch.get_pos());
 
 	/* CREATE CONTROL PANEL */
 	h_control_panel = CreateWindowExA(WS_EX_DLGMODALFRAME, WC_LAB2_CONTROLPANEL, "", WS_CHILD | WS_VISIBLE, 1, 1, 1, 1, h_main_window, (HMENU)0, NULL, NULL);
@@ -565,6 +573,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     MSG msg;
 	while (1) {
+		get_time_milliseconds(&curr_time);
 		if (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
 			DispatchMessageA(&msg);
@@ -577,12 +586,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 
-		// View transformation matrix.
 		glm::mat4 viewMat = glm::lookAt(glm::vec3(cam_eye[0], cam_eye[1], cam_eye[2]),
 			glm::vec3(cam_lookat[0], cam_lookat[1], cam_lookat[2]),
 			glm::vec3(cam_up[0], cam_up[1], cam_up[2]));
-
-		// Get the additional camera rotation matrix introduced by trackball.  
+ 
 		GLfloat rot[4][4];
 		build_rotmatrix(rot, cam_curr_quat);
 		glm::mat4 camRotMat = glm::mat4(rot[0][0], rot[0][1], rot[0][2], rot[0][3],
@@ -590,15 +597,70 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			rot[2][0], rot[2][1], rot[2][2], rot[2][3],
 			rot[3][0], rot[3][1], rot[3][2], rot[3][3]);
 
-		// The final view transformation has the additional rotation from trackball.
 		viewMat = viewMat * camRotMat;
 		glMultMatrixf(glm::value_ptr(viewMat));
 
-		//get_time_milliseconds(&curr_time);
-		scene_model.draw_model();
-		//last_time = curr_time;
+		/* HANDLE ANIM IF ENABLED */
+		if (animation_flags & AF_ANIMATE) {
+			double delta_time = curr_time - last_time;
+			anim_last_time += delta_time;
+			if (anim_last_time >= anim_time_interval) {
+				
 
+				printf(
+					"curr_time: %lf\n"
+					"last_time: %lf\n"
+					"delta_time: %lf"
+					"anim_last_time: %lf\n"
+					"anim_time_interval: %lf\n\n"
+					"anim_current_frame: %d\n"
+					"anim_next_frame: %d\n"
+					"anim_max_frames: %d\n",
+					curr_time, last_time, delta_time, anim_last_time, anim_time_interval,
+					anim_current_frame, anim_next_frame, anim_max_frames
+				);
+
+				anim_last_time = 0.0;
+				anim_next_frame++;
+				anim_current_frame++;
+
+				if (anim_current_frame >= anim_max_frames) {
+					anim_current_frame = 0;
+					if (!(animation_flags & AF_LOOP)) {
+						keyframes_switch.set_pos(0);
+						animation_flags &= ~AF_ANIMATE; // stop animation
+					}
+				}
+
+				if (anim_next_frame >= anim_max_frames)
+					anim_next_frame = 0;
+
+				keyframes_switch.set_pos(anim_current_frame);
+			}
+
+			// interpolate frames
+			if (animation_flags & AF_ANIMATE) {
+				float interp = (float)delta_time * anim_time_interval;
+				keyframe_s &current_kf = recorded_keyframes[anim_current_frame];
+				keyframe_s &next_kf = recorded_keyframes[anim_next_frame];
+				for (size_t i = 0; i < scene_model.get_meshes_count(); i++) {
+					mesh_s *p_mesh = scene_model.get_mesh_by_index(i);
+					bone_transform &curr_kf_bone_transform = current_kf.bones_positions[i];
+					bone_transform &next_kf_bone_transform = next_kf.bones_positions[i];
+					p_mesh->pos_of_parent_curr.x = SLERP(curr_kf_bone_transform.position.x, next_kf_bone_transform.position.x, interp);
+					p_mesh->pos_of_parent_curr.y = SLERP(curr_kf_bone_transform.position.y, next_kf_bone_transform.position.y, interp);
+					p_mesh->pos_of_parent_curr.z = SLERP(curr_kf_bone_transform.position.z, next_kf_bone_transform.position.z, interp);
+
+					p_mesh->rotation.x = SLERP(curr_kf_bone_transform.rotation.x, next_kf_bone_transform.rotation.x, interp);
+					p_mesh->rotation.y = SLERP(curr_kf_bone_transform.rotation.y, next_kf_bone_transform.rotation.y, interp);
+					p_mesh->rotation.z = SLERP(curr_kf_bone_transform.rotation.z, next_kf_bone_transform.rotation.z, interp);
+				}
+			}
+		}
+
+		scene_model.draw_model();
 		SwapBuffers(gl_viewport.h_device_context);
+		last_time = curr_time;
 	}
 
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -916,6 +978,19 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 				DBG("Keyframe %d is apply to model", keyframe_idx);
 				break;
 			}
+
+			/* ANIM FPS */
+			if (h_scroll_sender == anim_fps_switch) {
+				int curr_fps = anim_fps_switch.get_pos();
+				anim_time_interval = 1.0 / ABS(curr_fps);
+				if (curr_fps >= 0) {
+					
+				}
+				else {
+					//INVERSE PLAYING
+				}
+				break;
+			}
 		}
 		break;
 	}
@@ -969,17 +1044,28 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 					DBG("overwrited exists keyframe");
 				}
 			//}
-			DBG("IDC_KEYFRAME_SET: num_frames: %d", recorded_keyframes.size());
+			anim_max_frames = (int)recorded_keyframes.size(); // update animation max frames
+			DBG("IDC_KEYFRAME_SET: num_frames: %d", anim_max_frames);
 			break;
 		}
 
 		case IDC_KEYFRAME_UNDO:
+			size_t size;
+			if(recorded_keyframes.size())
+				recorded_keyframes.pop_back();
+			
+			size = recorded_keyframes.size();
+			anim_max_frames = (int)size;
+			if (size)
+				keyframe_put(scene_model, recorded_keyframes[size - 1]);
+
 			break;
 
 		case IDC_KEYFRAMES_CLEAR:
 			recorded_keyframes.clear();
 			keyframes_switch.set_max(0);
 			keyframes_switch.set_pos(0);
+			anim_max_frames = (int)recorded_keyframes.size(); // update animation max frames
 			break;
 
 		case IDC_KEYFRAME_SET_AS_ENDFRAME:
@@ -987,6 +1073,7 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 			keyframe_idx = keyframes_switch.get_pos();
 			recorded_keyframes.resize(keyframe_idx);
 			keyframes_switch.set_max(keyframe_idx);
+			anim_max_frames = (int)recorded_keyframes.size(); // update animation max frames
 			break;
 
 		case IDC_HAS_LOOP_PLAYING:
@@ -999,7 +1086,9 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 			break;
 
 		case IDC_ANIM_PLAY:
-			animation_flags |= AF_ANIMATE;
+			if(recorded_keyframes.size() > 2)
+				animation_flags |= AF_ANIMATE;
+
 			break;
 
 		case IDC_ANIM_PAUSE:
@@ -1007,7 +1096,8 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 			break;
 
 		case IDC_ANIM_STOP:
-			current_keyframe = 0;
+			anim_current_frame = 0;
+			anim_next_frame = 1;
 			animation_flags &= ~AF_ANIMATE;
 			break;
 

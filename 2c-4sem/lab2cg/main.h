@@ -10,10 +10,6 @@
 #define CONTROL_PANEL_WIDTH 300
 #define ANIM_CONTROL_PANEL_HEIGHT 100
 
-/* MENU ID's */
-#define IDM_OPEN 10
-
-
 /* CONTROLS ID's */
 enum CONTROLS_IDS {
 
@@ -51,6 +47,7 @@ enum CONTROLS_IDS {
 #define CLAMP(x, mn, mx)   (((x) < mn) ? mn : ((x) > mx) ? mx : (x))
 #define CLAMPMIN(x, mn)    (((x) < mn) ? mn : x)
 #define CLAMPMAX(x, mx)    (((x) > mx) ? mx : x)
+#define SLERP(last_val, next_val, time) (last_val + (next_val - last_val) * time)
 
 /* ANIM FLAGS */
 #define AF_ANIMATE (1 << 0)
