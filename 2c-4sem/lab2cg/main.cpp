@@ -946,12 +946,13 @@ ANIM_LDR_STATUS animation_import(const char *p_path)
 			keyframe_s keyframe;
 			keyframe.bones_positions.reserve(bones_count);
 			bone_transform transform;
-			for (int i = 0; i < bones_count; i++) {
-				
+			for (int i = 0; (i < bones_count) && !feof(fp) && !ferror(fp); i++) {
+				fgets(buffer, sizeof(buffer), fp);
 				if (sscanf(buffer, " ( %f %f %f ) ( %f %f %f )",
 					&transform.position.x, &transform.position.y, &transform.position.z,
-					transform.rotation.x, transform.rotation.y, transform.rotation.z) == 6) {
+					&transform.rotation.x, &transform.rotation.y, &transform.rotation.z) == 6) {
 					keyframe.bones_positions.push_back(transform);
+					printf("positions: ( %f %f %f ) ( %f %f %f )\n", transform.position.x, transform.position.y, transform.position.z, transform.rotation.x, transform.rotation.y, transform.rotation.z);
 				}
 			}
 
@@ -983,8 +984,11 @@ ANIM_LDR_STATUS animation_import(const char *p_path)
 	fclose(fp);
 
 	/* RESET ANIM CONTROLS */
-	keyframes_switch.set_max((int)recorded_keyframes.size());
+	anim_max_frames = (int)recorded_keyframes.size();
+	keyframes_switch.set_max(anim_max_frames - 1);
 	keyframes_switch.set_pos(0);
+	anim_current_frame = 0;
+	anim_next_frame = 1;
 	return ALDR_OK;
 }
 
@@ -1223,16 +1227,17 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 		/* ANIMATION */
 		case IDC_IMPORT_ANIM:		
 			GetCurrentDirectoryA(sizeof(current_dir), current_dir);
-			status = ctls::dialog_open_file(buffer, sizeof(buffer), HWND_DESKTOP, current_dir, ".ANM file (*.anm)\0*.txt\0All Files (*.*)\0*.*\0");
+			status = ctls::dialog_open_file(buffer, sizeof(buffer), HWND_DESKTOP, current_dir, ".ANM file (*.anm)\0*.anm\0All Files (*.*)\0*.*\0");
 			if (status == ctls::FD_STATUS_ERROR) {
 				MessageBoxA(0, "Произошла ошибка при выборе пути", "GetOpenFileName error", MB_ICONERROR | MB_OK);
 				break;
 			}
 
-			status = animation_import(buffer);
-			if(status != ALDR_OK)
-				MessageBoxA(HWND_DESKTOP, p_anim_ldr_errors[status], "Import error", MB_OK | MB_ICONERROR);
-
+			if (buffer[0]) {
+				status = animation_import(buffer);
+				if (status != ALDR_OK)
+					MessageBoxA(HWND_DESKTOP, p_anim_ldr_errors[status], "Import error", MB_OK | MB_ICONERROR);
+			}
 			break;
 
 		case IDC_EXPORT_ANIM:
@@ -1341,6 +1346,7 @@ LRESULT CALLBACK controlpanel_wnd_proc(HWND hWnd, UINT message, WPARAM wParam, L
 			EnableWindow(GetDlgItem(hWnd, IDC_KEYFRAMES_CLEAR), TRUE);
 			EnableWindow(GetDlgItem(hWnd, IDC_KEYFRAME_SET_AS_ENDFRAME), TRUE);
 			keyframes_switch.set_pos(0);
+			keyframe_put(scene_model, recorded_keyframes[0]);
 			break;
 
 		default:

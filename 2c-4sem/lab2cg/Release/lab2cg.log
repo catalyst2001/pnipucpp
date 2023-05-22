@@ -1,4 +1,20 @@
-﻿  Создание кода
-  All 2474 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+﻿  gl_viewport.cpp
+d:\github\pnipucpp\2c-4sem\cgcommon\gl_viewport.cpp(7): warning C4477: "sprintf_s": в строке форматирования "%s" требуется аргумент типа "char *", но вариативный аргумент "1" имеет тип "DWORD"
+d:\github\pnipucpp\2c-4sem\cgcommon\gl_viewport.cpp(7): warning C4473: "sprintf_s": передано недостаточно аргументов для строки формата
+  d:\github\pnipucpp\2c-4sem\cgcommon\gl_viewport.cpp(7): note: заполнители и их параметры ожидают переменное число аргументов в количестве 3, но было предоставлено 2
+  d:\github\pnipucpp\2c-4sem\cgcommon\gl_viewport.cpp(7): note: отсутствующий вариативный аргумент "3" требуется для строки форматирования "%x"
+  trackball.cc
+  gl_exts.cpp
+  main.cpp
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(647): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(875): warning C4101: bonename: неиспользованная локальная переменная
+  model.cpp
+d:\github\pnipucpp\2c-4sem\lab2cg\model.cpp(123): warning C4101: ni: неиспользованная локальная переменная
+d:\github\pnipucpp\2c-4sem\lab2cg\model.cpp(125): warning C4101: vn: неиспользованная локальная переменная
+  win32_controls.cpp
+  Создание кода
+  1185 of 2745 functions (43.2%) were compiled, the rest were copied from previous compilation.
+    271 functions were new in current compilation
+    96 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
   lab2cg.vcxproj -> D:\GITHUB\pnipucpp\Release\lab2cg_k.exe
