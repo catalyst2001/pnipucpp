@@ -1,0 +1,15 @@
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\bin\Debug\net6.0\lab10.1.exe
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\bin\Debug\net6.0\lab10.1.deps.json
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\bin\Debug\net6.0\lab10.1.runtimeconfig.json
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\bin\Debug\net6.0\lab10.1.dll
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\bin\Debug\net6.0\lab10.1.pdb
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\obj\Debug\net6.0\lab10.1.csproj.AssemblyReference.cache
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\obj\Debug\net6.0\lab10.1.GeneratedMSBuildEditorConfig.editorconfig
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\obj\Debug\net6.0\lab10.1.AssemblyInfoInputs.cache
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\obj\Debug\net6.0\lab10.1.AssemblyInfo.cs
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\obj\Debug\net6.0\lab10.1.csproj.CoreCompileInputs.cache
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\obj\Debug\net6.0\lab10.1.dll
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\obj\Debug\net6.0\refint\lab10.1.dll
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\obj\Debug\net6.0\lab10.1.pdb
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\obj\Debug\net6.0\lab10.1.genruntimeconfig.cache
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab10.1\obj\Debug\net6.0\ref\lab10.1.dll

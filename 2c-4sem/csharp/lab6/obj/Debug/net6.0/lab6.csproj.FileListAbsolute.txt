@@ -1,0 +1,15 @@
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\bin\Debug\net6.0\lab6.exe
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\bin\Debug\net6.0\lab6.deps.json
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\bin\Debug\net6.0\lab6.runtimeconfig.json
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\bin\Debug\net6.0\lab6.dll
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\bin\Debug\net6.0\lab6.pdb
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\obj\Debug\net6.0\lab6.csproj.AssemblyReference.cache
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\obj\Debug\net6.0\lab6.GeneratedMSBuildEditorConfig.editorconfig
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\obj\Debug\net6.0\lab6.AssemblyInfoInputs.cache
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\obj\Debug\net6.0\lab6.AssemblyInfo.cs
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\obj\Debug\net6.0\lab6.csproj.CoreCompileInputs.cache
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\obj\Debug\net6.0\lab6.dll
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\obj\Debug\net6.0\refint\lab6.dll
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\obj\Debug\net6.0\lab6.pdb
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\obj\Debug\net6.0\lab6.genruntimeconfig.cache
+D:\GITHUB\pnipucpp\2c-4sem\csharp\lab6\obj\Debug\net6.0\ref\lab6.dll
