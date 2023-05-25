@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace lab6
 {
-    internal class Program
+    public class Program
     {
         public static char[] ConsoleReadString()
         {
@@ -28,7 +28,7 @@ namespace lab6
             return str.ToArray();
         }
 
-        static bool IsVowel(char sym)
+        public static bool IsVowel(char sym)
         {
             char[] syms = {
                 'a', 'e', 'i', 'o', 'u',
@@ -55,7 +55,7 @@ namespace lab6
             array = copy;
         }
 
-        static void RemoveLastVowel(ref char[] array)
+        public static void RemoveLastVowel(ref char[] array)
         {
             int lastVowelIdx = -1;
             for (int i = array.Length - 1; i > 0; i--)
@@ -73,7 +73,7 @@ namespace lab6
             RemoveFromArray<char>(ref array, lastVowelIdx, 1);
         }
 
-        static void SwapFirstAndLastSentence(ref char[] array)
+        public static void SwapFirstAndLastSentence(ref char[] array)
         {
             char[] delims = new char[] { '.', '!', '?' };
 
@@ -86,7 +86,7 @@ namespace lab6
             str.CopyTo(array);
         }
 
-        static int StrChrs(string str, string delims, int startpos = 0)
+        public static int StrChrs(string str, string delims, int startpos = 0)
         {
             for (int i = startpos; i < str.Length; i++)
             {
@@ -101,7 +101,7 @@ namespace lab6
             return -1;
         }
 
-        static int StrrChrs(string str, string delims, int endpos = -1)
+        public static int StrrChrs(string str, string delims, int endpos = -1)
         {
             if (endpos == -1)
                 endpos = str.Length - 1;
@@ -119,12 +119,12 @@ namespace lab6
             return -1;
         }
 
-        static bool IsPrint(char chr)
+        public static bool IsPrint(char chr)
         {
             return char.IsLetterOrDigit(chr) || char.IsPunctuation(chr);
         }
 
-        static void SwapFirstAndLastSentence2(ref char[] array)
+        public static void SwapFirstAndLastSentence2(ref char[] array)
         {
             int first_delim, last_delim;
             string text = new string(array).Trim();

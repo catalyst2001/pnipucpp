@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage line-rate="0.222222222222222" branch-rate="0.333333333333333" lines-covered="10" lines-valid="45" branches-covered="2" branches-valid="6" complexity="9" version="0" timestamp="1684879973">
+<coverage line-rate="0.666666666666667" branch-rate="0.666666666666667" lines-covered="30" lines-valid="45" branches-covered="4" branches-valid="6" complexity="9" version="0" timestamp="1685015654">
   <sources>
     <source>D:\GITHUB\pnipucpp\2c-4sem\csharp\</source>
     <source>C:\</source>
   </sources>
   <packages>
-    <package name="lab3" line-rate="0.205128205128205" branch-rate="0.333333333333333" complexity="7">
+    <package name="lab3" line-rate="0.641025641025641" branch-rate="0.666666666666667" complexity="7">
       <classes>
-        <class name="lab3.Functions" filename="D:\GITHUB\pnipucpp\2c-4sem\csharp\lab3\Functions.cs" line-rate="0.32" branch-rate="0.5" complexity="5">
+        <class name="lab3.Functions" filename="D:\GITHUB\pnipucpp\2c-4sem\csharp\lab3\Functions.cs" line-rate="1" branch-rate="1" complexity="5">
           <methods>
-            <method name="ComputeY" signature="(...)" line-rate="0" branch-rate="1" complexity="1">
+            <method name="ComputeY" signature="(...)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="12" hits="0" branch="false" />
-                <line number="13" hits="0" branch="false" />
-                <line number="14" hits="0" branch="false" />
+                <line number="12" hits="1" branch="false" />
+                <line number="13" hits="1" branch="false" />
+                <line number="14" hits="1" branch="false" />
               </lines>
             </method>
             <method name="ComputeSN" signature="(...)" line-rate="1" branch-rate="1" complexity="2">
@@ -29,29 +29,29 @@
                 <line number="24" hits="1" branch="false" />
               </lines>
             </method>
-            <method name="ComputeSE" signature="(...)" line-rate="0" branch-rate="0" complexity="2">
+            <method name="ComputeSE" signature="(...)" line-rate="1" branch-rate="1" complexity="2">
               <lines>
-                <line number="27" hits="0" branch="false" />
-                <line number="28" hits="0" branch="false" />
-                <line number="29" hits="0" branch="false" />
-                <line number="30" hits="0" branch="false" />
-                <line number="31" hits="0" branch="false" />
-                <line number="32" hits="0" branch="true" condition-coverage="0% (0/2)" />
-                <line number="33" hits="0" branch="false" />
-                <line number="34" hits="0" branch="false" />
-                <line number="35" hits="0" branch="false" />
-                <line number="36" hits="0" branch="false" />
-                <line number="37" hits="0" branch="false" />
-                <line number="38" hits="0" branch="false" />
-                <line number="39" hits="0" branch="false" />
-                <line number="40" hits="0" branch="false" />
+                <line number="27" hits="1" branch="false" />
+                <line number="28" hits="1" branch="false" />
+                <line number="29" hits="1" branch="false" />
+                <line number="30" hits="1" branch="false" />
+                <line number="31" hits="1" branch="false" />
+                <line number="32" hits="3" branch="true" condition-coverage="100% (2/2)" />
+                <line number="33" hits="2" branch="false" />
+                <line number="34" hits="2" branch="false" />
+                <line number="35" hits="2" branch="false" />
+                <line number="36" hits="2" branch="false" />
+                <line number="37" hits="2" branch="false" />
+                <line number="38" hits="2" branch="false" />
+                <line number="39" hits="1" branch="false" />
+                <line number="40" hits="1" branch="false" />
               </lines>
             </method>
           </methods>
           <lines>
-            <line number="12" hits="0" branch="false" />
-            <line number="13" hits="0" branch="false" />
-            <line number="14" hits="0" branch="false" />
+            <line number="12" hits="1" branch="false" />
+            <line number="13" hits="1" branch="false" />
+            <line number="14" hits="1" branch="false" />
             <line number="17" hits="1" branch="false" />
             <line number="18" hits="1" branch="false" />
             <line number="19" hits="22" branch="true" condition-coverage="100% (2/2)" />
@@ -60,20 +60,20 @@
             <line number="22" hits="10" branch="false" />
             <line number="23" hits="1" branch="false" />
             <line number="24" hits="1" branch="false" />
-            <line number="27" hits="0" branch="false" />
-            <line number="28" hits="0" branch="false" />
-            <line number="29" hits="0" branch="false" />
-            <line number="30" hits="0" branch="false" />
-            <line number="31" hits="0" branch="false" />
-            <line number="32" hits="0" branch="true" condition-coverage="0% (0/2)" />
-            <line number="33" hits="0" branch="false" />
-            <line number="34" hits="0" branch="false" />
-            <line number="35" hits="0" branch="false" />
-            <line number="36" hits="0" branch="false" />
-            <line number="37" hits="0" branch="false" />
-            <line number="38" hits="0" branch="false" />
-            <line number="39" hits="0" branch="false" />
-            <line number="40" hits="0" branch="false" />
+            <line number="27" hits="1" branch="false" />
+            <line number="28" hits="1" branch="false" />
+            <line number="29" hits="1" branch="false" />
+            <line number="30" hits="1" branch="false" />
+            <line number="31" hits="1" branch="false" />
+            <line number="32" hits="3" branch="true" condition-coverage="100% (2/2)" />
+            <line number="33" hits="2" branch="false" />
+            <line number="34" hits="2" branch="false" />
+            <line number="35" hits="2" branch="false" />
+            <line number="36" hits="2" branch="false" />
+            <line number="37" hits="2" branch="false" />
+            <line number="38" hits="2" branch="false" />
+            <line number="39" hits="1" branch="false" />
+            <line number="40" hits="1" branch="false" />
           </lines>
         </class>
         <class name="lab3.Program" filename="D:\GITHUB\pnipucpp\2c-4sem\csharp\lab3\Program.cs" line-rate="0" branch-rate="0" complexity="2">
@@ -116,7 +116,7 @@
         </class>
       </classes>
     </package>
-    <package name="lab3_test" line-rate="0.333333333333333" branch-rate="1" complexity="2">
+    <package name="lab3_test" line-rate="0.833333333333333" branch-rate="1" complexity="2">
       <classes>
         <class name="AutoGeneratedProgram" filename="C:\Users\asrock\.nuget\packages\microsoft.net.test.sdk\17.3.2\build\netcoreapp2.1\Microsoft.NET.Test.Sdk.Program.cs" line-rate="0" branch-rate="1" complexity="1">
           <methods>
@@ -130,24 +130,24 @@
             <line number="4" hits="0" branch="false" />
           </lines>
         </class>
-        <class name="lab3_test.UnitTest1" filename="D:\GITHUB\pnipucpp\2c-4sem\csharp\lab3_test\UnitTest1.cs" line-rate="0.4" branch-rate="1" complexity="1">
+        <class name="lab3_test.UnitTest1" filename="D:\GITHUB\pnipucpp\2c-4sem\csharp\lab3_test\UnitTest1.cs" line-rate="1" branch-rate="1" complexity="1">
           <methods>
-            <method name="TestMethod1" signature="()" line-rate="0.4" branch-rate="1" complexity="1">
+            <method name="TestMethod1" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
                 <line number="10" hits="1" branch="false" />
                 <line number="11" hits="1" branch="false" />
-                <line number="12" hits="0" branch="false" />
-                <line number="13" hits="0" branch="false" />
-                <line number="14" hits="0" branch="false" />
+                <line number="12" hits="1" branch="false" />
+                <line number="13" hits="1" branch="false" />
+                <line number="14" hits="1" branch="false" />
               </lines>
             </method>
           </methods>
           <lines>
             <line number="10" hits="1" branch="false" />
             <line number="11" hits="1" branch="false" />
-            <line number="12" hits="0" branch="false" />
-            <line number="13" hits="0" branch="false" />
-            <line number="14" hits="0" branch="false" />
+            <line number="12" hits="1" branch="false" />
+            <line number="13" hits="1" branch="false" />
+            <line number="14" hits="1" branch="false" />
           </lines>
         </class>
       </classes>

@@ -10,7 +10,7 @@ namespace _10_3
         }
     }
 
-    internal class Program
+    public class Program
     {
         public static void PrintOrgs(Organization[] organizations)
         {
@@ -77,8 +77,12 @@ namespace _10_3
             Console.WriteLine("Elem to find: {0} == Found: {1} of index {2}", elem_to_find,
                array[idx].GetOrganizationId(), idx);
 
+            //--------------------------------------------
+            Organization array2 = new Organization("Org2", "адрес", "время работы");
+            Console.WriteLine(array2.GetFullInfo());
 
-
+            Organization clone = (Organization)array2.Clone();
+            Console.WriteLine(clone.GetFullInfo());
 
         }
     }

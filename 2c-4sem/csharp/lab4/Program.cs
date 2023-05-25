@@ -8,9 +8,9 @@ using System.Windows.Markup;
 
 namespace lab4
 {
-    internal class Program
+    public class Program
     {
-        static bool RemoveFromArray(ref int[] array, int from_idx, int count)
+        static public bool RemoveFromArray(ref int[] array, int from_idx, int count)
         {
             if ((from_idx + count) >= array.Length)
                 return false;
@@ -27,7 +27,7 @@ namespace lab4
             return true;
         }
 
-        static bool InsertElemFrom(ref int[] array, int idx, int elem)
+        static public bool InsertElemFrom(ref int[] array, int idx, int elem)
         {
             if (idx >= array.Length)
                 return false;
@@ -53,7 +53,7 @@ namespace lab4
             Console.WriteLine();
         }
 
-        static void SwapOddEven(int[] array)
+        static public void SwapOddEven(int[] array)
         {
             for (int i = 0; i < array.Length - 1; i += 2)
             {
@@ -63,7 +63,7 @@ namespace lab4
             }
         }
 
-        static int FindElemEqualsAverageElems(ref int avg, int[] array)
+        static public int FindElemEqualsAverageElems(ref int avg, int[] array)
         {
             int i, j;
             int idx = -1;
@@ -86,7 +86,7 @@ namespace lab4
             return idx;
         }
 
-        static void SimpleSwapSort(int[] array)
+        static public void SimpleSwapSort(int[] array)
         {
             int cmpscount = 0;
             for (int i = 0; i < array.Length - 1; i++)
