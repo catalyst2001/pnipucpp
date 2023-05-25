@@ -6,7 +6,7 @@
 INT Width, Height;
 const float sensitivity = 1.0f;
 Camera camera(true, glm::vec3(0.f, 0.f, 0.f));
-float eyes_distance = 10.f;
+float eyes_distance = 1.f;
 
 void scale_model(float size)
 {
@@ -23,6 +23,7 @@ void fn_draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
+	glColor3f(0.f, 0.f, 0.f);
 
 	camera.UpdateInput(p_glwindow->h_window);
 
@@ -113,9 +114,11 @@ void fn_windowcreate(HWND hWnd)
 	scale_model(20.f);
 	p_glwindow = GetStruct();
 
+	glClearColor(1.f, 1.f, 1.f, 1.f);
 	glEnable(GL_DEPTH_TEST);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glLineWidth(2.0);
 }
 
 void fn_windowclose(HWND hWnd)
@@ -125,7 +128,7 @@ void fn_windowclose(HWND hWnd)
 
 int main()
 {
-	create_window("Lab3", __FILE__,
+	create_window("Lab3  Stereo Pair", __FILE__,
 		24,					  //Colors bits
 		32,					  //Depth bits
 		fn_draw,			  //Draw function
