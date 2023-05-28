@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<coverage line-rate="0.33649999999999997" branch-rate="0.39740000000000003" version="1.9" timestamp="1684998808" lines-covered="69" lines-valid="205" branches-covered="31" branches-valid="78">
+<coverage line-rate="0.33649999999999997" branch-rate="0.39740000000000003" version="1.9" timestamp="1685131651" lines-covered="69" lines-valid="205" branches-covered="31" branches-valid="78">
   <sources>
     <source>D:\GITHUB\pnipucpp\2c-4sem\csharp\</source>
     <source>C:\</source>
@@ -276,12 +276,12 @@
                     <condition number="61" type="jump" coverage="50%" />
                   </conditions>
                 </line>
-                <line number="168" hits="244" branch="True" condition-coverage="100% (2/2)">
+                <line number="168" hits="240" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
                     <condition number="41" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="169" hits="113" branch="True" condition-coverage="100% (2/2)">
+                <line number="169" hits="111" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
                     <condition number="19" type="jump" coverage="100%" />
                   </conditions>
@@ -596,12 +596,12 @@
                 <condition number="61" type="jump" coverage="50%" />
               </conditions>
             </line>
-            <line number="168" hits="244" branch="True" condition-coverage="100% (2/2)">
+            <line number="168" hits="240" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="41" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="169" hits="113" branch="True" condition-coverage="100% (2/2)">
+            <line number="169" hits="111" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="19" type="jump" coverage="100%" />
               </conditions>
@@ -745,14 +745,14 @@
                   </conditions>
                 </line>
                 <line number="36" hits="10" branch="False" />
-                <line number="37" hits="246" branch="True" condition-coverage="100% (2/2)">
+                <line number="37" hits="242" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
                     <condition number="53" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="38" hits="113" branch="False" />
-                <line number="39" hits="113" branch="False" />
-                <line number="40" hits="113" branch="False" />
+                <line number="38" hits="111" branch="False" />
+                <line number="39" hits="111" branch="False" />
+                <line number="40" hits="111" branch="False" />
                 <line number="41" hits="10" branch="False" />
                 <line number="43" hits="1" branch="False" />
                 <line number="44" hits="1" branch="False" />
@@ -794,14 +794,14 @@
               </conditions>
             </line>
             <line number="36" hits="10" branch="False" />
-            <line number="37" hits="246" branch="True" condition-coverage="100% (2/2)">
+            <line number="37" hits="242" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="53" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="38" hits="113" branch="False" />
-            <line number="39" hits="113" branch="False" />
-            <line number="40" hits="113" branch="False" />
+            <line number="38" hits="111" branch="False" />
+            <line number="39" hits="111" branch="False" />
+            <line number="40" hits="111" branch="False" />
             <line number="41" hits="10" branch="False" />
             <line number="43" hits="1" branch="False" />
             <line number="44" hits="1" branch="False" />

@@ -18,6 +18,10 @@ namespace _10_3
         public ShipbuildingCompany(string name, string address, string worktime, int barges_total, int barges_done, int rbarges_total, int rbarges_done)
             : base(name, address, worktime, barges_total + rbarges_total, barges_done + rbarges_done)
         {
+            this.barges_total = barges_total;
+            this.barges_done = barges_done;
+            river_barges_total = rbarges_total;
+            river_barges_done = rbarges_done;
         }
 
         public int GetBargesTotal() { return barges_total; }

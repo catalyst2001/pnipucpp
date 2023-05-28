@@ -19,6 +19,6 @@ namespace lab10
             worktime = _worktime;
         }
 
-        public string GetFullInfo() { return $"{name}, {address}, {worktime}"; }
+        public string GetFullInfo() { return $"{name}, {address}, {worktime} --"; }
     }
 }

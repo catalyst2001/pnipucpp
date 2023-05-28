@@ -1,6 +1,35 @@
-﻿  main.cpp
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(646): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(946): warning C4477: "sscanf": в строке форматирования "%f" требуется аргумент типа "float *", но вариативный аргумент "4" имеет тип "double"
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(946): warning C4477: "sscanf": в строке форматирования "%f" требуется аргумент типа "float *", но вариативный аргумент "5" имеет тип "double"
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(946): warning C4477: "sscanf": в строке форматирования "%f" требуется аргумент типа "float *", но вариативный аргумент "6" имеет тип "double"
-  lab2cg.vcxproj -> D:\GITHUB\pnipucpp\Debug\lab2cg_k.exe
+﻿libcpmtd.lib(locale.obj) : error LNK2001: неразрешенный внешний символ "__CrtDbgReport"
+libcpmtd.lib(wlocale.obj) : error LNK2001: неразрешенный внешний символ "__CrtDbgReport"
+libcpmtd.lib(xlocale.obj) : error LNK2001: неразрешенный внешний символ "__CrtDbgReport"
+main.obj : error LNK2001: неразрешенный внешний символ "__CrtDbgReport"
+model.obj : error LNK2001: неразрешенный внешний символ "__CrtDbgReport"
+libcpmtd.lib(xonce.obj) : error LNK2001: неразрешенный внешний символ "__CrtDbgReport"
+libcpmtd.lib(syserror.obj) : error LNK2001: неразрешенный внешний символ "__CrtDbgReport"
+libcpmtd.lib(xlocale.obj) : error LNK2001: неразрешенный внешний символ "__calloc_dbg"
+model.obj : error LNK2001: неразрешенный внешний символ "__calloc_dbg"
+libcpmtd.lib(_tolower.obj) : error LNK2001: неразрешенный внешний символ "__calloc_dbg"
+libcpmtd.lib(locale.obj) : error LNK2001: неразрешенный внешний символ "__calloc_dbg"
+libcpmtd.lib(wlocale.obj) : error LNK2001: неразрешенный внешний символ "__calloc_dbg"
+libcpmtd.lib(wlocale.obj) : error LNK2001: неразрешенный внешний символ "__free_dbg"
+libcpmtd.lib(xlocale.obj) : error LNK2001: неразрешенный внешний символ "__free_dbg"
+libcpmtd.lib(xwcsxfrm.obj) : error LNK2001: неразрешенный внешний символ "__free_dbg"
+libcpmtd.lib(StlCompareStringA.obj) : error LNK2001: неразрешенный внешний символ "__free_dbg"
+model.obj : error LNK2001: неразрешенный внешний символ "__free_dbg"
+libcpmtd.lib(locale0.obj) : error LNK2001: неразрешенный внешний символ "__free_dbg"
+libcpmtd.lib(StlLCMapStringA.obj) : error LNK2001: неразрешенный внешний символ "__free_dbg"
+libcpmtd.lib(locale.obj) : error LNK2001: неразрешенный внешний символ "__free_dbg"
+libcpmtd.lib(wlocale.obj) : error LNK2001: неразрешенный внешний символ "__malloc_dbg"
+libcpmtd.lib(xlocale.obj) : error LNK2001: неразрешенный внешний символ "__malloc_dbg"
+libcpmtd.lib(xwcsxfrm.obj) : error LNK2001: неразрешенный внешний символ "__malloc_dbg"
+libcpmtd.lib(StlCompareStringA.obj) : error LNK2001: неразрешенный внешний символ "__malloc_dbg"
+model.obj : error LNK2001: неразрешенный внешний символ "__malloc_dbg"
+libcpmtd.lib(locale0.obj) : error LNK2001: неразрешенный внешний символ "__malloc_dbg"
+libcpmtd.lib(StlLCMapStringA.obj) : error LNK2001: неразрешенный внешний символ "__malloc_dbg"
+libcpmtd.lib(locale.obj) : error LNK2001: неразрешенный внешний символ "__malloc_dbg"
+libcpmtd.lib(_tolower.obj) : error LNK2019: ссылка на неразрешенный внешний символ __wcsdup_dbg в функции __Getctype
+libcpmtd.lib(xstrcoll.obj) : error LNK2001: неразрешенный внешний символ "__wcsdup_dbg"
+libcpmtd.lib(StlLCMapStringA.obj) : error LNK2019: ссылка на неразрешенный внешний символ __CrtDbgReportW в функции __freea_crt
+libcpmtd.lib(xmbtowc.obj) : error LNK2001: неразрешенный внешний символ "__CrtDbgReportW"
+libcpmtd.lib(StlCompareStringA.obj) : error LNK2001: неразрешенный внешний символ "__CrtDbgReportW"
+libcpmtd.lib(locale.obj) : error LNK2019: ссылка на неразрешенный внешний символ __realloc_dbg в функции "private: static void __cdecl std::locale::_Locimp::_Locimp_Addfac(class std::locale::_Locimp *,class std::locale::facet *,unsigned int)" (?_Locimp_Addfac@_Locimp@locale@std@@CAXPAV123@PAVfacet@23@I@Z)
+D:\GITHUB\pnipucpp\Debug\lab2cg_k.exe : fatal error LNK1120: неразрешенных внешних элементов: 7

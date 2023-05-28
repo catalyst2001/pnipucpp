@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
@@ -10,10 +11,10 @@ namespace lab4
 {
     public class Program
     {
-        static public bool RemoveFromArray(ref int[] array, int from_idx, int count)
+        static public void RemoveFromArray(ref int[] array, int from_idx, int count)
         {
             if ((from_idx + count) >= array.Length)
-                return false;
+                throw new IndexOutOfRangeException();
 
             int j = 0;
             int[] copy = new int[array.Length - count];
@@ -23,14 +24,13 @@ namespace lab4
             for (int i = from_idx + count; i < array.Length; i++)
                 copy[j++] = array[i];
 
-            array = copy;
-            return true;
+            array = copy;      
         }
 
-        static public bool InsertElemFrom(ref int[] array, int idx, int elem)
+        static public void InsertElemFrom(ref int[] array, int idx, int elem)
         {
             if (idx >= array.Length)
-                return false;
+                throw new IndexOutOfRangeException();
 
             int i, j = 0;
             int[] copy = new int[array.Length + 1];
@@ -42,7 +42,6 @@ namespace lab4
 
             copy[idx] = elem;
             array = copy;
-            return true;
         }
 
         static void PrintArray(int[] array)
@@ -156,9 +155,15 @@ namespace lab4
                         count = Convert.ToInt32(Console.ReadLine());
 
                         PrintArray(array);
-                        if (!RemoveFromArray(ref array, from_idx, count))
+                        try
+                        {
+                            RemoveFromArray(ref array, from_idx, count);
+                        }
+                        catch(Exception e)
+                        {
                             Console.WriteLine("Index or Index+count out of bounds");
-
+                            Console.WriteLine(e.ToString());
+                        }
                         PrintArray(array);
                         break;
 
@@ -169,8 +174,15 @@ namespace lab4
                         int val = Convert.ToInt32(Console.ReadLine());
 
                         PrintArray(array);
-                        if (!InsertElemFrom(ref array, from_idx, val))
+                       try
+                        {
+                            InsertElemFrom(ref array, from_idx, val);
+                        }
+                        catch(Exception e)
+                        {
                             Console.WriteLine("Index out of bounds");
+                            Console.WriteLine(e.ToString());
+                        }
 
                         PrintArray(array);
                         break;

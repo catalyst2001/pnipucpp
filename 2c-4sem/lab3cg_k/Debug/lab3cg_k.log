@@ -1,9 +1,7 @@
-﻿  builtin_models.cpp
-  lab3cg_k.cpp
+﻿  lab3cg_k.cpp
 d:\github\pnipucpp\2c-4sem\cgcommon\euler_camera.h(117): warning C4244: инициализация: преобразование "LONG" в "float", возможна потеря данных
 d:\github\pnipucpp\2c-4sem\cgcommon\euler_camera.h(118): warning C4244: инициализация: преобразование "LONG" в "float", возможна потеря данных
 d:\github\pnipucpp\2c-4sem\cgcommon\euler_camera.h(139): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
 d:\github\pnipucpp\2c-4sem\cgcommon\euler_camera.h(140): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
 d:\github\pnipucpp\2c-4sem\cgcommon\euler_camera.h(141): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
-  Создание кода...
   lab3cg_k.vcxproj -> D:\GITHUB\pnipucpp\Debug\lab3cg_k.exe

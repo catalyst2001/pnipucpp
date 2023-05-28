@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage line-rate="0.336585365853659" branch-rate="0.397435897435897" lines-covered="69" lines-valid="205" branches-covered="31" branches-valid="78" complexity="81" version="0" timestamp="1685016809">
+<coverage line-rate="0.336585365853659" branch-rate="0.397435897435897" lines-covered="69" lines-valid="205" branches-covered="31" branches-valid="78" complexity="81" version="0" timestamp="1685149652">
   <sources>
     <source>D:\GITHUB\pnipucpp\2c-4sem\csharp\</source>
     <source>C:\</source>
@@ -176,8 +176,8 @@
               <lines>
                 <line number="166" hits="1" branch="false" />
                 <line number="167" hits="20" branch="true" condition-coverage="50% (1/2)" />
-                <line number="168" hits="244" branch="true" condition-coverage="100% (2/2)" />
-                <line number="169" hits="113" branch="true" condition-coverage="100% (2/2)" />
+                <line number="168" hits="240" branch="true" condition-coverage="100% (2/2)" />
+                <line number="169" hits="111" branch="true" condition-coverage="100% (2/2)" />
                 <line number="170" hits="1" branch="false" />
                 <line number="172" hits="0" branch="false" />
                 <line number="173" hits="1" branch="false" />
@@ -363,8 +363,8 @@
             <line number="163" hits="0" branch="false" />
             <line number="166" hits="1" branch="false" />
             <line number="167" hits="20" branch="true" condition-coverage="50% (1/2)" />
-            <line number="168" hits="244" branch="true" condition-coverage="100% (2/2)" />
-            <line number="169" hits="113" branch="true" condition-coverage="100% (2/2)" />
+            <line number="168" hits="240" branch="true" condition-coverage="100% (2/2)" />
+            <line number="169" hits="111" branch="true" condition-coverage="100% (2/2)" />
             <line number="170" hits="1" branch="false" />
             <line number="172" hits="0" branch="false" />
             <line number="173" hits="1" branch="false" />
@@ -468,10 +468,10 @@
                 <line number="34" hits="1" branch="false" />
                 <line number="35" hits="22" branch="true" condition-coverage="100% (2/2)" />
                 <line number="36" hits="10" branch="false" />
-                <line number="37" hits="246" branch="true" condition-coverage="100% (2/2)" />
-                <line number="38" hits="113" branch="false" />
-                <line number="39" hits="113" branch="false" />
-                <line number="40" hits="113" branch="false" />
+                <line number="37" hits="242" branch="true" condition-coverage="100% (2/2)" />
+                <line number="38" hits="111" branch="false" />
+                <line number="39" hits="111" branch="false" />
+                <line number="40" hits="111" branch="false" />
                 <line number="41" hits="10" branch="false" />
                 <line number="43" hits="1" branch="false" />
                 <line number="44" hits="1" branch="false" />
@@ -501,10 +501,10 @@
             <line number="34" hits="1" branch="false" />
             <line number="35" hits="22" branch="true" condition-coverage="100% (2/2)" />
             <line number="36" hits="10" branch="false" />
-            <line number="37" hits="246" branch="true" condition-coverage="100% (2/2)" />
-            <line number="38" hits="113" branch="false" />
-            <line number="39" hits="113" branch="false" />
-            <line number="40" hits="113" branch="false" />
+            <line number="37" hits="242" branch="true" condition-coverage="100% (2/2)" />
+            <line number="38" hits="111" branch="false" />
+            <line number="39" hits="111" branch="false" />
+            <line number="40" hits="111" branch="false" />
             <line number="41" hits="10" branch="false" />
             <line number="43" hits="1" branch="false" />
             <line number="44" hits="1" branch="false" />

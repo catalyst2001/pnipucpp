@@ -1,23 +1,85 @@
 ﻿#include <Windows.h>
 #include "../cgcommon/glwnd.h"
-#include "../cgcommon/builtin_models.h"
 #include "../cgcommon/euler_camera.h"
+#include "glm/gtc/type_ptr.hpp"
+
+glm::vec3 houseVertices[] = {
+	glm::vec3(-0.5f, -0.5f, 0.5f),
+	glm::vec3(0.5f, -0.5f, 0.5f),
+	glm::vec3(0.5f,  0.5f, 0.5f),
+	glm::vec3(-0.5f,  0.5f, 0.5f),
+
+	glm::vec3(-0.5f, -0.5f, -0.5f),
+	glm::vec3(-0.5f,  0.5f, -0.5f),
+	glm::vec3(0.5f,  0.5f, -0.5f),
+	glm::vec3(0.5f, -0.5f, -0.5f),
+
+	glm::vec3(0.5f, -0.5f, 0.5f),
+	glm::vec3(0.5f, -0.5f, -0.5f),
+	glm::vec3(0.5f,  0.5f, -0.5f),
+	glm::vec3(0.5f,  0.5f, 0.5f),
+
+	glm::vec3(-0.5f, -0.5f, 0.5f),
+	glm::vec3(-0.5f,  0.5f, 0.5f),
+	glm::vec3(-0.5f,  0.5f, -0.5f),
+	glm::vec3(-0.5f, -0.5f, -0.5f),
+
+	glm::vec3(-0.5f,  0.5f, 0.5f),
+	glm::vec3(0.5f,  0.5f, 0.5f),
+	glm::vec3(0.0f,  0.8f, 0.0f),
+
+	glm::vec3(-0.5f, -0.5f, 0.5f),
+	glm::vec3(0.5f, -0.5f, 0.5f),
+	glm::vec3(0.5f, -0.5f, -0.5f),
+	glm::vec3(-0.5f, -0.5f, -0.5f),
+};
+
+int houseIndices[] = {
+	0, 1, 2,
+	2, 3, 0,
+
+	4, 5, 6,
+	6, 7, 4,
+
+	8, 9, 10,
+	10, 11, 8,
+
+	12, 13, 14,
+	14, 15, 12,
+
+	16, 17, 18,
+
+	19, 20, 21,
+	21, 22, 19,
+};
+
+glm::vec3 projected_verts[sizeof(houseVertices) / sizeof(houseVertices[0])];
 
 INT Width, Height;
 const float sensitivity = 1.0f;
 Camera camera(true, glm::vec3(0.f, 0.f, 0.f));
-float eyes_distance = 1.f;
+float eyes_distance = 1.1f;
 
 void scale_model(float size)
 {
-	for (size_t i = 0; i < sizeof(model1_verts) / sizeof(model1_verts[0]); i++) {
-		model1_verts[i][0] *= size;
-		model1_verts[i][1] *= size;
-		model1_verts[i][2] *= size;
+	for (size_t i = 0; i < sizeof(houseVertices) / sizeof(houseVertices[0]); i++) {
+		houseVertices[i] *= size;
+		houseVertices[i] *= size;
+		houseVertices[i] *= size;
 	}
 }
 
 GLWINDOW *p_glwindow;
+
+inline glm::vec4 vec3_to_vec4(glm::vec3 &vec) { return glm::vec4(vec.x, vec.y, vec.z, 1.f); }
+inline glm::vec3 vec4_to_vec3(glm::vec4 &vec) {
+	if (vec.w != 0.f) {
+		vec.x /= vec.w;
+		vec.y /= vec.w;
+		vec.z /= vec.w;
+	}
+	return glm::vec3(vec.x, vec.y, vec.z);
+}
 
 void fn_draw()
 {
@@ -36,15 +98,45 @@ void fn_draw()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	glm::vec3 left_eye_pos = camera.Position + glm::vec3(-eyes_distance, 0.f, 0.f);
+	glm::vec3 right_normalized = glm::normalize(camera.Right);
+	glm::vec3 left_eye_pos = camera.Position + (right_normalized * -eyes_distance);
 	glm::vec3 left_eye_dir = left_eye_pos + camera.Front;
 
 	gluLookAt(left_eye_pos.x, left_eye_pos.y, left_eye_pos.z,
 		left_eye_dir.x, left_eye_dir.y, left_eye_dir.z,
 		camera.Up.x, camera.Up.y, camera.Up.z);
 
-	glVertexPointer(3, GL_FLOAT, 0, model1_verts);
-	glDrawArrays(GL_TRIANGLES, 0, sizeof(model1_verts) / sizeof(model1_verts[0]));
+	glVertexPointer(3, GL_FLOAT, 0, houseVertices);
+	glDrawElements(GL_TRIANGLES, sizeof(houseIndices) / sizeof(houseIndices[0]), GL_UNSIGNED_INT, houseIndices);
+
+	glPushMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glm::mat4x4 projection;
+	glm::mat4x4 modelview;
+	glGetFloatv(GL_PROJECTION_MATRIX, glm::value_ptr(projection));
+	glGetFloatv(GL_MODELVIEW_MATRIX, glm::value_ptr(modelview));
+	float half_height = p_glwindow->height / 2.f;
+	for (size_t i = 0; i < sizeof(houseIndices) / sizeof(houseIndices[0]); i++) {
+		glm::vec4 prep_vert = vec3_to_vec4(houseVertices[houseIndices[i]]);
+		glm::vec4 projected_vert = modelview * prep_vert * projection;
+		projected_verts[houseIndices[i]] = vec4_to_vec3(projected_vert);
+
+		projected_verts[houseIndices[i]].x *= (float)half_width;
+		projected_verts[houseIndices[i]].y *= (float)half_height;
+		projected_verts[houseIndices[i]].x += (float)half_width;
+		projected_verts[houseIndices[i]].y += (float)half_height;
+	}
+
+	gluOrtho2D((double)half_width, (double)p_glwindow->width, (double)p_glwindow->height, 0.0);
+	glVertexPointer(3, GL_FLOAT, 0, projected_verts);
+	glDrawElements(GL_TRIANGLES, sizeof(houseIndices) / sizeof(houseIndices[0]), GL_UNSIGNED_INT, houseIndices);
+
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
 
 	// RIGHT EYE
 	glViewport(half_width, 0, half_width, p_glwindow->height);
@@ -54,15 +146,15 @@ void fn_draw()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glm::vec3 right_eye_pos = camera.Position + glm::vec3(eyes_distance, 0.f, 0.f);
+	glm::vec3 right_eye_pos = camera.Position + (right_normalized * eyes_distance);
 	glm::vec3 right_eye_dir = right_eye_pos + camera.Front;
 
 	gluLookAt(right_eye_pos.x, right_eye_pos.y, right_eye_pos.z,
 		right_eye_dir.x, right_eye_dir.y, right_eye_dir.z,
 		camera.Up.x, camera.Up.y, camera.Up.z);
 
-	glVertexPointer(3, GL_FLOAT, 0, model1_verts);
-	glDrawArrays(GL_TRIANGLES, 0, sizeof(model1_verts) / sizeof(model1_verts[0]));
+	//glVertexPointer(3, GL_FLOAT, 0, houseVertices);
+	//glDrawElements(GL_TRIANGLES, sizeof(houseIndices) / sizeof(houseIndices[0]), GL_UNSIGNED_INT, houseIndices);
 }
 
 void fn_window_resize(HWND hWnd, int width, int height)
@@ -111,7 +203,7 @@ void fn_windowcreate(HWND hWnd)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	scale_model(20.f);
+	scale_model(2.f);
 	p_glwindow = GetStruct();
 
 	glClearColor(1.f, 1.f, 1.f, 1.f);

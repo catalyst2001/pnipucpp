@@ -48,6 +48,7 @@ namespace lab7
             Assert.IsTrue(triangle.a == 2.0 && triangle.b == 2.0 && triangle.c == 2.0);
         }
 
+        [TestMethod]
         public void Triangle_OperatorDouble()
         {
             Triangle triangle = new Triangle();
@@ -55,6 +56,7 @@ namespace lab7
             Assert.IsTrue(Math.Round((double)triangle, 6) == 3.897114);
         }
 
+        [TestMethod]
         public void Triangle_OperatorBool()
         {
             Triangle triangle = new Triangle();
@@ -62,6 +64,7 @@ namespace lab7
             Assert.IsTrue(triangle.IsValid());
         }
 
+        [TestMethod]
         public void MyCollection_Test()
         {
             try
@@ -73,6 +76,14 @@ namespace lab7
             {
                 Assert.IsTrue((ex as ArgumentException != null));
             }
+        }
+
+        [TestMethod]
+        public void MyCollection_Length_Test()
+        {
+            Triangle[] arr = new Triangle[10];
+            MyCollection myCollection = new MyCollection(arr);
+            Assert.AreEqual(arr.Length, myCollection.Length);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace lab10
 {
-    internal class InsuranceCompany : Organization
+    public class InsuranceCompany : Organization
     {
         protected int clients_number;
         public InsuranceCompany(string name, string address, string worktime, int clients) : base(name, address, worktime)

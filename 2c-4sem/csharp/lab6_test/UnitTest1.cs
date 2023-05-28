@@ -62,7 +62,7 @@ namespace lab6
         [TestMethod]
         public void StrrChrs_Test()
         {
-            string str = "11!11";
+            string str = "11?11";
             Assert.AreEqual(2, Program.StrrChrs(str, "?!"));
         }
 

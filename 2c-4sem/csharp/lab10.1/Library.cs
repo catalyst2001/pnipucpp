@@ -19,7 +19,7 @@ namespace _10_3
 
         public override string GetFullInfo()
         {
-            return $"Library: {name}, {address}, {worktime}. Number of books: {number_books})";
+            return $"Library: {name}, {address}, {worktime}. Number of books: {number_books}";
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿  main.cpp
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(647): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\lab2cg\main.cpp(875): warning C4101: bonename: неиспользованная локальная переменная
-trackball.obj : fatal error LNK1000: неизвестная ошибка в 00FCDEBC; обратитесь к документации по параметрам технической поддержки
+﻿  Создание кода
+  0 of 2745 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Создание кода завершено
+  lab2cg.vcxproj -> D:\GITHUB\pnipucpp\Release\lab2cg_k.exe
