@@ -228,15 +228,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	pen_red = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
 	pen_blue = CreatePen(PS_SOLID, 1, RGB(200, 200, 200));
 
-	//float scale = 20.f;
-	//for (size_t i = 0; i < sizeof(house) / sizeof(house[0]); i++) {
-	//	house[i][0].x *= scale;
-	//	house[i][0].y *= scale;
-	//	house[i][1].x *= scale;
-	//	house[i][1].y *= scale;
-	//}
-
-
 	ShowWindow(h_wnd, SW_SHOW);
 	UpdateWindow(h_wnd);
 
@@ -278,77 +269,6 @@ inline glm::vec3 project_vertex(glm::vec3 &vert_in)
 		(vec_projected.y * half_screen_height) + half_screen_height,
 		vec_projected.z
 	);
-}
-
-inline glm::vec3 perspective_trimetric_project(glm::vec3 &in, glm::vec3 &begin, float theta, float phi, float pz)
-{
-	glm::vec4 in_col = glm::vec4(in.x, in.y, in.z, 1.f);
-
-	glm::mat4x4 mat = mat_identity;
-	theta = glm::radians(theta);
-	phi = glm::radians(phi);
-	mat = glm::rotate(mat, theta, glm::vec3(0.f, 1.f, 0.f)); //Ry
-	mat = glm::rotate(mat, theta, glm::vec3(1.f, 0.f, 0.f)); //Rx
-	mat = mat * glm::mat4x4(
-		glm::vec4(1.f, 0.f, 0.f, 0.f),
-		glm::vec4(0.f, 1.f, 0.f, 0.f),
-		glm::vec4(0.f, 0.f, -(1.f / pz), 0.f),
-		glm::vec4(0.f, 0.f, 0.f, 1.f)
-	);
-
-	glm::vec4 out = glm::translate(mat_identity, begin) * in_col * mat;
-	if (out.w != 0.f) {
-		out.x /= out.w;
-		out.y /= out.w;
-		out.z /= out.w;
-	}
-
-	float scale = 0.5;
-	float half_screen_width = rect.right / 2.f;
-	float half_screen_height = rect.bottom / 2.f;
-	return glm::vec3(
-		(out.x * half_screen_width) + half_screen_width,
-		(out.y * -half_screen_height) + half_screen_height,
-		out.z
-	);
-}
-
-glm::vec3 perspective_trimetric_project2(glm::vec3 in, glm::vec3 &begin, float _theta, float _phi, float _rho) {
-	float rez;
-	float deg2rad = atanf(1.f) / 45.f;
-
-	//углы в радианах
-	float th = _theta * deg2rad;
-	float ph = (_phi + 90) * deg2rad;
-	float costh = cosf(th);
-	float sinth = sinf(th);
-	float cosph = cosf(ph);
-	float sinph = sinf(ph);
-
-	//элементы матрицы
-	float v11 = -sinth;
-	float v12 = -cosph * costh;
-	float v13 = -sinph * costh;
-	float v21 = costh;
-	float v22 = -cosph * sinth;
-	float v23 = -sinph * sinth;
-	float v32 = sinph;
-	float v33 = -cosph;
-	float v43 = _rho;
-
-	float scale = 100.f;
-
-	//вычисление видовых координат
-	float xe = v11 * in.x + v21 * in.y;
-	float ye = v12 * in.x + v22 * in.y + v32 * in.z;
-	float ze = v13 * in.x + v23 * in.y + v33 * in.z + v43;
-
-	//вычисление экранных координат
-	float half_screen_width = rect.right / 2.f;
-	float half_screen_height = rect.bottom / 2.f;
-	float pX = 25 * _rho * xe / ze + half_screen_width - 2 * begin.y;
-	float pY = 25 * _rho * ye / ze + half_screen_height - 2 * begin.z;
-	return glm::vec3(pX, pY, 1.f);
 }
 
 bool cross_lines(glm::vec2 &dst, glm::vec2 &line1b, glm::vec2 &line1e, glm::vec2 &line2b, glm::vec2 &line2e) {
@@ -393,11 +313,10 @@ void paint_scene(HDC hdc, HWND hwnd)
 
 	glm::vec3 v0;
 	glm::vec3 v1;
-	glm::vec3 begin(0.f, 0.f, 0.f);
 	HGDIOBJ oldpen = SelectObject(hdc, pen_red);
 	for (int i = 0; i < num_lines; i++) {
-		v0 = perspective_trimetric_project2(house[i][0], begin, angles.y, angles.x, dist);
-		v1 = perspective_trimetric_project2(house[i][1], begin, angles.y, angles.x, dist);
+		v0 = project_vertex(house[i][0]);
+		v1 = project_vertex(house[i][1]);
 		projected_verts[i][0] = v0;
 		projected_verts[i][1] = v1;
 		draw_line(hdc, v0.x, v0.y, v1.x, v1.y);
@@ -471,19 +390,14 @@ void paint_scene(HDC hdc, HWND hwnd)
 	}
 
 	/* scene distortion factor */
-
 	glm::vec3 distortion_factor;
-	distortion_factor.x = glm::length(glm::vec2(projected_verts[2][1].x, projected_verts[2][1].y) - glm::vec2(projected_verts[2][0].x, projected_verts[2][0].y)) / glm::length(glm::vec2(house[2][1].x, house[2][1].y) - glm::vec2(house[2][0].x, house[2][0].y));
-	distortion_factor.y = glm::length(glm::vec2(projected_verts[16][1].x, projected_verts[16][1].y) - glm::vec2(projected_verts[16][0].x, projected_verts[16][0].y)) / glm::length(glm::vec2(house[16][1].x, house[16][1].y) - glm::vec2(house[16][0].x, house[16][0].y));
-	distortion_factor.z = glm::length(glm::vec2(projected_verts[0][1].x, projected_verts[0][1].y) - glm::vec2(projected_verts[0][0].x, projected_verts[0][0].y)) / (glm::length(glm::vec2(house[0][1].x, house[0][1].y) - glm::vec2(house[0][0].x, house[0][0].y)) + 1.f);
+	distortion_factor.x = glm::length(glm::vec2(house[2][0].x, house[2][0].y)) / glm::length(glm::vec2(projected_verts[2][0].x, projected_verts[2][0].y));
+	distortion_factor.y = glm::length(glm::vec2(house[16][0].x, house[16][0].y)) / glm::length(glm::vec2(projected_verts[16][0].x, projected_verts[16][0].y));
+	distortion_factor.z = glm::length(glm::vec2(house[0][0].x, house[0][0].y)) / glm::length(glm::vec2(projected_verts[0][0].x, projected_verts[0][0].y));
 
-	text_print(hdc, 10, 10, "vanishing points count %d", vanishing_points);
-	text_print(hdc, 10, 30, "distortion  x: %f y: %f z: %f", distortion_factor.x, distortion_factor.y, distortion_factor.z);
-	text_print(hdc, 10, 50, "scene distortion: %f", sqrtf(powf(distortion_factor.x, 2.f) + powf(distortion_factor.y, 2.f) + powf(distortion_factor.z, 2.f)));
-	
-	text_print(hdc, 10, 80, "theta %f", angles.y);
-	text_print(hdc, 10, 100, "phi %f", angles.x);
-	text_print(hdc, 10, 120, "rho %f", dist);
+	text_print(hdc, 10, 10, "vanishing points count: %d", vanishing_points);
+	text_print(hdc, 10, 30, "scene distortion factor: %f %f %f", distortion_factor.x, distortion_factor.y, distortion_factor.z);
+	text_print(hdc, 10, 50, "distance: %f", dist);
 
 	SelectObject(hdc, oldpen);
 }
@@ -519,12 +433,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEWHEEL: {
 		SHORT zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
 		if (zDelta < 0)
-			dist -= 0.5f;
-		else dist += 0.5f;
+			dist -= 0.1f;
+		else dist += 0.1f;
 
-		//view = glm::translate(mat_identity, glm::vec3(0, 0, dist));
-		//view = glm::rotate(view, glm::radians(angles.x), glm::vec3(1, 0, 0));
-		//view = glm::rotate(view, glm::radians(angles.y), glm::vec3(0, 1, 0));
+		view = glm::translate(mat_identity, glm::vec3(0, 0, dist));
+		view = glm::rotate(view, glm::radians(angles.x), glm::vec3(1, 0, 0));
+		view = glm::rotate(view, glm::radians(angles.y), glm::vec3(0, 1, 0));
 		InvalidateRect(hWnd, NULL, FALSE);
 		break;
 	}
@@ -563,9 +477,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			last_cursor = curr_cursor;
 
 			// setup matrix
-			//view = glm::translate(mat_identity, glm::vec3(0, 0, dist));
-			//view = glm::rotate(view, glm::radians(angles.x), glm::vec3(1, 0, 0));
-			//view = glm::rotate(view, glm::radians(angles.y), glm::vec3(0, 1, 0));
+			view = glm::translate(mat_identity, glm::vec3(0, 0, dist));
+			view = glm::rotate(view, glm::radians(angles.x), glm::vec3(1, 0, 0));
+			view = glm::rotate(view, glm::radians(angles.y), glm::vec3(0, 1, 0));
+
+
 			InvalidateRect(hWnd, NULL, FALSE);
 		}
 		break;
