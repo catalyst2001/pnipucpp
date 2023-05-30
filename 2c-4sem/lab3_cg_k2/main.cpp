@@ -7,7 +7,7 @@
 HINSTANCE g_instance;
 HWND h_wnd;
 
-glm::vec2 angles;
+glm::vec2 angles = glm::vec2(/*-96.f, 89.f*/);
 POINT curr_cursor, last_cursor;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
@@ -188,6 +188,19 @@ glm::mat4x4 mat_identity = glm::mat4x4(
 HPEN pen_red;
 HPEN pen_blue;
 
+void rotate_model()
+{
+	for (size_t i = 0; i < sizeof(house) / sizeof(house[0]); i++) {
+		for (size_t j = 0; j < 2; j++) {
+			glm::vec4 vec = glm::vec4(house[i][j].x, house[i][j].y, house[i][j].z, 1.f);
+			glm::mat4x4 mat = glm::rotate(mat_identity, -90.f, glm::vec3(1.f, 0.f, 0.f));
+			mat = glm::rotate(mat, 89.f, glm::vec3(0.f, 1.f, 0.f));
+			vec = mat * vec;
+			house[i][j] = glm::vec3(vec.x, vec.y, vec.z);
+		}
+	}
+}
+
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	AllocConsole();
@@ -228,14 +241,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	pen_red = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
 	pen_blue = CreatePen(PS_SOLID, 1, RGB(200, 200, 200));
 
-	//float scale = 20.f;
-	//for (size_t i = 0; i < sizeof(house) / sizeof(house[0]); i++) {
-	//	house[i][0].x *= scale;
-	//	house[i][0].y *= scale;
-	//	house[i][1].x *= scale;
-	//	house[i][1].y *= scale;
-	//}
-
+	//rotate_model();
 
 	ShowWindow(h_wnd, SW_SHOW);
 	UpdateWindow(h_wnd);
@@ -283,12 +289,11 @@ inline glm::vec3 project_vertex(glm::vec3 &vert_in)
 inline glm::vec3 perspective_trimetric_project(glm::vec3 &in, glm::vec3 &begin, float theta, float phi, float pz)
 {
 	glm::vec4 in_col = glm::vec4(in.x, in.y, in.z, 1.f);
-
 	glm::mat4x4 mat = mat_identity;
 	theta = glm::radians(theta);
 	phi = glm::radians(phi);
 	mat = glm::rotate(mat, theta, glm::vec3(0.f, 1.f, 0.f)); //Ry
-	mat = glm::rotate(mat, theta, glm::vec3(1.f, 0.f, 0.f)); //Rx
+	mat = glm::rotate(mat, phi, glm::vec3(1.f, 0.f, 0.f)); //Rx
 	mat = mat * glm::mat4x4(
 		glm::vec4(1.f, 0.f, 0.f, 0.f),
 		glm::vec4(0.f, 1.f, 0.f, 0.f),
@@ -317,7 +322,6 @@ glm::vec3 perspective_trimetric_project2(glm::vec3 in, glm::vec3 &begin, float _
 	float rez;
 	float deg2rad = atanf(1.f) / 45.f;
 
-	//углы в радианах
 	float th = _theta * deg2rad;
 	float ph = (_phi + 90) * deg2rad;
 	float costh = cosf(th);
@@ -325,7 +329,6 @@ glm::vec3 perspective_trimetric_project2(glm::vec3 in, glm::vec3 &begin, float _
 	float cosph = cosf(ph);
 	float sinph = sinf(ph);
 
-	//элементы матрицы
 	float v11 = -sinth;
 	float v12 = -cosph * costh;
 	float v13 = -sinph * costh;
@@ -336,18 +339,14 @@ glm::vec3 perspective_trimetric_project2(glm::vec3 in, glm::vec3 &begin, float _
 	float v33 = -cosph;
 	float v43 = _rho;
 
-	float scale = 100.f;
-
-	//вычисление видовых координат
 	float xe = v11 * in.x + v21 * in.y;
 	float ye = v12 * in.x + v22 * in.y + v32 * in.z;
 	float ze = v13 * in.x + v23 * in.y + v33 * in.z + v43;
 
-	//вычисление экранных координат
 	float half_screen_width = rect.right / 2.f;
 	float half_screen_height = rect.bottom / 2.f;
-	float pX = 25 * _rho * xe / ze + half_screen_width - 2 * begin.y;
-	float pY = 25 * _rho * ye / ze + half_screen_height - 2 * begin.z;
+	float pX = 45 * _rho * xe / ze + half_screen_width - 2 * begin.y;
+	float pY = 45 * _rho * ye / ze + half_screen_height - 2 * begin.z;
 	return glm::vec3(pX, pY, 1.f);
 }
 
@@ -387,6 +386,8 @@ void text_print(HDC hdc, int x, int y, const char *p_format, ...)
 	TextOutA(hdc, x, y, buffer, strlen(buffer));
 }
 
+//#define MATRIX_PRINT
+
 void paint_scene(HDC hdc, HWND hwnd)
 {
 	clear_color_buffer(hdc);
@@ -395,14 +396,43 @@ void paint_scene(HDC hdc, HWND hwnd)
 	glm::vec3 v1;
 	glm::vec3 begin(0.f, 0.f, 0.f);
 	HGDIOBJ oldpen = SelectObject(hdc, pen_red);
+
+#ifdef MATRIX_PRINT
+	printf("--- src ---\n\\begin{bmatrix}\n");
+#endif
+
 	for (int i = 0; i < num_lines; i++) {
 		v0 = perspective_trimetric_project2(house[i][0], begin, angles.y, angles.x, dist);
 		v1 = perspective_trimetric_project2(house[i][1], begin, angles.y, angles.x, dist);
+
+#ifdef MATRIX_PRINT
+		printf(
+			"%.1f && %.1f && %.1f && 1.0\\\\\n"
+			"%.1f && %.1f && %.1f && 1.0\\\\\n",
+			house[i][0].x, house[i][0].y, house[i][0].z,
+			house[i][1].x, house[i][1].y, house[i][1].z
+		);
+#endif
+
 		projected_verts[i][0] = v0;
 		projected_verts[i][1] = v1;
 		draw_line(hdc, v0.x, v0.y, v1.x, v1.y);
 	}
+#ifdef MATRIX_PRINT
+	printf("\\end{bmatrix}\n");
 
+
+	printf(" --- transformated ---\n\\begin{bmatrix}\n");
+	for (size_t i = 0; i < num_lines; i++) {
+		printf(
+			"%.2f && %.2f && %.2f\\\\\n"
+			"%.2f && %.2f && %.2f\\\\\n",
+			projected_verts[i][0].x, projected_verts[i][0].y, projected_verts[i][0].z,
+			projected_verts[i][1].x, projected_verts[i][1].y, projected_verts[i][1].z
+		);
+	}
+	printf("\\end{bmatrix}\n");
+#endif
 	SelectObject(hdc, pen_blue);
 
 
@@ -483,7 +513,7 @@ void paint_scene(HDC hdc, HWND hwnd)
 	
 	text_print(hdc, 10, 80, "theta %f", angles.y);
 	text_print(hdc, 10, 100, "phi %f", angles.x);
-	text_print(hdc, 10, 120, "rho %f", dist);
+	text_print(hdc, 10, 120, "z %f", dist);
 
 	SelectObject(hdc, oldpen);
 }
@@ -508,11 +538,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
 	case WM_SIZE:
-		GetClientRect(hWnd, &rect);
-		if (rect.bottom == 0)
-			rect.bottom = 1;
+		//GetClientRect(hWnd, &rect);
+		//if (rect.bottom == 0)
+		//	rect.bottom = 1;
 
-		projection = glm::perspective(45.f, rect.right / (float)rect.bottom, 0.0001f, 1000.f);
+		//projection = glm::perspective(45.f, rect.right / (float)rect.bottom, 0.0001f, 1000.f);
 		InvalidateRect(hWnd, NULL, FALSE);
 		break;
 
