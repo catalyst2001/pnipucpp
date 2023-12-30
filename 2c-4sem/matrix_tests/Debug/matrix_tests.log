@@ -1,0 +1,12 @@
+﻿  cmathlib.c
+d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(228): warning C4029: объявленный список формальных параметров отличается от объявления
+d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(73): warning C4716: vec2_dot: должна возвращать значение
+d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(107): warning C4716: vec3_normalable: должна возвращать значение
+d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(123): warning C4716: vec3_length: должна возвращать значение
+d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(119): warning C4716: vec3_lengthsq: должна возвращать значение
+d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(131): warning C4716: vec3_dot: должна возвращать значение
+d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(163): warning C4716: vec4_normalable: должна возвращать значение
+d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(179): warning C4716: vec4_length: должна возвращать значение
+d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(175): warning C4716: vec4_lengthsq: должна возвращать значение
+d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(187): warning C4716: vec4_dot: должна возвращать значение
+  matrix_tests.vcxproj -> D:\GITHUB\pnipucpp\Debug\matrix_tests.exe
