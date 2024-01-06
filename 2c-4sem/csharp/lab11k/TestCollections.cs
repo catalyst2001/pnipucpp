@@ -83,9 +83,10 @@ namespace lab11k
             collection1.Remove(nodeToRemove); //remove node
 
             /* remove from list */
-            Organization empty = new Organization(); //create new object for get object name
-            if(!collection2.Remove($"{empty.ToString()}_{elemidx}"))
-            {
+            Factory empty = new Factory(); //create new object for get object name
+            string? keystr = $"{empty.ToString()}_{elemidx}";
+            Console.WriteLine("Delete element by key {0}", keystr);
+            if (!collection2.Remove(keystr)) {
                 Console.WriteLine("Failed to remove key-value with index {0} from {1}", elemidx, collection2.ToString());
                 return false; // index out of bounds
             }
@@ -113,6 +114,13 @@ namespace lab11k
                 string worktime = $"{hour}:{mins}-{endhour}:{endmins}";
                 CollectionsAddElement(i, name, street, worktime, planmax, plancur);
             }
+        }
+
+        private void PrintCollections()
+        {
+            /* enum collection keys */
+            foreach (string? key in collection2.Keys)
+                Console.WriteLine("key '{0}'", key);
         }
 
         public void FindTests()
@@ -154,11 +162,8 @@ namespace lab11k
 
             Console.Write("\n\n");
 
-            /* enum collection keys */
-            foreach(string ?key : )
-
-
             while (true) {
+                PrintCollections();
                 elemidx = (int)ReadLineWithDescription(FORMAT_TYPE.FORMAT_INT32, "Type element index from delete from collections");
                 if(!CollectionsRemoveElement(elemidx)) {
                     Console.WriteLine("Failed to delete element with index {0} from collections", elemidx);

@@ -1,13 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gZ9U6aR8odEGaUXdI4scRUNcWgH2FHyTUHdsTenljWErOJmLQ1iOgzaTZf9VLfkz2tys8e0KiQqoT/dhD9NQ1w==",
+  "dgSpecHash": "cn4DZ2pLgBX4yz/CwLufpFsaode0jgkSYIWYNngr241DOlkRS3RWlhJ9mnMj66XrUK2gIrcsDm3vEFUX1g4XyQ==",
   "success": true,
   "projectFilePath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab6\\lab6.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\HP\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.25\\microsoft.windowsdesktop.app.ref.6.0.25.nupkg.sha512",
-    "C:\\Users\\HP\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.25\\microsoft.netcore.app.ref.6.0.25.nupkg.sha512",
-    "C:\\Users\\HP\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.25\\microsoft.aspnetcore.app.ref.6.0.25.nupkg.sha512",
-    "C:\\Users\\HP\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.25\\microsoft.netcore.app.host.win-x64.6.0.25.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }

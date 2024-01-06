@@ -10,8 +10,8 @@ namespace lab11k
     {
         static void Main(string[] args)
         {
-            new CollectionsLab1().Start(); //Stack<T> 1
-            new CollectionsLab2().Start(); //List<T> 2
+            //new CollectionsLab1().Start(); //Stack<T> 1
+            //new CollectionsLab2().Start(); //List<T> 2
             new TestCollections(5).FindTests(); // 3
         }
     }
