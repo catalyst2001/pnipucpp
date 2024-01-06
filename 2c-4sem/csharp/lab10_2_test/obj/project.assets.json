@@ -6772,19 +6772,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\asrock\\.nuget\\packages\\": {}
+    "C:\\Users\\HP\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10_2_test\\lab10_2_test.csproj",
+      "projectUniqueName": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10_2_test\\lab10_2_test.csproj",
       "projectName": "lab10_2_test",
-      "projectPath": "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10_2_test\\lab10_2_test.csproj",
-      "packagesPath": "C:\\Users\\asrock\\.nuget\\packages\\",
-      "outputPath": "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10_2_test\\obj\\",
+      "projectPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10_2_test\\lab10_2_test.csproj",
+      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+      "outputPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10_2_test\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\asrock\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -6843,7 +6843,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }

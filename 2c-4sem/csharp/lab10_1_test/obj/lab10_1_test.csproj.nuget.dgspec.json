@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10_1_test\\lab10_1_test.csproj": {}
+    "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10_1_test\\lab10_1_test.csproj": {}
   },
   "projects": {
-    "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10.1\\lab10.1.csproj": {
+    "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10.1\\lab10.1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10.1\\lab10.1.csproj",
+        "projectUniqueName": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10.1\\lab10.1.csproj",
         "projectName": "lab10.1",
-        "projectPath": "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10.1\\lab10.1.csproj",
-        "packagesPath": "C:\\Users\\asrock\\.nuget\\packages\\",
-        "outputPath": "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10.1\\obj\\",
+        "projectPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10.1\\lab10.1.csproj",
+        "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+        "outputPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10.1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\asrock\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -50,26 +50,44 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.25, 6.0.25]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[6.0.25, 6.0.25]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.25, 6.0.25]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[6.0.25, 6.0.25]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10_1_test\\lab10_1_test.csproj": {
+    "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10_1_test\\lab10_1_test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10_1_test\\lab10_1_test.csproj",
+        "projectUniqueName": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10_1_test\\lab10_1_test.csproj",
         "projectName": "lab10_1_test",
-        "projectPath": "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10_1_test\\lab10_1_test.csproj",
-        "packagesPath": "C:\\Users\\asrock\\.nuget\\packages\\",
-        "outputPath": "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10_1_test\\obj\\",
+        "projectPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10_1_test\\lab10_1_test.csproj",
+        "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+        "outputPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10_1_test\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\asrock\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -83,8 +101,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10.1\\lab10.1.csproj": {
-                "projectPath": "D:\\GITHUB\\pnipucpp\\2c-4sem\\csharp\\lab10.1\\lab10.1.csproj"
+              "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10.1\\lab10.1.csproj": {
+                "projectPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab10.1\\lab10.1.csproj"
               }
             }
           }
@@ -132,7 +150,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }
