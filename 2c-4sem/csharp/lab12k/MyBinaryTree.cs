@@ -14,26 +14,28 @@ namespace lab12k
         public MyBinaryTreeNode<_Ty>? right;
         public _Ty data;
 
-        public MyBinaryTreeNode() {
+        public MyBinaryTreeNode(_Ty Data) {
+            data = Data;
             root = null;
             left = null;
             right = null;
         }
 
-        public MyBinaryTreeNode(MyBinaryTreeNode<_Ty> rootNode) {
+        public MyBinaryTreeNode(_Ty Data, MyBinaryTreeNode<_Ty> rootNode) {
+            data = Data;
             root = rootNode;
             left = null;
             right = null;
         }
 
-        public MyBinaryTreeNode<_Ty>? AddLeftNode()
+        public MyBinaryTreeNode<_Ty>? AddLeftNode(_Ty Data)
         {
-            return left = new MyBinaryTreeNode<_Ty>(this);
+            return left = new MyBinaryTreeNode<_Ty>(Data, this);
         }
 
-        public MyBinaryTreeNode<_Ty>? AddRightNode()
+        public MyBinaryTreeNode<_Ty>? AddRightNode(_Ty Data)
         {
-            return right = new MyBinaryTreeNode<_Ty>(this);
+            return right = new MyBinaryTreeNode<_Ty>(Data, this);
         }
     }
 }

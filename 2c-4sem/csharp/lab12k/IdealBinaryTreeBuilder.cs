@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace lab12k
 {
@@ -31,7 +33,7 @@ namespace lab12k
 
         public IdealBinaryTreeBuilder(ITreeBuilderNodeCreator<_Ty> nodeCreator, int levels) {
             creator = nodeCreator;
-            root = new MyBinaryTreeNode<_Ty>();
+            root = creator.CreateNode(root, levels);
             BuildTreeBranchRecursive(root, levels, ref root.right);
             BuildTreeBranchRecursive(root, levels, ref root.left);
         }

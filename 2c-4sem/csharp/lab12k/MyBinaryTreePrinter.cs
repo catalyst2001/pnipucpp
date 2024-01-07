@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace lab12k
 {
@@ -19,7 +21,7 @@ namespace lab12k
 
         private void PrintTreeBranch(int level, MyBinaryTreeNode<_Ty>? node)
         {
-            if (null == node || level == maxLevel)
+            if (null == node /*|| level > maxLevel*/)
                 return;
 
             int spacesCount = level * padWidth;
@@ -38,8 +40,9 @@ namespace lab12k
             printer = nodePrinter;
             padWidth = padwith;
             maxLevel = numlevels;
-            PrintTreeBranch(0, rootnode.left);
-            PrintTreeBranch(0, rootnode.right);
+            Console.WriteLine(printer.Print(rootnode, 0));
+            PrintTreeBranch(1, rootnode.left);
+            PrintTreeBranch(1, rootnode.right);
         }
     }
 }
