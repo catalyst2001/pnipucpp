@@ -1,71 +1,48 @@
 {
   "version": 3,
   "targets": {
-    "net6.0": {}
+    ".NETFramework,Version=v6.0": {},
+    ".NETFramework,Version=v6.0/win7-x86": {}
   },
   "libraries": {},
   "projectFileDependencyGroups": {
-    "net6.0": []
+    ".NETFramework,Version=v6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\okay\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\HP\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\STUDY\\ПНИПУ\\4 семестр\\ооп\\folder\\лабы - игорь\\Lab1\\Lab10\\Lab10_1.csproj",
+      "projectUniqueName": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\Lab10i\\Lab10_1.csproj",
       "projectName": "Lab10_1",
-      "projectPath": "D:\\STUDY\\ПНИПУ\\4 семестр\\ооп\\folder\\лабы - игорь\\Lab1\\Lab10\\Lab10_1.csproj",
-      "packagesPath": "C:\\Users\\okay\\.nuget\\packages\\",
-      "outputPath": "D:\\STUDY\\ПНИПУ\\4 семестр\\ооп\\folder\\лабы - игорь\\Lab1\\Lab10\\obj\\",
+      "projectPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\Lab10i\\Lab10_1.csproj",
+      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+      "outputPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\Lab10i\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\okay\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net6.0"
+        "net60"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net6.0": {
-          "targetAlias": "net6.0",
+        "net60": {
           "projectReferences": {}
         }
-      },
-      "warningProperties": {
-        "warnAsError": [
-          "NU1605"
-        ]
       }
     },
     "frameworks": {
-      "net6.0": {
-        "targetAlias": "net6.0",
-        "imports": [
-          "net461",
-          "net462",
-          "net47",
-          "net471",
-          "net472",
-          "net48",
-          "net481"
-        ],
-        "assetTargetFallback": true,
-        "warn": true,
-        "frameworkReferences": {
-          "Microsoft.NETCore.App": {
-            "privateAssets": "all"
-          }
-        },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.103\\RuntimeIdentifierGraph.json"
+      "net60": {}
+    },
+    "runtimes": {
+      "win7-x86": {
+        "#import": []
       }
     }
   }

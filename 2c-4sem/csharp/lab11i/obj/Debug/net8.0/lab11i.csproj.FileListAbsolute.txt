@@ -1,0 +1,15 @@
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\obj\Debug\net8.0\lab11i.GeneratedMSBuildEditorConfig.editorconfig
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\obj\Debug\net8.0\lab11i.AssemblyInfoInputs.cache
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\obj\Debug\net8.0\lab11i.AssemblyInfo.cs
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\obj\Debug\net8.0\lab11i.csproj.CoreCompileInputs.cache
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\obj\Debug\net8.0\lab11i.sourcelink.json
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\bin\Debug\net8.0\lab11i.exe
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\bin\Debug\net8.0\lab11i.deps.json
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\bin\Debug\net8.0\lab11i.runtimeconfig.json
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\bin\Debug\net8.0\lab11i.dll
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\bin\Debug\net8.0\lab11i.pdb
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\obj\Debug\net8.0\lab11i.dll
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\obj\Debug\net8.0\refint\lab11i.dll
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\obj\Debug\net8.0\lab11i.pdb
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\obj\Debug\net8.0\lab11i.genruntimeconfig.cache
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab11i\obj\Debug\net8.0\ref\lab11i.dll

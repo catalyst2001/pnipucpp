@@ -1901,16 +1901,6 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlDocument.dll": {}
         }
-      },
-      "Lab10_1/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v6.0",
-        "compile": {
-          "bin/placeholder/Lab10_1.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Lab10_1.dll": {}
-        }
       }
     }
   },
@@ -6706,16 +6696,11 @@
         "system.xml.xmldocument.4.3.0.nupkg.sha512",
         "system.xml.xmldocument.nuspec"
       ]
-    },
-    "Lab10_1/1.0.0": {
-      "type": "project",
-      "path": "../Lab10/Lab10_1.csproj",
-      "msbuildProject": "../Lab10/Lab10_1.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "Lab10_1 >= 1.0.0",
+      "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\Lab10\\Lab10_1.csproj",
       "MSTest.TestAdapter >= 2.2.10",
       "MSTest.TestFramework >= 2.2.10",
       "Microsoft.NET.Test.Sdk >= 17.3.2",
@@ -6723,23 +6708,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\okay\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\HP\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\STUDY\\ПНИПУ\\4 семестр\\ооп\\folder\\лабы - игорь\\Lab1\\Lab10_1Tests\\Lab10_1Tests.csproj",
+      "projectUniqueName": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\Lab10i_1Tests\\Lab10_1Tests.csproj",
       "projectName": "Lab10_1Tests",
-      "projectPath": "D:\\STUDY\\ПНИПУ\\4 семестр\\ооп\\folder\\лабы - игорь\\Lab1\\Lab10_1Tests\\Lab10_1Tests.csproj",
-      "packagesPath": "C:\\Users\\okay\\.nuget\\packages\\",
-      "outputPath": "D:\\STUDY\\ПНИПУ\\4 семестр\\ооп\\folder\\лабы - игорь\\Lab1\\Lab10_1Tests\\obj\\",
+      "projectPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\Lab10i_1Tests\\Lab10_1Tests.csproj",
+      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+      "outputPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\Lab10i_1Tests\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\okay\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -6753,8 +6734,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\STUDY\\ПНИПУ\\4 семестр\\ооп\\folder\\лабы - игорь\\Lab1\\Lab10\\Lab10_1.csproj": {
-              "projectPath": "D:\\STUDY\\ПНИПУ\\4 семестр\\ооп\\folder\\лабы - игорь\\Lab1\\Lab10\\Lab10_1.csproj"
+            "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\Lab10\\Lab10_1.csproj": {
+              "projectPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\Lab10\\Lab10_1.csproj"
             }
           }
         }
@@ -6802,8 +6783,19 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.103\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1104",
+      "level": "Error",
+      "message": "Не удалось найти проект \"E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\Lab10\\Lab10_1.csproj\". Убедитесь, что ссылка на проект действительна и файл проекта существует.",
+      "libraryId": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\Lab10\\Lab10_1.csproj",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
 }

@@ -26,7 +26,6 @@ namespace lab11k
             if (index < 0 || index >= list.Count)
                 return false;
 
-            /* this is my node searching optimization :) */
             if(index <= hfalfCount) {
                 // if elem index less or equal half size, find from start
                 node = list.First;
