@@ -1,0 +1,5 @@
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab12k\obj\Debug\net5.0\lab12k.GeneratedMSBuildEditorConfig.editorconfig
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab12k\obj\Debug\net5.0\lab12k.AssemblyInfoInputs.cache
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab12k\obj\Debug\net5.0\lab12k.AssemblyInfo.cs
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab12k\obj\Debug\net5.0\lab12k.csproj.CoreCompileInputs.cache
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab12k\obj\Debug\net5.0\lab12k.sourcelink.json
