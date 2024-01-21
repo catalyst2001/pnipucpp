@@ -1,40 +1,111 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace lab11i
 {
-    public class TestCollections
+    public class TestCollections : ConInFormat
     {
-        LinkedList<Organization> collection1;
-        LinkedList<string> collection1Strings;
-        Dictionary<string, Factory> collection2;
+        LinkedList<State> collection1;
+        SortedDictionary<string, Republic> collection2;
 
+        /* get linked list node by index */
+        public static bool LinkedListGetNodeByIndex<_Ty>(ref LinkedListNode<_Ty>? dest, LinkedList<_Ty>? list, int index)
+        {
+            int i;
+            LinkedListNode<_Ty>? node = null;
+            int hfalfCount = list.Count >> 1;
 
-        Monarchy
+            /* check */
+            if (index < 0 || index >= list.Count)
+                return false;
+
+            if (index <= hfalfCount)
+            {
+                // if elem index less or equal half size, find from start
+                node = list.First;
+                for (i = 0; i < index; i++)
+                {
+                    if (node == null)
+                        return false;
+
+                    node = node.Next;
+                }
+            }
+            else
+            {
+                // find from end if elem index greater half size
+                node = list.Last;
+                for (i = list.Count - 1; i > index; i--)
+                {
+                    if (node == null)
+                        return false;
+
+                    node = node.Previous;
+                }
+            }
+            dest = node;
+            return true;
+        }
+
+        public static bool LinkedListGetNodeDataByIndex<_Ty>(ref _Ty dest, LinkedList<_Ty>? list, int index)
+        {
+            LinkedListNode<_Ty>? node = null;
+            if (!LinkedListGetNodeByIndex<_Ty>(ref node, list, index))
+                return false;
+
+            dest = node.Value;
+            return true;
+        }
+
+        private void CollectionsAddElement(int uniqueid, string? name, string? govermentForm)
+        {
+            State state = new State(name, govermentForm); // add new base class object
+            Republic republic = new Republic(name); // add new derived class object
+            collection1.AddLast(state);
+            collection2.Add($"{republic.ToString()}_{uniqueid}", republic);
+        }
+
+        private bool CollectionsRemoveElement(int elemidx)
+        {
+            /* delete node from linked list */
+            LinkedListNode<State>? nodeToRemove = null;
+            if (!LinkedListGetNodeByIndex<State>(ref nodeToRemove, collection1, elemidx))
+            {
+                Console.WriteLine("Failed to remove node with index {0} from {1}", elemidx, collection1.ToString());
+                return false; // index out of bounds
+            }
+            collection1.Remove(nodeToRemove); //remove node
+
+            /* remove from list */
+            Republic empty = new Republic(""); //create new object for get object name
+            string? keystr = $"{empty.ToString()}_{elemidx}";
+            Console.WriteLine("Delete element by key {0}", keystr);
+            if (!collection2.Remove(keystr))
+            {
+                Console.WriteLine("Failed to remove key-value with index {0} from {1}", elemidx, collection2.ToString());
+                return false; // index out of bounds
+            }
+            return true; //OK
+        }
 
         public TestCollections(int numberOfElements)
         {
             Random random = new Random();
-            collection1 = new LinkedList<Organization>();
-            collection2 = new Dictionary<string, Factory>();
+            collection1 = new LinkedList<State>();
+            collection2 = new SortedDictionary<string, Republic>();
 
             for (int i = 0; i < numberOfElements; i++)
             {
-                int hour = random.Next(9, 13);
-                int mins = random.Next(0, 50);
-                int currhour = hour % 12;
-                int minval = Math.Min(hour + 1, currhour);
-                int maxval = Math.Max(hour + 1, currhour);
-                int endhour = random.Next(minval, maxval);
-                int endmins = random.Next(0, 50);
-                int planmax = random.Next(10, 1000);
-                int plancur = random.Next(0, planmax);
-                string name = $"organization{i}";
-                string street = $"street {i + 20}";
-                CollectionsAddElement(i, name, street, worktime, planmax, plancur);
+                string name = $"State{i}";
+                string govermentForm = $"govermentForm{i}";
+                CollectionsAddElement(i, name, govermentForm);
             }
         }
 
@@ -48,12 +119,12 @@ namespace lab11i
         public void FindTests()
         {
             int elemidx;
-            Organization center = new Organization();
-            Organization first = collection1.First();
-            Organization end = collection1.Last();
-            Organization noexists = new Organization("This Organization Is No Exists!", "Ababsdbsdb", "00:00-00:00");
+            State center = new State("State", "GovermentForm");
+            State first = collection1.First();
+            State end = collection1.Last();
+            State noexists = new State("This state Is No Exists!", "123");
 
-            if (!LinkedListGetNodeDataByIndex<Organization>(ref center, collection1, collection1.Count >> 1))
+            if (!LinkedListGetNodeDataByIndex<State>(ref center, collection1, collection1.Count >> 1))
             {
                 Console.WriteLine("Index out of bounds!");
                 return;
@@ -83,14 +154,44 @@ namespace lab11i
             Console.WriteLine("4. find no exists element. elapsed time {0} ms", stopwatch.Elapsed);
             stopwatch.Reset();
 
+            Console.Write("\n\n --------------\n\n ");
+
+            Republic center_republic = this.GetCenterElement(collection2).Value;
+            Republic first_republic = collection2.First().Value;
+            Republic end_republic = collection2.Last().Value;
+            Republic noexists_republic = new Republic("This state Is No Exists!");
+
+            stopwatch = new Stopwatch();
+            stopwatch.Start();
+            collection2.ContainsValue(first_republic);
+            stopwatch.Stop();
+            Console.WriteLine("1. find first element. elapsed time {0} ms", stopwatch.Elapsed);
+            stopwatch.Reset();
+
+            stopwatch.Start();
+            collection2.ContainsValue(center_republic);
+            stopwatch.Stop();
+            Console.WriteLine("2. find center element. elapsed time {0} ms", stopwatch.Elapsed);
+            stopwatch.Reset();
+
+            stopwatch.Start();
+            collection2.ContainsValue(end_republic);
+            stopwatch.Stop();
+            Console.WriteLine("3. find end element. elapsed time {0} ms", stopwatch.Elapsed);
+            stopwatch.Reset();
+
+            stopwatch.Start();
+            collection2.ContainsValue(noexists_republic);
+            stopwatch.Stop();
+            Console.WriteLine("4. find no exists element. elapsed time {0} ms", stopwatch.Elapsed);
+            stopwatch.Reset();
+
             Console.Write("\n\n");
 
             while (true)
             {
                 PrintCollections();
-
-                Console.Write("type element index for delete: ");
-                elemidx = ConsoleRead.readInt32();
+                elemidx = (int)ReadLineWithDescription(FORMAT_TYPE.FORMAT_INT32, "Type element index from delete from collections");
                 if (!CollectionsRemoveElement(elemidx))
                 {
                     Console.WriteLine("Failed to delete element with index {0} from collections", elemidx);
@@ -98,6 +199,13 @@ namespace lab11i
                 }
                 Console.WriteLine("Deleted element with index {0} from collections", elemidx);
             }
+        }
+
+        private KeyValuePair<K, V> GetCenterElement<K, V>(SortedDictionary<K, V> dictionary)
+        {
+            int middleIndex = dictionary.Count / 2;
+
+            return dictionary.ElementAt(middleIndex);
         }
     }
 }

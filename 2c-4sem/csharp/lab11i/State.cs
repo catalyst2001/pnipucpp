@@ -35,6 +35,11 @@ namespace lab11i
             this.governmentForm = governmentForm;
         }
 
+        public virtual string GetFullInfo()
+        {
+            return this.name + " " + this.governmentForm;
+        }
+
         public void RandomInit()
         {
             _random = new Random().Next(0, 100);

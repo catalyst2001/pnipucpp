@@ -69,19 +69,19 @@ namespace lab11i
             switch (menuItem)
             {
                 case 1:
-                    states.Push(new State("State Added", "123"));
+                    states.Push(new State("State", "123"));
                     break;
                         
                 case 2:
-                    states.Push(new Republic("Republic  Added"));
+                    states.Push(new Republic("Republic"));
                     break;
 
                 case 3:
-                    states.Push(new Monarchy("Monarchy  Added"));
+                    states.Push(new Monarchy("Monarchy"));
                     break;
 
                 case 4:
-                    states.Push(new Kingdom("Kingdom  Added"));
+                    states.Push(new Kingdom("Kingdom"));
                     break;
             }
         }
@@ -103,7 +103,13 @@ namespace lab11i
         {
             Console.WriteLine("1. Add new objects");
             Console.WriteLine("2. Delete objects");
-            Console.WriteLine("3. Exit");
+            Console.WriteLine("3. List objects in collection");
+            Console.WriteLine("4. Print specific objects");
+            Console.WriteLine("5. Count specific objects");
+            Console.WriteLine("6. Foreach print");
+            Console.WriteLine("6. Clone print");
+            Console.WriteLine("6. Sort print");
+            Console.WriteLine("9. Exit");
         }
 
         public void main()
@@ -124,9 +130,119 @@ namespace lab11i
                         break;
 
                     case 3:
+                        PrintObjectsInStack();
+                        break;
+
+                    case 4:
+                        PrintSpecificObjects();
+                        break;
+
+                    case 5:
+                        CountSpecificObjects();
+                        break;
+
+                    case 6:
+                        PrintForeach(states);
+                        break;
+
+                    case 7:
+                        CloneStack();
+                        break;
+
+                    case 8:
+                        SortStack();
+                        break;
+
+                    case 9:
                         return; //exit
                 }
             }
         }
+
+        private void PrintObjectsInStack()
+        {
+            Console.WriteLine("List of objects in Stack:");
+            var statesCopy = new Stack<State>(states);
+            int i = 0;
+            while (statesCopy.Count > 0)
+            {
+                State state = statesCopy.Pop();
+                Console.WriteLine(" [{0}] object name: {1}, full info: {2}", i, state.ToString(), state.GetFullInfo());
+                i++;
+            }
+        }
+
+        private void PrintSpecificObjects()
+        {
+            Console.WriteLine("type object name:");
+            string objectName = Console.ReadLine();
+
+            var statesCopy = new Stack<State>(states);
+            int i = 0;
+            while (statesCopy.Count > 0)
+            {
+                State state = statesCopy.Pop();
+                if (state.GetName() == objectName)
+                {
+                    Console.WriteLine(" [{0}] object name: {1}, full info: {2}", i, state.ToString(), state.GetFullInfo());
+                }
+                i++;
+            }
+        }
+
+        private void CountSpecificObjects()
+        {
+            Console.WriteLine("type object name:");
+            string objectName = Console.ReadLine();
+            int statesCount = 0;
+            var statesCopy = new Stack<State>(states);
+            int i = 0;
+            while (statesCopy.Count > 0)
+            {
+                State state = statesCopy.Pop();
+                if (state.GetName() == objectName)
+                    statesCount++;
+                i++;
+            }
+
+            Console.WriteLine(" {0} objects with name {1}", statesCount, objectName);
+        }
+
+        private void PrintForeach(Stack<State> array)
+        {
+            foreach (State state in array)
+                Console.WriteLine("object name: {0}, full info: {1}", state.ToString(), state.GetFullInfo());
+
+            Console.Write("\n");
+        }
+
+        private void CloneStack()
+        {
+            /*
+             * Класс Stack<T> в C# не предоставляет прямого метода Clone, 
+             * как некоторые другие классы коллекций.
+             * Однако мы можем вручную создать копию стека,
+             * создав новый Stack<T> и скопировав элементы.
+             * Один из способов добиться этого — использовать метод ToArray
+             * и передать массив конструктору нового стека.
+             */
+            var cloneStates = new Stack<State>(states.ToArray());
+            PrintForeach(cloneStates);
+        }
+
+        private void SortStack()
+        {
+            /*
+             * Класс Stack<T> в C# не предоставляет прямого метода Sort, 
+             * как некоторые другие классы коллекций.
+             * Однако мы можем вручную создать копию стека,
+             * создав новый Stack<T> и скопировав элементы.
+             * Один из способов добиться этого — использовать метод ToArray и OrderBy
+             * и передать массив конструктору нового стека.
+             */
+            var sortedStates = new Stack<State>(states.ToArray().OrderBy(state => state.GetName()));
+            PrintForeach(sortedStates);
+        }
+
     }
 }

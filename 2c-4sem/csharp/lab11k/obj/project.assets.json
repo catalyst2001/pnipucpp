@@ -1,48 +1,71 @@
 {
   "version": 3,
   "targets": {
-    ".NETFramework,Version=v8.0": {},
-    ".NETFramework,Version=v8.0/win7-x86": {}
+    "net8.0": {}
   },
   "libraries": {},
   "projectFileDependencyGroups": {
-    ".NETFramework,Version=v8.0": []
+    "net8.0": []
   },
   "packageFolders": {
-    "C:\\Users\\HP\\.nuget\\packages\\": {}
+    "C:\\Users\\okay\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab11k\\lab11k.csproj",
+      "projectUniqueName": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab11k\\lab11k.csproj",
       "projectName": "lab11k",
-      "projectPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab11k\\lab11k.csproj",
-      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab11k\\obj\\",
+      "projectPath": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab11k\\lab11k.csproj",
+      "packagesPath": "C:\\Users\\okay\\.nuget\\packages\\",
+      "outputPath": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab11k\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
-        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\okay\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net80"
+        "net8.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net80": {
+        "net8.0": {
+          "targetAlias": "net8.0",
           "projectReferences": {}
         }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
       }
     },
     "frameworks": {
-      "net80": {}
-    },
-    "runtimes": {
-      "win7-x86": {
-        "#import": []
+      "net8.0": {
+        "targetAlias": "net8.0",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
