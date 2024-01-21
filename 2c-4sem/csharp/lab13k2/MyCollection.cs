@@ -35,7 +35,7 @@ namespace lab13k2
         }
 
 
-        public override MyNewCollection this[int index]
+        public override Organization this[int index]
         {
             get
             {
