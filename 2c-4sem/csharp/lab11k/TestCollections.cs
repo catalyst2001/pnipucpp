@@ -161,6 +161,8 @@ namespace lab11k
 
             Console.Write("\n\n");
 
+            //TODO: add test 2 collection
+
             while (true) {
                 PrintCollections();
                 elemidx = (int)ReadLineWithDescription(FORMAT_TYPE.FORMAT_INT32, "Type element index from delete from collections");

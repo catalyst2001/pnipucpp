@@ -9,25 +9,25 @@ namespace lab12k
     public class Lab124
     {
         public void Start() {
-            MyCollectionQueue<int> myQueue = new MyCollectionQueue<int>();
+            MyCollectionQueue<Organization> myQueue = new MyCollectionQueue<Organization>();
             if (myQueue.IsEmpty())
                 Console.WriteLine("collection is empty\n");
 
             for(int i = 0; i < 10; i++) {
-                myQueue.PushBack(i);
-                Console.WriteLine("Pushed {0} data to queue\n", i);
+                Organization org = new Organization($"org_{i}", "address", "time");
+                myQueue.PushBack(org);
+                Console.WriteLine("Pushed {0} data to queue\n", org.ToString());
             }
 
-            Console.WriteLine("--- printing by foreach ---");
+            Console.WriteLine("\n--- printing by foreach ---");
             foreach (var data in myQueue)
-                Console.WriteLine("Data in myQueue: {0}", data);
+                Console.WriteLine("Data in myQueue: {0}", data.GetFullInfo());
 
-            if (!myQueue.IsEmpty())
-            {
-                while (!myQueue.IsEmpty())
-                {
-                    int dataFromQueue = myQueue.Front();
-                    Console.WriteLine("Readed from queue: {0}", dataFromQueue);
+            Console.WriteLine("\n--- read from queue ---");
+            if (!myQueue.IsEmpty()) {
+                while (!myQueue.IsEmpty()) {
+                    Organization dataFromQueue = myQueue.Front();
+                    Console.WriteLine("Readed from queue: {0}", dataFromQueue.GetFullInfo());
                 }
             }
 
