@@ -8,7 +8,7 @@ namespace lab13k2
     internal class Program
     {
         static void Main(string[] args) {
-
+            new Lab().Start();
         }
     }
 }
