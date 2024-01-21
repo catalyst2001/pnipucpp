@@ -1,0 +1,15 @@
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\bin\Debug\net8.0\lab12i.exe
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\bin\Debug\net8.0\lab12i.deps.json
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\bin\Debug\net8.0\lab12i.runtimeconfig.json
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\bin\Debug\net8.0\lab12i.dll
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\bin\Debug\net8.0\lab12i.pdb
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\obj\Debug\net8.0\lab12i.GeneratedMSBuildEditorConfig.editorconfig
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\obj\Debug\net8.0\lab12i.AssemblyInfoInputs.cache
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\obj\Debug\net8.0\lab12i.AssemblyInfo.cs
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\obj\Debug\net8.0\lab12i.csproj.CoreCompileInputs.cache
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\obj\Debug\net8.0\lab12i.sourcelink.json
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\obj\Debug\net8.0\lab12i.dll
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\obj\Debug\net8.0\refint\lab12i.dll
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\obj\Debug\net8.0\lab12i.pdb
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\obj\Debug\net8.0\lab12i.genruntimeconfig.cache
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab12i\obj\Debug\net8.0\ref\lab12i.dll
