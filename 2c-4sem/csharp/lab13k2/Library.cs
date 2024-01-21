@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace lab10
+namespace lab13k2
 {
     public class Library : Organization
     {

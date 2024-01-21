@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace lab10
+namespace lab13k2
 {
     public class Organization : IComparable<Organization>
     {

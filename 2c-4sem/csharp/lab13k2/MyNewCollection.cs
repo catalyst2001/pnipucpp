@@ -6,27 +6,11 @@ using System.Threading.Tasks;
 
 namespace lab13k2
 {
-    public class CollectionHandlerEventArgs : System.EventArgs {
-    }
-
-    public delegate void CollectionHandler(object source, CollectionHandlerEventArgs args);//делегат
 
     public class MyNewCollection : MyCollection
     {
         public event CollectionHandler CollectionCountChanged;
         public event CollectionHandler CollectionReferenceChanged;
-
-        public void CollectionCountChanged(object sourse, CollectionHandlerEventArgs e)
-        {
-            JournalEntry je = new JournalEntry(e.NameCollection, e.ChangeCollection, e.Obj.ToString());
-            journal.Add(je);
-
-        }
-        public void CollectionReferenceChanged(object sourse, CollectionHandlerEventArgs e)
-        {
-            JournalEntry je = new JournalEntry(e.NameCollection, e.ChangeCollection, e.Obj.ToString());
-            journal.Add(je);
-        }
 
         //обработчик события CollectionCountChanged
         public virtual void OnCollectionCountChanged(object source, CollectionHandlerEventArgs args)
@@ -43,15 +27,17 @@ namespace lab13k2
 
         public override bool Remove(int position)
         {
-            OnCollectionCountChanged(this, new CollectionHandlerEventArgs(this.Name, "delete", list[position]));
+            OnCollectionCountChanged(this, new CollectionHandlerEventArgs(this.Name, "delete", this[position]));
             return base.Remove(position);
         }
-        public override int Add(Person p)
+
+        public override bool Add(MyCollectionQueue<Organization> p)
         {
             OnCollectionCountChanged(this, new CollectionHandlerEventArgs(this.Name, "add", p));
             return base.Add(p);
         }
-        public override Person this[int index]
+
+        public override MyNewCollection this[int index]
         {
             get
             {
@@ -59,11 +45,9 @@ namespace lab13k2
             }
             set
             {
-                OnCollectionReferenceChanged(this, new CollectionHandlerEventArgs(this.Name, "changed", list[index]));
+                OnCollectionReferenceChanged(this, new CollectionHandlerEventArgs(this.Name, "changed", this[index]));
                 base[index] = value;
             }
         }
-
-
     }
 }
