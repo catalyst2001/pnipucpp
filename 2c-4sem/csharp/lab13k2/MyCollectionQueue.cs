@@ -237,7 +237,7 @@ namespace lab13k2
             tail = null;
         }
 
-        public _Ty this[int index] { 
+        public virtual _Ty this[int index] { 
             get {
                 int i = 0;
                 MyCollectionNode<_Ty>? nodeRef = tail; 

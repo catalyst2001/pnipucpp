@@ -9,6 +9,12 @@ namespace lab13k2
 
     public class MyNewCollection : MyCollection
     {
+        public MyNewCollection(string name) : base(name) {
+        }
+
+        public MyNewCollection(string name, int cap) : base(name, cap) {
+        }
+
         public event CollectionHandler CollectionCountChanged;
         public event CollectionHandler CollectionReferenceChanged;
 
@@ -31,13 +37,13 @@ namespace lab13k2
             return base.Remove(position);
         }
 
-        public override bool Add(MyCollectionQueue<Organization> p)
+        public override bool Add(Organization p)
         {
             OnCollectionCountChanged(this, new CollectionHandlerEventArgs(this.Name, "add", p));
             return base.Add(p);
         }
 
-        public override MyNewCollection this[int index]
+        public override Organization this[int index]
         {
             get
             {

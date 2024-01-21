@@ -8,8 +8,24 @@ namespace lab13k2
 {
     public class Lab
     {
-        public void Start() {
+        MyNewCollection mc1;
+        MyNewCollection mc2;
 
+        public void Start() {
+            mc1 = new MyNewCollection("FIRST");
+            mc2 = new MyNewCollection("COLLECTION2");
+            Journal joun1 = new Journal();
+            mc1.CollectionCountChanged += new CollectionHandler(joun1.CollectionCountChanged);
+            mc1.CollectionReferenceChanged += new CollectionHandler(joun1.CollectionReferenceChanged);
+
+            Organization orgForDel = new Organization("Org for delete", "address", "10:00-20:00");
+            mc1.Add(new Organization("Added org", "address", "time"));
+            mc1.Add(orgForDel);
+
+            MyCollectionNode<Organization> ?node = mc1.Find(orgForDel);
+            if(mc1.Remove(node)) {
+                Console.WriteLine("element removed from collection\n");
+            }
         }
     }
 }

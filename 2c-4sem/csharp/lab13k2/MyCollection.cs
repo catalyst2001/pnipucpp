@@ -8,30 +8,22 @@ using System.Threading.Tasks;
 
 namespace lab13k2
 {
-    public class CollectionHandlerEventArgs : System.EventArgs
-    {
-        public string collectionName { get; set; }
-        public string eventName { get; set; }
-        public object obj { get; set; }
-
-        public CollectionHandlerEventArgs(string collectionName, string eventName, object obj)
-        {
-            this.collectionName = collectionName;
-            this.eventName = eventName;
-            this.obj = obj;
-        }
-    }
-
     public delegate void CollectionHandler(object source, CollectionHandlerEventArgs args);//делегат
 
     public class MyCollection : MyCollectionQueue<Organization>
     {
+        List<JournalEntry> journal;
+
         public string Name { get; set; }
 
-        public MyCollection() : base() {
+        public MyCollection(string name) : base() {
+            journal = new List<JournalEntry>();
+            Name = name;
         }
 
-        public MyCollection(int cap) : base(cap) {
+        public MyCollection(string name, int cap) : base(cap) {
+            journal = new List<JournalEntry>();
+            Name = name;
         }
 
 
@@ -43,7 +35,7 @@ namespace lab13k2
             }
             set
             {
-                OnCollectionReferenceChanged(this, new CollectionHandlerEventArgs(this.Name, "changed", this[index]));
+                CollectionReferenceChanged(this, new CollectionHandlerEventArgs(this.Name, "changed", this[index]));
                 base[index] = value;
             }
         }
@@ -65,7 +57,7 @@ namespace lab13k2
             return true;
         }
 
-        public virtual bool Add(MyCollectionQueue<Organization> org)
+        public virtual bool Add(Organization org)
         {
             return true;
         }

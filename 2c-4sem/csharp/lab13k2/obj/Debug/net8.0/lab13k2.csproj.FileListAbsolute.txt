@@ -1,0 +1,15 @@
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\bin\Debug\net8.0\lab13k2.exe
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\bin\Debug\net8.0\lab13k2.deps.json
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\bin\Debug\net8.0\lab13k2.runtimeconfig.json
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\bin\Debug\net8.0\lab13k2.dll
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\bin\Debug\net8.0\lab13k2.pdb
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.GeneratedMSBuildEditorConfig.editorconfig
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.AssemblyInfoInputs.cache
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.AssemblyInfo.cs
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.csproj.CoreCompileInputs.cache
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.sourcelink.json
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.dll
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\refint\lab13k2.dll
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.pdb
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.genruntimeconfig.cache
+E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\ref\lab13k2.dll
