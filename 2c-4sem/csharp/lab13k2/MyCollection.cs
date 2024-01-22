@@ -54,11 +54,15 @@ namespace lab13k2
 
         public virtual bool Remove(int postition)
         {
-            return true;
+            Console.WriteLine("MyCollection::Remove({0}) called", postition);
+            MyCollectionNode<Organization>? node = GetNodeByIndex(postition);
+            return base.Remove(node);
         }
 
         public virtual bool Add(Organization org)
         {
+            Console.WriteLine("MyCollection::Add({0}) called", org);
+            base.PushBack(org);
             return true;
         }
 

@@ -22,10 +22,20 @@ namespace lab13k2
             mc1.Add(new Organization("Added org", "address", "time"));
             mc1.Add(orgForDel);
 
+            int j = 0;
+            foreach (var i in mc1)
+                Console.WriteLine("[{0}]: {1}", j++, i.GetFullInfo());
+
             MyCollectionNode<Organization> ?node = mc1.Find(orgForDel);
             if(mc1.Remove(node)) {
                 Console.WriteLine("element removed from collection\n");
             }
+
+            j = 0;
+            foreach (var i in mc1)
+                Console.WriteLine("[{0}]: {1}", j++, i.GetFullInfo());
+
+            mc1[0] = orgForDel;
         }
     }
 }
