@@ -237,31 +237,36 @@ namespace lab13k2
             tail = null;
         }
 
+        public MyCollectionNode<_Ty>? GetNodeByIndex(int index)
+        {
+            int i = 0;
+            MyCollectionNode<_Ty>? nodeRef = tail;
+            while (nodeRef != null)
+            {
+                if (index == i)
+                    return nodeRef;
+
+                i++;
+                nodeRef = nodeRef.Next;
+            }
+            return null;
+        }
+
         public virtual _Ty this[int index] { 
-            get {
-                int i = 0;
-                MyCollectionNode<_Ty>? nodeRef = tail; 
-                while (nodeRef != null) {
-                    if(index == i)
-                        return nodeRef.Data;
-                    
-                    i++;
-                    nodeRef = nodeRef.Next;
-                }
-                throw new IndexOutOfRangeException($"index {index} out of bounds");
+            get {            
+                MyCollectionNode<_Ty>? nodeRef = GetNodeByIndex(index);
+                if(nodeRef == null)
+                    throw new IndexOutOfRangeException($"index {index} out of bounds");
+
+                return nodeRef.Data;
             }
             set
             {
-                int i = 0;
-                MyCollectionNode<_Ty>? nodeRef = tail;
-                while (nodeRef != null) {
-                    if (index == i)
-                        nodeRef.Data = value;
+                MyCollectionNode<_Ty>? nodeRef = GetNodeByIndex(index);
+                if (nodeRef == null)
+                    throw new IndexOutOfRangeException($"index {index} out of bounds");
 
-                    i++;
-                    nodeRef = nodeRef.Next;
-                }
-                throw new IndexOutOfRangeException($"index {index} out of bounds");
+                nodeRef.Data = value;
             }
         }
 
