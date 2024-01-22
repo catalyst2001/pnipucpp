@@ -13,3 +13,18 @@ E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\refint\lab13k2.dll
 E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.pdb
 E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.genruntimeconfig.cache
 E:\GitHub\pnipucpp\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\ref\lab13k2.dll
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\bin\Debug\net8.0\lab13k2.exe
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\bin\Debug\net8.0\lab13k2.deps.json
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\bin\Debug\net8.0\lab13k2.runtimeconfig.json
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\bin\Debug\net8.0\lab13k2.dll
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\bin\Debug\net8.0\lab13k2.pdb
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.GeneratedMSBuildEditorConfig.editorconfig
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.AssemblyInfoInputs.cache
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.AssemblyInfo.cs
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.csproj.CoreCompileInputs.cache
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.sourcelink.json
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.dll
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\refint\lab13k2.dll
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.pdb
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\lab13k2.genruntimeconfig.cache
+D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab13k2\obj\Debug\net8.0\ref\lab13k2.dll
