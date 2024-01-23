@@ -79,12 +79,6 @@ namespace lab11k
                 "7. Foreach print\n" +
                 "8. Copy and sort\n" +
                 "9. Find company in collection\n\n"
-               //" --------- work 3 -----------\n" + 
-               //"" +
-               //"" +
-               //"" +
-               //"" +
-               //""
                );
         }
 
@@ -95,7 +89,6 @@ namespace lab11k
             Array.Reverse(arr);
             for (int i = 0; i < arr.Length; i++)
             {
-                ;
                 Console.WriteLine(" [{0}] object name: {1}, full info: {2}", i, arr[i].ToString(), arr[i].GetFullInfo());
             }
         }

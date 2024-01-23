@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="lab12k.labs.Lab121">
+    <Position X="1" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>labs\Lab121.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab12k.labs.Lab122">
+    <Position X="1" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>labs\Lab122.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab12k.Lab123">
+    <Position X="1" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>labs\Lab123.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab12k.Lab124">
+    <Position X="1" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Lab124.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab12k.Program">
+    <Position X="1" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab12k.IdealBinaryTreeBuilder&lt;_Ty&gt;">
+    <Position X="3" Y="0.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAAARAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>IdealBinaryTreeBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab12k.MyBinaryTreeNode&lt;_Ty&gt;">
+    <Position X="5.5" Y="0.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAIAAAAAgAAAAAAAIAAAAAAAQAAAAgAA=</HashCode>
+      <FileName>MyBinaryTree.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab12k.MyBinaryTreeNodesCounter">
+    <Position X="8" Y="0.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAABACAAAAAAAAAAAAAAEAEAAAAAAAAAAAA=</HashCode>
+      <FileName>MyBinaryTreeNodesCounter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab12k.MyBinaryTreePrinter&lt;_Ty&gt;">
+    <Position X="10.75" Y="0.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAACQAAAAAE=</HashCode>
+      <FileName>MyBinaryTreePrinter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab12k.MyBSTBuilder">
+    <Position X="3" Y="3.25" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="lab12k.MyBSTBuilder.NodeSearchContext">
+        <TypeIdentifier>
+          <NewMemberFileName>MyBSTBuilder.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="lab12k.MyBSTBuilder.NodesWalkPath">
+        <Compartments>
+          <Compartment Name="Nested Types" Collapsed="false" />
+        </Compartments>
+        <NestedTypes>
+          <Enum Name="lab12k.MyBSTBuilder.NodesWalkPath.TREE_PATH_DIR">
+            <TypeIdentifier>
+              <NewMemberFileName>MyBSTBuilder.cs</NewMemberFileName>
+            </TypeIdentifier>
+          </Enum>
+        </NestedTypes>
+        <TypeIdentifier>
+          <NewMemberFileName>MyBSTBuilder.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAEAAQAAAAAAAECAAAABAAAA=</HashCode>
+      <FileName>MyBSTBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab12k.MyCollectionNode&lt;_Ty&gt;">
+    <Position X="5.5" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAgAA=</HashCode>
+      <FileName>MyCollectionQueue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab12k.MyCollectionQueue&lt;_Ty&gt;">
+    <Position X="13.5" Y="0.75" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="lab12k.MyCollectionQueue&lt;_Ty&gt;.MyCollectionQueueEnumeraror&lt;_Ty2&gt;">
+        <TypeIdentifier>
+          <NewMemberFileName>MyCollectionQueue.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="lab12k.MyCollectionQueue&lt;_Ty&gt;.MyCollectionQueueEnumeraror2&lt;_Ty2&gt;">
+        <TypeIdentifier>
+          <NewMemberFileName>MyCollectionQueue.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IAFAEAAAgAAAABAABAAABAUAAgAIAAAEAAAAAAAAggI=</HashCode>
+      <FileName>MyCollectionQueue.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="lab12k.MyDCLinkedList&lt;_Ty&gt;">
+    <Position X="16.25" Y="0.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAABAAAAJEAAAAAAAAAAAAIAAAEAAACAAACAAA=</HashCode>
+      <FileName>MyDCLinkedList.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="lab12k.MyDCLinkedListNode&lt;_Ty&gt;">
+    <Position X="16.25" Y="4" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAEAAAAAAAAAAAAAABAAAggGAAAAAAA=</HashCode>
+      <FileName>MyDCLinkedList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab12k.MyHashTable&lt;_TyKey, _TyVal&gt;">
+    <Position X="18.75" Y="0.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAABAAAAAAhAQAAAAIAAAAAEAABAEEAAA=</HashCode>
+      <FileName>MyHashTable.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

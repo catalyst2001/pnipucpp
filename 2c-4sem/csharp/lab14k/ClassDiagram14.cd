@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="lab14k.AddressEqualityComparer">
+    <Position X="1.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>AddressEqualityComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="lab14k.Extension">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Extension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab14k.Factory">
+    <Position X="7.75" Y="4" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AACAAAABEBAAACAEAAAAAAAAAAAAAAAAASAAAAACAAA=</HashCode>
+      <FileName>Factory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab14k.Organization">
+    <Position X="7.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAACAAAAAAAAQEAAAAAAAAAAIEAEAAACAAAAAAAAA=</HashCode>
+      <FileName>Organization.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="lab14k.Lab">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEACAAAAAAAAACAAAAAAABAAAAAJIAAAAAAAA=</HashCode>
+      <FileName>Lab.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab14k.Library">
+    <Position X="10" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAQAAAAAAAAAAEAAAAACAABAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Library.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab14k.InsuranceCompany">
+    <Position X="5.75" Y="4" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ABCAAAAAAAAAAAAEAAAAAAAAAAAAAAAACCAAAAAAAAA=</HashCode>
+      <FileName>InsuranceCompany.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab14k.ShipbuildingCompany">
+    <Position X="7.75" Y="7.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAFBAAAAAAAAAAAAAACAKAAAAAgIiA=</HashCode>
+      <FileName>ShipbuildingCompany.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

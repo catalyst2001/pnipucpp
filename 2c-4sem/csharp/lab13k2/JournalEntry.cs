@@ -8,9 +8,9 @@ namespace lab13k2
 {
     public class JournalEntry
     {
-        string NameCollection;
-        string EventName;
-        string ObjName;
+        public string NameCollection;
+        public string EventName;
+        public string ObjName;
 
         public JournalEntry(string name, string eventname, string objName) {
             NameCollection = name;

@@ -10,9 +10,16 @@ namespace lab12k
     {
         static void Main(string[] args)
         {
-            //new Lab121().Start();
-            //new Lab122().Start();
-            //new Lab123().Start();
+            Console.WriteLine("\n\n*********************** 1 ***********************");
+            new Lab121().Start();
+
+            Console.WriteLine("\n\n*********************** 2 ***********************");
+            new Lab122().Start();
+
+            Console.WriteLine("\n\n*********************** 3 ***********************");
+            new Lab123().Start();
+
+            Console.WriteLine("\n\n*********************** 4 ***********************");
             new Lab124().Start();
         }
     }

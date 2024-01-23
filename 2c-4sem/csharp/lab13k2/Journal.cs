@@ -8,14 +8,29 @@ namespace lab13k2
 {
     public class Journal
     {
-        public void CollectionCountChanged(object sender, CollectionHandlerEventArgs e)
-        {
+        List<JournalEntry> journal;
+
+        public Journal() {
+            journal = new List<JournalEntry>();
+        }
+        
+        public void CollectionCountChanged(object sender, CollectionHandlerEventArgs e) {
             Console.WriteLine($"Collection '{e.NameCollection}' count changed.");
+            JournalEntry je = new JournalEntry(e.NameCollection, e.ChangeCollection, e.Obj.ToString());
+            journal.Add(je);
         }
 
-        public void CollectionReferenceChanged(object sender, CollectionHandlerEventArgs e)
-        {
+        public void CollectionReferenceChanged(object sender, CollectionHandlerEventArgs e) {
             Console.WriteLine($"Reference changed in collection '{e.NameCollection}'.");
+            JournalEntry je = new JournalEntry(e.NameCollection, e.ChangeCollection, e.Obj.ToString());
+            journal.Add(je);
+        }
+
+        public void PrintJournal() {
+            Console.WriteLine("------- Printing journal -------");
+            foreach(JournalEntry je in journal) {
+                Console.WriteLine("Name collection: {0}  Event name: {1}", je.NameCollection, je.EventName);
+            }
         }
     }
 }

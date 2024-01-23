@@ -16,6 +16,7 @@ namespace lab12k
             Organization forDeleting = new Organization("For deleting", "", "10:00-20:00");
             ht.Add(forDeleting, "ObjectForDeleting");
 
+            Console.WriteLine("----- Add 8 elements to collection ------");
             for (int i = 0; i < 8; i++) {
                 string str = $"org_{i}";
                 Organization org = new Organization(str, $"address {i}", "10:00-20:00");
@@ -25,7 +26,9 @@ namespace lab12k
             }
 
             ht.Print();
-            if(ht.Find(forDeleting) != null) {
+
+            Console.WriteLine("----- find object and delete from collection ------");
+            if (ht.Find(forDeleting) != null) {
                 Console.WriteLine("object found");
                 if(ht.Remove(forDeleting)) {
                     if(ht.Find(forDeleting) == null) {
@@ -36,11 +39,12 @@ namespace lab12k
             }
 
             // show collisions
+            Console.WriteLine("----- Full fill collection (collisions demo) ------");
             for (int i = 8; i < ht.Count; i++) {
                 string str = $"next_{i}";
                 Organization org = new Organization(str, $"address {i}", "12:00-22:00");
                 if (-1 == ht.Add(org, str)) {
-                    Console.WriteLine("Collision on {0} index!\n", i);
+                    Console.WriteLine("Collision on {0} index!", i);
                 }
             }
         }

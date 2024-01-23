@@ -79,12 +79,6 @@ namespace lab11k
                 "7. Foreach print\n" +
                 "8. Copy and sort\n" +
                 "9. Find company in collection\n\n"
-               //" --------- work 3 -----------\n" + 
-               //"" +
-               //"" +
-               //"" +
-               //"" +
-               //""
                );
         }
 
