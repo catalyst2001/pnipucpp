@@ -9,9 +9,9 @@ namespace lab11i
     {
         static void Main(string[] args)
         {
-            //new Work1().main();
+            new Work1().main();
             //new Work2().main();
-            new TestCollections(5).FindTests();
+            //new TestCollections(5).FindTests();
         }
     }
 }
