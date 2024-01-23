@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="lab13k2.CollectionHandlerEventArgs">
+    <Position X="0.5" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAQCAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CollectionHandlerEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13k2.Factory">
+    <Position X="14.75" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AACAAAABEBAAACAEAAAAAAAAAAAAAAAAASAAAAACAAA=</HashCode>
+      <FileName>Factory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13k2.InsuranceCompany">
+    <Position X="11" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ABCAAAAAAAAAAAAEAAAAAAAAAAAAAAAACCAAAAAAAAA=</HashCode>
+      <FileName>InsuranceCompany.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13k2.Journal">
+    <Position X="11" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACEAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Journal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13k2.JournalEntry">
+    <Position X="11" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAKAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>JournalEntry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13k2.Library">
+    <Position X="13" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAQAAAAAAAAAAEAAAAACAABAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Library.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13k2.MyCollection">
+    <Position X="3.75" Y="4.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAQBAQAAAAAEAAAAAAAAABAAAA=</HashCode>
+      <FileName>MyCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13k2.MyCollectionNode&lt;_Ty&gt;">
+    <Position X="3.75" Y="7.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAgAA=</HashCode>
+      <FileName>MyCollectionQueue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13k2.MyCollectionQueue&lt;_Ty&gt;">
+    <Position X="6.75" Y="1" Width="3.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="lab13k2.MyCollectionQueue&lt;_Ty&gt;.MyCollectionQueueEnumeraror&lt;_Ty2&gt;">
+        <TypeIdentifier>
+          <NewMemberFileName>MyCollectionQueue.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="lab13k2.MyCollectionQueue&lt;_Ty&gt;.MyCollectionQueueEnumeraror2&lt;_Ty2&gt;">
+        <TypeIdentifier>
+          <NewMemberFileName>MyCollectionQueue.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IAFAEAIAgAAAABAADAAABAUAAgAIAAAEAAAQAAAAggI=</HashCode>
+      <FileName>MyCollectionQueue.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="lab13k2.MyNewCollection">
+    <Position X="3.75" Y="1" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAKAAAAAAAAAAAIACAAABAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MyNewCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13k2.Organization">
+    <Position X="13" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAACAAAAAAAAQEAAAAAAAAAAIEAEAAACAAAAAAAAA=</HashCode>
+      <FileName>Organization.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="lab13k2.ShipbuildingCompany">
+    <Position X="14.75" Y="8.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAFBAAAAAAAAAAAAAACAKAAAAAgIiA=</HashCode>
+      <FileName>ShipbuildingCompany.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Delegate Name="lab13k2.CollectionHandler">
+    <Position X="0.5" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MyCollection.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -43,6 +43,7 @@ namespace lab12k.labs
             Console.Write("\n");
 
             /* remove element by information */
+            Console.WriteLine("/* remove element by information */");
             if (!linkedList.RemoveElem(libForDeleteFromLL))
                 Console.WriteLine("failed to delete object from linked list");
 

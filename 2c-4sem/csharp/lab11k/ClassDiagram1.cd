@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="lab11k.CollectionsLab1">
+    <Position X="7.75" Y="2.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="lab11k.CollectionsLab1.ORG_TYPE" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CollectionsLab1.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>iQQAAAEBAGAQACAIAgBAAAAIAIAAgIgAAAAAAACAIAA=</HashCode>
+      <FileName>CollectionsLab1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab11k.CollectionsLab2">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="lab11k.CollectionsLab2.ORG_TYPE" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CollectionsLab2.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>iQAAAAEBAGAQACAAAgBAAAAIAIAAgIgAAAAAAACAIAA=</HashCode>
+      <FileName>CollectionsLab2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab11k.ConInFormat">
+    <Position X="11" Y="2.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="lab11k.ConInFormat.FORMAT_TYPE">
+        <TypeIdentifier>
+          <NewMemberFileName>ConInFormat.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ConInFormat.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab11k.TestCollections">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAQAAAAAAAEAAAACAAACAAAgAAAAAAAQAQA=</HashCode>
+      <FileName>TestCollections.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab11k.ShipbuildingCompany">
+    <Position X="9" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABBAAAAAAAAAAAAAACAKAAACAgIiA=</HashCode>
+      <FileName>ShipbuildingCompany.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab11k.Program">
+    <Position X="11" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab11k.Factory">
+    <Position X="10.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABEBAAACAAAAAAAAAAAAAAAAAAASAAACACAAA=</HashCode>
+      <FileName>Factory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab11k.InsuranceCompany">
+    <Position X="5.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACCAAACAAAAA=</HashCode>
+      <FileName>InsuranceCompany.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab11k.Library">
+    <Position X="7.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAACAABAAAAAAAACAAACAAAAA=</HashCode>
+      <FileName>Library.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab11k.Organization">
+    <Position X="12.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAgAQAAAAAAAAAAIIEAAAAICAAACAAQAA=</HashCode>
+      <FileName>Organization.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

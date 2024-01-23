@@ -130,7 +130,9 @@ namespace lab11k
             Organization end = collection1.Last();
             Organization noexists = new Organization("This Organization Is No Exists!", "Ababsdbsdb", "00:00-00:00");
 
-            if(!LinkedListGetNodeDataByIndex<Organization>(ref center, collection1, collection1.Count >> 1)) {
+            /* COLLECTION 1 */
+            Console.WriteLine("COLLECTION 1");
+            if (!LinkedListGetNodeDataByIndex<Organization>(ref center, collection1, collection1.Count >> 1)) {
                 Console.WriteLine("Index out of bounds!");
                 return;
             }
@@ -138,30 +140,64 @@ namespace lab11k
             stopwatch.Start();
             collection1.Contains(first);
             stopwatch.Stop();
-            Console.WriteLine("1. find first element. elapsed time {0} ms", stopwatch.Elapsed);
+            Console.WriteLine("1. find first element in collection1. elapsed time {0} ms", stopwatch.Elapsed);
             stopwatch.Reset();
 
             stopwatch.Start();
             collection1.Contains(center);
             stopwatch.Stop();
-            Console.WriteLine("2. find center element. elapsed time {0} ms", stopwatch.Elapsed);
+            Console.WriteLine("2. find center element in collection1. elapsed time {0} ms", stopwatch.Elapsed);
             stopwatch.Reset();
 
             stopwatch.Start();
             collection1.Contains(end);
             stopwatch.Stop();
-            Console.WriteLine("3. find end element. elapsed time {0} ms", stopwatch.Elapsed);
+            Console.WriteLine("3. find end element in collection1. elapsed time {0} ms", stopwatch.Elapsed);
             stopwatch.Reset();
 
             stopwatch.Start();
             collection1.Contains(noexists);
             stopwatch.Stop();
-            Console.WriteLine("4. find no exists element. elapsed time {0} ms", stopwatch.Elapsed);
+            Console.WriteLine("4. find no exists element in collection1. elapsed time {0} ms", stopwatch.Elapsed);
             stopwatch.Reset();
 
             Console.Write("\n\n");
 
-            //TODO: add test 2 collection
+            /* COLLECTION 2 */
+            Console.WriteLine("COLLECTION 2");
+            string keystr;
+            Factory empty = new Factory(); //create new object for get object name
+
+            keystr = $"{empty.ToString()}_0";
+            stopwatch.Start();
+            collection2.ContainsKey(keystr);
+            stopwatch.Stop();
+            Console.WriteLine("1. find first element in collection2. elapsed time {0} ms", stopwatch.Elapsed);
+            stopwatch.Reset();
+
+            int centeridx = collection2.Count >> 1;
+            keystr = $"{empty.ToString()}_{centeridx}";
+            stopwatch.Start();
+            collection2.ContainsKey(keystr);
+            stopwatch.Stop();
+            Console.WriteLine("2. find center element in collection2. elapsed time {0} ms", stopwatch.Elapsed);
+            stopwatch.Reset();
+
+            keystr = $"{empty.ToString()}_{collection2.Count-1}";
+            stopwatch.Start();
+            collection2.ContainsKey(keystr);
+            stopwatch.Stop();
+            Console.WriteLine("3. find end element in collection2. elapsed time {0} ms", stopwatch.Elapsed);
+            stopwatch.Reset();
+
+            keystr = $"THIS IS NOT EXISTS KEY";
+            stopwatch.Start();
+            collection2.ContainsKey(keystr);
+            stopwatch.Stop();
+            Console.WriteLine("4. find no exists element in collection2. elapsed time {0} ms", stopwatch.Elapsed);
+            stopwatch.Reset();
+
+            Console.Write("\n\n");
 
             while (true) {
                 PrintCollections();

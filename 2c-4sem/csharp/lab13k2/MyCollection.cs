@@ -12,44 +12,14 @@ namespace lab13k2
 
     public class MyCollection : MyCollectionQueue<Organization>
     {
-        List<JournalEntry> journal;
-
         public string Name { get; set; }
 
         public MyCollection(string name) : base() {
-            journal = new List<JournalEntry>();
             Name = name;
         }
 
         public MyCollection(string name, int cap) : base(cap) {
-            journal = new List<JournalEntry>();
             Name = name;
-        }
-
-
-        public override Organization this[int index]
-        {
-            get
-            {
-                return base[index];
-            }
-            set
-            {
-                CollectionReferenceChanged(this, new CollectionHandlerEventArgs(this.Name, "changed", this[index]));
-                base[index] = value;
-            }
-        }
-
-        public void CollectionCountChanged(object sourse, CollectionHandlerEventArgs e)
-        {
-            JournalEntry je = new JournalEntry(e.NameCollection, e.ChangeCollection, e.Obj.ToString());
-            journal.Add(je);
-
-        }
-        public void CollectionReferenceChanged(object sourse, CollectionHandlerEventArgs e)
-        {
-            JournalEntry je = new JournalEntry(e.NameCollection, e.ChangeCollection, e.Obj.ToString());
-            journal.Add(je);
         }
 
         public virtual bool Remove(int postition)
