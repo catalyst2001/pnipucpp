@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab5_test\\lab5_test.csproj": {}
+    "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab5_test\\lab5_test.csproj": {}
   },
   "projects": {
-    "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab5\\lab5.csproj": {
+    "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab5\\lab5.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab5\\lab5.csproj",
+        "projectUniqueName": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab5\\lab5.csproj",
         "projectName": "lab5",
-        "projectPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab5\\lab5.csproj",
-        "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab5\\obj\\",
+        "projectPath": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab5\\lab5.csproj",
+        "packagesPath": "C:\\Users\\okay\\.nuget\\packages\\",
+        "outputPath": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab5\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\okay\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -55,21 +58,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab5_test\\lab5_test.csproj": {
+    "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab5_test\\lab5_test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab5_test\\lab5_test.csproj",
+        "projectUniqueName": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab5_test\\lab5_test.csproj",
         "projectName": "lab5_test",
-        "projectPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab5_test\\lab5_test.csproj",
-        "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab5_test\\obj\\",
+        "projectPath": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab5_test\\lab5_test.csproj",
+        "packagesPath": "C:\\Users\\okay\\.nuget\\packages\\",
+        "outputPath": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab5_test\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\okay\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -83,8 +89,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab5\\lab5.csproj": {
-                "projectPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab5\\lab5.csproj"
+              "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab5\\lab5.csproj": {
+                "projectPath": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab5\\lab5.csproj"
               }
             }
           }
@@ -132,7 +138,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

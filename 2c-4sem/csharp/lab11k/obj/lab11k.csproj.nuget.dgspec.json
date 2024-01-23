@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab11k\\lab11k.csproj": {}
+    "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab11k\\lab11k.csproj": {}
   },
   "projects": {
-    "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab11k\\lab11k.csproj": {
+    "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab11k\\lab11k.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab11k\\lab11k.csproj",
+        "projectUniqueName": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab11k\\lab11k.csproj",
         "projectName": "lab11k",
-        "projectPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab11k\\lab11k.csproj",
-        "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "E:\\GitHub\\pnipucpp\\2c-4sem\\csharp\\lab11k\\obj\\",
+        "projectPath": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab11k\\lab11k.csproj",
+        "packagesPath": "C:\\Users\\okay\\.nuget\\packages\\",
+        "outputPath": "D:\\STUDY\\ПНИПУ\\2 семестр\\Полякова ОА\\labs\\2c-4sem\\csharp\\lab11k\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\okay\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -55,7 +58,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

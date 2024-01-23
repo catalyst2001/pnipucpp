@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="lab13i.CollectionHandlerEventArgs">
+    <Position X="8" Y="1.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAQCAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CollectionHandlerEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13i.Journal">
+    <Position X="12.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Journal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13i.JournalEntry">
+    <Position X="14.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAKAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>JournalEntry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13i.Kingdom">
+    <Position X="10.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Kingdom.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13i.Lab">
+    <Position X="10.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Lab.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13i.Monarchy">
+    <Position X="6.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Monarchy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13i.MyCollection">
+    <Position X="3" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAACAAQBCUAAAAAEAAAAAAAAABAAAA=</HashCode>
+      <FileName>MyCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13i.MyCollectionNode&lt;_Ty&gt;">
+    <Position X="12.25" Y="1.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAgAA=</HashCode>
+      <FileName>MyCollectionQueue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13i.MyCollectionQueue&lt;_Ty&gt;">
+    <Position X="3" Y="5.5" Width="2.75" />
+    <NestedTypes>
+      <Class Name="lab13i.MyCollectionQueue&lt;_Ty&gt;.MyCollectionQueueEnumeraror&lt;_Ty2&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>MyCollectionQueue.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="lab13i.MyCollectionQueue&lt;_Ty&gt;.
+        &lt;_Ty2&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>MyCollectionQueue.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IAFAEAIAgAAAABAADAAABAUAAgAIAAAEAAAQAAAAggI=</HashCode>
+      <FileName>MyCollectionQueue.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="lab13i.MyNewCollection">
+    <Position X="5.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAKAAAAAAAAAAAIACAAABAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MyNewCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13i.Program">
+    <Position X="14.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13i.Republic">
+    <Position X="10.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Republic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="lab13i.State">
+    <Position X="8.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAACAAAQAAAAAAAAAAUAEAAAAACBAQBAABBU=</HashCode>
+      <FileName>State.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="lab13i.IRandomInit">
+    <Position X="14.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>IRandomInit.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Delegate Name="lab13i.CollectionHandler">
+    <Position X="14.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MyCollection.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

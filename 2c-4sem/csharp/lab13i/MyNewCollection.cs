@@ -8,10 +8,12 @@ namespace lab13i
 {
     public class MyNewCollection : MyCollection
     {
-        public MyNewCollection(string name) : base(name) {
+        public MyNewCollection(string name) : base(name)
+        {
         }
 
-        public MyNewCollection(string name, int cap) : base(name, cap) {
+        public MyNewCollection(string name, int cap) : base(name, cap)
+        {
         }
 
         public event CollectionHandler CollectionCountChanged;

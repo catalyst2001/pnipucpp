@@ -16,12 +16,14 @@ namespace lab13i
 
         public string Name { get; set; }
 
-        public MyCollection(string name) : base() {
+        public MyCollection(string name) : base()
+        {
             journal = new List<JournalEntry>();
             Name = name;
         }
 
-        public MyCollection(string name, int cap) : base(cap) {
+        public MyCollection(string name, int cap) : base(cap)
+        {
             journal = new List<JournalEntry>();
             Name = name;
         }
@@ -66,19 +68,23 @@ namespace lab13i
             return true;
         }
 
-        public void FillCollection() {
+        public void FillCollection()
+        {
             MyCollectionNode<State>? node = tail;
-            while (node != null) {
+            while (node != null)
+            {
                 node.Data.SetName("State");
                 node.Data.SetGovernmentForm("GovermentForm");
                 node = node.Next;
             }
         }
 
-        public void Sort() {
+        public void Sort()
+        {
             MyCollectionNode<State>? node = tail;
             List<State> list = new List<State>(count);
-            while (node != null) {
+            while (node != null)
+            {
                 list.Add(node.Data);
                 node = node.Next;
             }
@@ -86,14 +92,16 @@ namespace lab13i
             list.Sort();
 
             node = tail;
-            foreach (var item in list) {
+            foreach (var item in list)
+            {
                 Debug.Assert(node != null, "node can never be null here!");
                 node.Data = item;
                 node = node.Next;
             }
         }
 
-        public void Clear() {
+        public void Clear()
+        {
             Free();
         }
     }

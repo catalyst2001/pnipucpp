@@ -24,5 +24,16 @@ namespace lab14i
 
             return dictionary.Keys.Aggregate((result, key) => result + separator + key);
         }
+
+        public static Dictionary<string, State> SortByKeys(this Dictionary<string, State> dictionary)
+        {
+            if (dictionary == null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
+            return dictionary.OrderBy(pair => pair.Key)
+                             .ToDictionary(pair => pair.Key, pair => pair.Value);
+        }
     }
 }

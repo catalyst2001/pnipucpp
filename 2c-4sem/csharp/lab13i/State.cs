@@ -3,14 +3,15 @@ using System.Xml.Linq;
 
 namespace lab13i
 {
-    public class State: IRandomInit
+    public class State : IRandomInit
     {
         protected string name;
         protected string governmentForm;
         private int _random;
         int IRandomInit.random => _random;
 
-        public State(string name, string governmentForm) {
+        public State(string name, string governmentForm)
+        {
             this.name = name;
             this.governmentForm = governmentForm;
         }

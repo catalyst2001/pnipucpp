@@ -25,5 +25,17 @@ namespace lab14k
             return queue.Select(organization => organization.GetFullInfo()).Aggregate((result, fullInfo) => result + separator + fullInfo);
         }
 
+        public static Queue<Organization> SortByName(this Queue<Organization> queue)
+        {
+            if (queue == null)
+            {
+                throw new ArgumentNullException(nameof(queue));
+            }
+
+            var sortedList = queue.OrderBy(organization => organization.name).ToList();
+            var sortedQueue = new Queue<Organization>(sortedList);
+            return sortedQueue;
+        }
+
     }
 }
