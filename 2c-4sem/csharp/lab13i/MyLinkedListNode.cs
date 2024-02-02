@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace lab13i
 {
-    public class MyCollectionNode<T>
+    public class MyLinkedListNode<T>
     {
-        MyCollectionNode<T>? next_node;
+        MyLinkedListNode<T>? next_node;
         T node_data;
 
-        public MyCollectionNode(MyCollectionNode<T>? next, T data)
+        public MyLinkedListNode(MyLinkedListNode<T>? next, T data)
         {
             next_node = next;
             node_data = data;
@@ -23,7 +23,7 @@ namespace lab13i
             set { node_data = value; }
         }
 
-        public MyCollectionNode<T>? Next
+        public MyLinkedListNode<T>? Next
         {
             get { return next_node; }
             set { next_node = value; }

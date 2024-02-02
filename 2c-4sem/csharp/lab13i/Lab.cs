@@ -27,7 +27,7 @@ namespace lab13i
             foreach (var i in mc1)
                 Console.WriteLine("[{0}]: {1}", j++, i.GetFullInfo());
 
-            MyCollectionNode<State>? node = mc1.Find(stateForDel);
+            MyLinkedListNode<State>? node = mc1.Find(stateForDel);
             if (mc1.Remove(node))
             {
                 Console.WriteLine("element removed from collection\n");

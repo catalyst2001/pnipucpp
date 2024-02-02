@@ -9,7 +9,7 @@ namespace lab12i
     public class Lab124
     {
         public void Start() {
-            MyCollectionQueue<State> myQueue = new MyCollectionQueue<State>();
+            MyLinkedList<State> myQueue = new MyLinkedList<State>();
             if (myQueue.IsEmpty())
                 Console.WriteLine("collection is empty\n");
 

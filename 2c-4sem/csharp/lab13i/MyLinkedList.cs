@@ -7,16 +7,16 @@ using System.Text;
 
 namespace lab13i
 {
-    public class MyCollectionQueue<Ty> : IEnumerable<Ty>
+    public class MyLinkedList<Ty> : IEnumerable<Ty>
     {
-        public class MyCollectionQueueEnumeraror<TX> : IEnumerator<TX>
+        public class MyLinkedListEnumeraror<TX> : IEnumerator<TX>
         {
             TX data;
-            MyCollectionQueue<TX> collectionQueue;
+            MyLinkedList<TX> linkedList;
 
-            public MyCollectionQueueEnumeraror(MyCollectionQueue<TX>? thisQueue)
+            public MyLinkedListEnumeraror(MyLinkedList<TX>? thisLinkedList)
             {
-                collectionQueue = thisQueue.Copy2();
+                linkedList = thisLinkedList.ShallowCopy();
             }
 
             public TX Current
@@ -31,9 +31,9 @@ namespace lab13i
 
             public bool MoveNext()
             {
-                if (!collectionQueue.IsEmpty())
+                if (!linkedList.IsEmpty())
                 {
-                    data = collectionQueue.Front();
+                    data = linkedList.Front();
                     return true;
                 }
                 return false;
@@ -46,7 +46,7 @@ namespace lab13i
 
         public IEnumerator<Ty> GetEnumerator()
         {
-            return new MyCollectionQueueEnumeraror<Ty>(this);
+            return new MyLinkedListEnumeraror<Ty>(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -55,15 +55,39 @@ namespace lab13i
         }
 
         protected int count;
-        protected MyCollectionNode<Ty>? head;
-        protected MyCollectionNode<Ty>? tail;
+        protected MyLinkedListNode<Ty>? head;
+        protected MyLinkedListNode<Ty>? tail;
+
+        public MyLinkedListNode<Ty>? Head
+        {
+            get
+            {
+                return head;
+            }
+            set
+            {
+                head = value;
+            }
+        }
+
+        public MyLinkedListNode<Ty>? Tail
+        {
+            get
+            {
+                return tail;
+            }
+            set
+            {
+                tail = value;
+            }
+        }
 
         public int Count
         {
             get { return count; }
         }
 
-        public MyCollectionQueue()
+        public MyLinkedList()
         {
             head = null;
             tail = null;
@@ -76,7 +100,7 @@ namespace lab13i
             if (count > 0)
             {
                 Ty data = default(Ty);
-                MyCollectionNode<Ty>? newNode = new MyCollectionNode<Ty>(null, data);
+                MyLinkedListNode<Ty>? newNode = new MyLinkedListNode<Ty>(null, data);
                 // create new empty nodes
                 for (int i = 0; i < count; i++)
                 {
@@ -88,19 +112,19 @@ namespace lab13i
             }
         }
 
-        public MyCollectionQueue(int capacity)
+        public MyLinkedList(int capacity)
         {
             head = null;
             tail = null;
-            count = capacity; // define queue size
+            count = capacity;
             FillByDefaults();
         }
 
-        public MyCollectionQueue(MyCollectionQueue<Ty>? queueWithInit)
+        public MyLinkedList(MyLinkedList<Ty>? linkedListWithInit)
         {
-            if (queueWithInit != null)
+            if (linkedListWithInit != null)
             {
-                MyCollectionQueue<Ty> copy = queueWithInit.Copy2();
+                MyLinkedList<Ty> copy = linkedListWithInit.ShallowCopy();
                 while (!copy.IsEmpty())
                 {
                     PushBack(copy.Front());
@@ -110,16 +134,16 @@ namespace lab13i
 
         public void PushBack(Ty data)
         {
-            MyCollectionNode<Ty>? newNode = null;
-            newNode = new MyCollectionNode<Ty>(null, data);
-            if (head != null) // if previous node exists
-                head.Next = newNode; // next node for previous - this new node
+            MyLinkedListNode<Ty>? newNode = null;
+            newNode = new MyLinkedListNode<Ty>(null, data);
+            if (head != null)
+                head.Next = newNode;
 
-            head = newNode; //set new node to head ref
+            head = newNode;
             if (tail == null)
-                tail = head; // queue is empty or not initialized. Set tail to head ref
+                tail = head;
 
-            count++; // increment count elements in queue
+            count++;
         }
 
         public void PushBackMultiple(Ty[] dataArray, int count)
@@ -133,9 +157,9 @@ namespace lab13i
             }
         }
 
-        public MyCollectionNode<Ty>? Find(Ty dataForFind)
+        public MyLinkedListNode<Ty>? Find(Ty dataForFind)
         {
-            MyCollectionNode<Ty>? nodeRef = tail;
+            MyLinkedListNode<Ty>? nodeRef = tail;
             if (nodeRef != null)
             {
                 while (nodeRef != null)
@@ -150,15 +174,15 @@ namespace lab13i
             return null; // not found
         }
 
-        public bool Remove(MyCollectionNode<Ty>? nodeRefForDel)
+        public bool Remove(MyLinkedListNode<Ty>? nodeRefForDel)
         {
             if (nodeRefForDel == null)
                 return false;
 
-            MyCollectionNode<Ty>? nodeRef = tail; // tail is start
+            MyLinkedListNode<Ty>? nodeRef = tail; // tail is start
             while (nodeRef != null)
             { // if start node is not null
-                MyCollectionNode<Ty>? nextRef = nodeRef.Next; // save ref to next node
+                MyLinkedListNode<Ty>? nextRef = nodeRef.Next; // save ref to next node
                 if (nextRef != null)
                 { // if ref to next node is not null
                     if (nodeRefForDel == nextRef)
@@ -172,7 +196,7 @@ namespace lab13i
             return false;
         }
 
-        public bool RemoveMultiple(MyCollectionNode<Ty>?[] nodesRefForDel, int count)
+        public bool RemoveMultiple(MyLinkedListNode<Ty>?[] nodesRefForDel, int count)
         {
             bool bSuccess = true; // return is OK
             for (int i = 0; i < count; i++) // for each element
@@ -183,7 +207,7 @@ namespace lab13i
 
         public bool IsEmpty()
         {
-            return tail == null; // tail ref is null. queue is empty
+            return tail == null;
         }
 
         public Ty Front()
@@ -191,25 +215,25 @@ namespace lab13i
             Ty data = default(Ty); // init new empty object instance data
             if (tail != null)
             { // if tail not null
-                data = tail.Data; // copy data from queue node
-                tail = tail.Next; // move to next ref and set tail to this ref
-                count--; // element readed from queue, decrement count
+                data = tail.Data;
+                tail = tail.Next;
+                count--;
             }
             return data; // return copied data
         }
 
-        public MyCollectionQueue<Ty> Copy()
+        public MyLinkedList<Ty> Copy()
         {  // DEPTH copy
-            return new MyCollectionQueue<Ty>(this);
+            return new MyLinkedList<Ty>(this);
         }
 
-        public MyCollectionQueue<Ty> Copy2()
+        public MyLinkedList<Ty> ShallowCopy()
         {
-            MyCollectionQueue<Ty> queueCopy = new MyCollectionQueue<Ty>();
-            queueCopy.head = head;
-            queueCopy.tail = tail;
-            queueCopy.count = count;
-            return queueCopy;
+            MyLinkedList<Ty> linkedListCopy = new MyLinkedList<Ty>();
+            linkedListCopy.head = head;
+            linkedListCopy.tail = tail;
+            linkedListCopy.count = count;
+            return linkedListCopy;
         }
 
         // free memory
@@ -219,10 +243,10 @@ namespace lab13i
             tail = null;
         }
 
-        public MyCollectionNode<Ty>? GetNodeByIndex(int index)
+        public MyLinkedListNode<Ty>? GetNodeByIndex(int index)
         {
             int i = 0;
-            MyCollectionNode<Ty>? nodeRef = tail;
+            MyLinkedListNode<Ty>? nodeRef = tail;
             while (nodeRef != null)
             {
                 if (index == i)
@@ -238,7 +262,7 @@ namespace lab13i
         {
             get
             {
-                MyCollectionNode<Ty>? nodeRef = GetNodeByIndex(index);
+                MyLinkedListNode<Ty>? nodeRef = GetNodeByIndex(index);
                 if (nodeRef == null)
                     throw new IndexOutOfRangeException($"index {index} out of bounds");
 
@@ -246,7 +270,7 @@ namespace lab13i
             }
             set
             {
-                MyCollectionNode<Ty>? nodeRef = GetNodeByIndex(index);
+                MyLinkedListNode<Ty>? nodeRef = GetNodeByIndex(index);
                 if (nodeRef == null)
                     throw new IndexOutOfRangeException($"index {index} out of bounds");
 

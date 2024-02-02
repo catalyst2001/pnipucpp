@@ -10,7 +10,7 @@ namespace lab13i
 {
     public delegate void CollectionHandler(object source, CollectionHandlerEventArgs args);//делегат
 
-    public class MyCollection : MyCollectionQueue<State>
+    public class MyCollection : MyLinkedList<State>
     {
         List<JournalEntry> journal;
 
@@ -57,7 +57,7 @@ namespace lab13i
         public virtual bool Remove(int postition)
         {
             Console.WriteLine("MyCollection::Remove({0}) called", postition);
-            MyCollectionNode<State>? node = GetNodeByIndex(postition);
+            MyLinkedListNode<State>? node = GetNodeByIndex(postition);
             return base.Remove(node);
         }
 
@@ -70,7 +70,7 @@ namespace lab13i
 
         public void FillCollection()
         {
-            MyCollectionNode<State>? node = tail;
+            MyLinkedListNode<State>? node = tail;
             while (node != null)
             {
                 node.Data.SetName("State");
@@ -81,7 +81,7 @@ namespace lab13i
 
         public void Sort()
         {
-            MyCollectionNode<State>? node = tail;
+            MyLinkedListNode<State>? node = tail;
             List<State> list = new List<State>(count);
             while (node != null)
             {

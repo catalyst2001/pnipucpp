@@ -28,7 +28,7 @@ namespace lab12i
         }
     };
 
-    public class MyCollectionQueue<_Ty> : IEnumerable<_Ty>
+    public class MyLinkedList<_Ty> : IEnumerable<_Ty>
     {
 
         public class MyCollectionQueueEnumeraror<_Ty2> : IEnumerator<_Ty2>
@@ -63,9 +63,9 @@ namespace lab12i
         public class MyCollectionQueueEnumeraror2<_Ty2> : IEnumerator<_Ty2>
         {
             _Ty2 data;
-            MyCollectionQueue<_Ty2> collectionQueue;
+            MyLinkedList<_Ty2> collectionQueue;
 
-            public MyCollectionQueueEnumeraror2(MyCollectionQueue<_Ty2>? thisQueue) {
+            public MyCollectionQueueEnumeraror2(MyLinkedList<_Ty2>? thisQueue) {
                 collectionQueue = thisQueue.Copy2();
             }
 
@@ -106,13 +106,13 @@ namespace lab12i
             get { return count; }
         }
 
-        public MyCollectionQueue() {
+        public MyLinkedList() {
             head = null;
             tail = null;
             count = 0;
         }
 
-        public MyCollectionQueue(int capacity) {
+        public MyLinkedList(int capacity) {
             head = null;
             tail = null;
             count = capacity; // define queue size
@@ -131,9 +131,9 @@ namespace lab12i
             }
         }
 
-        public MyCollectionQueue(MyCollectionQueue<_Ty> ?queueWithInit) {
+        public MyLinkedList(MyLinkedList<_Ty> ?queueWithInit) {
             if(queueWithInit != null) {
-                MyCollectionQueue<_Ty> copy = queueWithInit.Copy2();
+                MyLinkedList<_Ty> copy = queueWithInit.Copy2();
                 while (!copy.IsEmpty()) {
                     PushBack(copy.Front());
                 }
@@ -214,12 +214,12 @@ namespace lab12i
             return data; // return copied data
         }
      
-        public MyCollectionQueue<_Ty> Copy() {  // DEPTH copy
-            return new MyCollectionQueue<_Ty>(this);
+        public MyLinkedList<_Ty> Copy() {  // DEPTH copy
+            return new MyLinkedList<_Ty>(this);
         }
 
-        public MyCollectionQueue<_Ty> Copy2() {
-            MyCollectionQueue<_Ty> queueCopy = new MyCollectionQueue<_Ty>();
+        public MyLinkedList<_Ty> Copy2() {
+            MyLinkedList<_Ty> queueCopy = new MyLinkedList<_Ty>();
             queueCopy.head = head;
             queueCopy.tail = tail;
             queueCopy.count = count;
