@@ -55,30 +55,30 @@ namespace lab13i
         }
 
         protected int count;
-        protected MyLinkedListNode<Ty>? head;
-        protected MyLinkedListNode<Ty>? tail;
+        protected MyLinkedListNode<Ty>? first;
+        protected MyLinkedListNode<Ty>? last;
 
-        public MyLinkedListNode<Ty>? Head
+        public MyLinkedListNode<Ty>? First
         {
             get
             {
-                return head;
+                return first;
             }
             set
             {
-                head = value;
+                first = value;
             }
         }
 
-        public MyLinkedListNode<Ty>? Tail
+        public MyLinkedListNode<Ty>? Last
         {
             get
             {
-                return tail;
+                return last;
             }
             set
             {
-                tail = value;
+                last = value;
             }
         }
 
@@ -89,8 +89,8 @@ namespace lab13i
 
         public MyLinkedList()
         {
-            head = null;
-            tail = null;
+            first = null;
+            last = null;
             count = 0;
         }
 
@@ -104,18 +104,18 @@ namespace lab13i
                 // create new empty nodes
                 for (int i = 0; i < count; i++)
                 {
-                    if (head != null)  // if head exists element
-                        head.Next = newNode; // set next ref to exists element
+                    if (first != null)  // if head exists element
+                        first.Next = newNode; // set next ref to exists element
 
-                    head = newNode;
+                    first = newNode;
                 }
             }
         }
 
         public MyLinkedList(int capacity)
         {
-            head = null;
-            tail = null;
+            first = null;
+            last = null;
             count = capacity;
             FillByDefaults();
         }
@@ -136,12 +136,12 @@ namespace lab13i
         {
             MyLinkedListNode<Ty>? newNode = null;
             newNode = new MyLinkedListNode<Ty>(null, data);
-            if (head != null)
-                head.Next = newNode;
+            if (first != null)
+                first.Next = newNode;
 
-            head = newNode;
-            if (tail == null)
-                tail = head;
+            first = newNode;
+            if (last == null)
+                last = first;
 
             count++;
         }
@@ -159,7 +159,7 @@ namespace lab13i
 
         public MyLinkedListNode<Ty>? Find(Ty dataForFind)
         {
-            MyLinkedListNode<Ty>? nodeRef = tail;
+            MyLinkedListNode<Ty>? nodeRef = last;
             if (nodeRef != null)
             {
                 while (nodeRef != null)
@@ -179,7 +179,7 @@ namespace lab13i
             if (nodeRefForDel == null)
                 return false;
 
-            MyLinkedListNode<Ty>? nodeRef = tail; // tail is start
+            MyLinkedListNode<Ty>? nodeRef = last; // tail is start
             while (nodeRef != null)
             { // if start node is not null
                 MyLinkedListNode<Ty>? nextRef = nodeRef.Next; // save ref to next node
@@ -207,16 +207,16 @@ namespace lab13i
 
         public bool IsEmpty()
         {
-            return tail == null;
+            return last == null;
         }
 
         public Ty Front()
         {
             Ty data = default(Ty); // init new empty object instance data
-            if (tail != null)
+            if (last != null)
             { // if tail not null
-                data = tail.Data;
-                tail = tail.Next;
+                data = last.Data;
+                last = last.Next;
                 count--;
             }
             return data; // return copied data
@@ -230,8 +230,8 @@ namespace lab13i
         public MyLinkedList<Ty> ShallowCopy()
         {
             MyLinkedList<Ty> linkedListCopy = new MyLinkedList<Ty>();
-            linkedListCopy.head = head;
-            linkedListCopy.tail = tail;
+            linkedListCopy.first = first;
+            linkedListCopy.last = last;
             linkedListCopy.count = count;
             return linkedListCopy;
         }
@@ -239,14 +239,14 @@ namespace lab13i
         // free memory
         public void Free()
         {
-            head = null;
-            tail = null;
+            first = null;
+            last = null;
         }
 
         public MyLinkedListNode<Ty>? GetNodeByIndex(int index)
         {
             int i = 0;
-            MyLinkedListNode<Ty>? nodeRef = tail;
+            MyLinkedListNode<Ty>? nodeRef = last;
             while (nodeRef != null)
             {
                 if (index == i)

@@ -134,6 +134,39 @@ void vec3_cross(vec3_t *p_dst, const vec3_t *p_veca, const vec3_t *p_vecb)
 {
 }
 
+bool vec3_less(const vec3_t *p_veca, const vec3_t *p_vecb)
+{
+	return (p_veca->x < p_vecb->x && p_veca->y < p_vecb->y && p_veca->z < p_vecb->z);
+}
+
+bool vec3_lesseq(const vec3_t * p_veca, const vec3_t * p_vecb)
+{
+	return (p_veca->x <= p_vecb->x && p_veca->y <= p_vecb->y && p_veca->z <= p_vecb->z);
+}
+
+bool vec3_equals(const vec3_t *p_veca, const vec3_t *p_vecb)
+{
+	return (p_veca->x == p_vecb->x && p_veca->y == p_vecb->y && p_veca->z == p_vecb->z);
+}
+
+bool vec3_greater(const vec3_t *p_veca, const vec3_t *p_vecb)
+{
+	return (p_veca->x > p_vecb->x && p_veca->y > p_vecb->y && p_veca->z > p_vecb->z);
+}
+
+bool vec3_greateq(const vec3_t * p_veca, const vec3_t * p_vecb)
+{
+	return (p_veca->x >= p_vecb->x && p_veca->y >= p_vecb->y && p_veca->z >= p_vecb->z);
+}
+
+void vec4_copy_vec3(vec4_t *p_dst, const vec3_t *p_src)
+{
+	p_dst->x = p_src->x;
+	p_dst->y = p_src->y;
+	p_dst->z = p_src->z;
+	p_dst->w = 1.f;
+}
+
 void vec4_set(vec4_t *p_dst, float x, float y, float z, float w)
 {
 	p_dst->x = x;
@@ -156,6 +189,15 @@ void vec4_div(vec4_t *p_dst, const vec4_t *p_veca, const vec4_t *p_vecb)
 
 void vec4_scale(vec3_t *p_dst, const vec4_t *p_veca, float sc)
 {
+}
+
+void vec4_divw(vec4_t *p_dst)
+{
+	if (p_dst->w >= FLT_EPSILON) {
+		p_dst->x /= p_dst->w;
+		p_dst->y /= p_dst->w;
+		p_dst->z /= p_dst->w;
+	}
 }
 
 bool vec4_normalable(const vec4_t *p_src_vec)
@@ -205,9 +247,14 @@ void mat33_ident(mat33_t p_dst)
 
 void mat33_transpose(mat33_t p_dst)
 {
-	for (size_t j = 0; j < 3; j++)
-		for (size_t i = 0; i < 3; i++)
+	float temp;
+	for (size_t j = 0; j < 3; j++) {
+		for (size_t i = 0; i < 3; i++) {
+			temp = p_dst[i][j];
 			p_dst[i][j] = p_dst[j][i];
+			p_dst[j][i] = temp;
+		}
+	}
 }
 
 void mat33_mul(mat33_t p_dst, const mat33_t p_mata, const mat33_t p_matb)

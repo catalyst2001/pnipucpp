@@ -339,6 +339,13 @@ glm::vec3 perspective_trimetric_project2(glm::vec3 in, glm::vec3 &begin, float _
 	float v33 = -cosph;
 	float v43 = _rho;
 
+	// 
+	// -sinth, -cosph * costh, 0               0
+	// 0       1               -sinph * sinth  0
+	// 0       sinph           -cosph          _rho
+	// 0       0               0               1
+	// 
+
 	float xe = v11 * in.x + v21 * in.y;
 	float ye = v12 * in.x + v22 * in.y + v32 * in.z;
 	float ze = v13 * in.x + v23 * in.y + v33 * in.z + v43;

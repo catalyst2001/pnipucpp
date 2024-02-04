@@ -8,6 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = lab9_test
-build_property.ProjectDir = D:\STUDY\ПНИПУ\2 семестр\Полякова ОА\labs\2c-4sem\csharp\lab9_test\
-build_property.EnableComHosting = 
-build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.ProjectDir = E:\GitHub\pnipucpp\2c-4sem\csharp\lab9_test\

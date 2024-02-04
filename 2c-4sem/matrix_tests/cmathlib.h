@@ -3,6 +3,9 @@
 #include <float.h>
 #include <math.h>
 
+#define DEG2RAD (0.0174444444f)
+#define RAD2DEG (57.3248407643f)
+
 /* VECTOR 2 */
 typedef struct vec2_s {
 	union {
@@ -46,6 +49,11 @@ float vec3_length(const vec3_t *p_src);
 void  vec3_reflect(vec3_t *p_vec);
 float vec3_dot(const vec3_t *p_veca, const vec3_t *p_vecb);
 void  vec3_cross(vec3_t *p_dst, const vec3_t *p_veca, const vec3_t *p_vecb);
+bool  vec3_less(const vec3_t *p_veca, const vec3_t *p_vecb); // veca < vecb
+bool  vec3_lesseq(const vec3_t *p_veca, const vec3_t *p_vecb); // veca <= vecb
+bool  vec3_equals(const vec3_t *p_veca, const vec3_t *p_vecb); // veca == vecb
+bool  vec3_greater(const vec3_t *p_veca, const vec3_t *p_vecb); // veca > vecb
+bool  vec3_greateq(const vec3_t *p_veca, const vec3_t *p_vecb); // veca >= vecb
 
 /* VECTOR 4 */
 typedef struct vec4_s {
@@ -55,11 +63,14 @@ typedef struct vec4_s {
 	};
 } vec4_t;
 
+void  vec4_copy_vec3(vec4_t *p_dst, const vec3_t *p_src);
+
 void  vec4_set(vec4_t *p_dst, float x, float y, float z, float w);
 void  vec4_mul(vec4_t *p_dst, const vec4_t *p_veca, const vec4_t *p_vecb);
 void  vec4_muls(vec4_t *p_dst, const vec4_t *p_src, float sc);
 void  vec4_div(vec4_t *p_dst, const vec4_t *p_veca, const vec4_t *p_vecb);
 void  vec4_scale(vec3_t *p_dst, const vec4_t *p_veca, float sc);
+void  vec4_divw(vec4_t *p_dst);
 bool  vec4_normalable(const vec4_t *p_src_vec);
 void  vec4_trynorm(vec4_t *p_vec);
 void  vec4_norm(vec4_t *p_vec);
@@ -113,13 +124,6 @@ void  mat44_scale(mat44_t p_mat, const vec3_t *p_scl);
 
 /* QUAT */
 typedef vec4_t quat_t;
-
-
-
-
-
-
-
 
 typedef struct transform_s {
 	mat44_t transform;

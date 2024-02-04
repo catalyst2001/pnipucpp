@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace lab13i
 {
-    public delegate void CollectionHandler(object source, CollectionHandlerEventArgs args);//делегат
+    public delegate void CollectionHandler(object source, CollectionHandlerEventArgs args);
 
     public class MyCollection : MyLinkedList<State>
     {
@@ -70,7 +70,7 @@ namespace lab13i
 
         public void FillCollection()
         {
-            MyLinkedListNode<State>? node = tail;
+            MyLinkedListNode<State>? node = last;
             while (node != null)
             {
                 node.Data.SetName("State");
@@ -81,7 +81,7 @@ namespace lab13i
 
         public void Sort()
         {
-            MyLinkedListNode<State>? node = tail;
+            MyLinkedListNode<State>? node = last;
             List<State> list = new List<State>(count);
             while (node != null)
             {
@@ -91,7 +91,7 @@ namespace lab13i
 
             list.Sort();
 
-            node = tail;
+            node = last;
             foreach (var item in list)
             {
                 Debug.Assert(node != null, "node can never be null here!");

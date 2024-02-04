@@ -1,12 +1,11 @@
-﻿  cmathlib.c
-d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(228): warning C4029: объявленный список формальных параметров отличается от объявления
-d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(73): warning C4716: vec2_dot: должна возвращать значение
-d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(107): warning C4716: vec3_normalable: должна возвращать значение
-d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(123): warning C4716: vec3_length: должна возвращать значение
-d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(119): warning C4716: vec3_lengthsq: должна возвращать значение
-d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(131): warning C4716: vec3_dot: должна возвращать значение
-d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(163): warning C4716: vec4_normalable: должна возвращать значение
-d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(179): warning C4716: vec4_length: должна возвращать значение
-d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(175): warning C4716: vec4_lengthsq: должна возвращать значение
-d:\github\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(187): warning C4716: vec4_dot: должна возвращать значение
-  matrix_tests.vcxproj -> D:\GITHUB\pnipucpp\Debug\matrix_tests.exe
+﻿  main.c
+e:\github\pnipucpp\2c-4sem\matrix_tests\main.c(78): warning C4047: функция: "float (*)[4]" отличается по уровням косвенного обращения от "mat44_t (*)"
+e:\github\pnipucpp\2c-4sem\matrix_tests\main.c(78): warning C4024: mat44_ident: различные типы для формального и фактического параметров 1
+e:\github\pnipucpp\2c-4sem\matrix_tests\main.c(79): warning C4047: функция: "float (*)[4]" отличается по уровням косвенного обращения от "mat44_t (*)"
+e:\github\pnipucpp\2c-4sem\matrix_tests\main.c(79): warning C4024: mat44_rotate: различные типы для формального и фактического параметров 1
+e:\github\pnipucpp\2c-4sem\matrix_tests\main.c(80): warning C4047: функция: "float (*)[4]" отличается по уровням косвенного обращения от "mat44_t (*)"
+e:\github\pnipucpp\2c-4sem\matrix_tests\main.c(80): warning C4024: mat44_translate: различные типы для формального и фактического параметров 1
+e:\github\pnipucpp\2c-4sem\matrix_tests\main.c(80): warning C4133: функция: несовместимые типы - из "float [3]" в "const vec3_t *"
+e:\github\pnipucpp\2c-4sem\matrix_tests\main.c(84): warning C4047: функция: "float (*)[4]" отличается по уровням косвенного обращения от "mat44_t (*)"
+e:\github\pnipucpp\2c-4sem\matrix_tests\main.c(84): warning C4024: mat44_ident: различные типы для формального и фактического параметров 1
+  matrix_tests.vcxproj -> E:\GitHub\pnipucpp\Debug\matrix_tests.exe
