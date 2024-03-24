@@ -16,190 +16,236 @@ glm::mat4x4 view;
 glm::mat4x4 projection;
 float dist = -10.f;
 
-glm::vec3 houseVertices[] = {
-	glm::vec3(-0.5f, -0.5f, 0.5f),
-	glm::vec3(0.5f, -0.5f, 0.5f),
-	glm::vec3(0.5f,  0.5f, 0.5f),
-	glm::vec3(-0.5f,  0.5f, 0.5f),
 
-	glm::vec3(-0.5f, -0.5f, -0.5f),
-	glm::vec3(-0.5f,  0.5f, -0.5f),
-	glm::vec3(0.5f,  0.5f, -0.5f),
-	glm::vec3(0.5f, -0.5f, -0.5f),
-
-	glm::vec3(0.5f, -0.5f, 0.5f),
-	glm::vec3(0.5f, -0.5f, -0.5f),
-	glm::vec3(0.5f,  0.5f, -0.5f),
-	glm::vec3(0.5f,  0.5f, 0.5f),
-
-	glm::vec3(-0.5f, -0.5f, 0.5f),
-	glm::vec3(-0.5f,  0.5f, 0.5f),
-	glm::vec3(-0.5f,  0.5f, -0.5f),
-	glm::vec3(-0.5f, -0.5f, -0.5f),
-
-	glm::vec3(-0.5f,  0.5f, 0.5f),
-	glm::vec3(0.5f,  0.5f, 0.5f),
-	glm::vec3(0.0f,  0.8f, 0.0f),
-
-	glm::vec3(-0.5f, -0.5f, 0.5f),
-	glm::vec3(0.5f, -0.5f, 0.5f),
-	glm::vec3(0.5f, -0.5f, -0.5f),
-	glm::vec3(-0.5f, -0.5f, -0.5f),
-};
-
-int houseIndices[] = {
-	0, 1, 2,
-	2, 3, 0,
-
-	4, 5, 6,
-	6, 7, 4,
-
-	8, 9, 10,
-	10, 11, 8,
-
-	12, 13, 14,
-	14, 15, 12,
-
-	16, 17, 18,
-
-	19, 20, 21,
-	21, 22, 19,
-};
-
-#define H 1
-
-glm::vec3 house[][2] = {
-	//bottom
-	{ glm::vec3(-1, 0, 1), glm::vec3(-1, 0, -1) },
-	{ glm::vec3(1, 0, 1), glm::vec3(1, 0, -1) },
-	{ glm::vec3(-1, 0, 1), glm::vec3(1, 0, 1) },
-	{ glm::vec3(-1, 0, -1), glm::vec3(1, 0, -1) },
-
-	//left
-	{ glm::vec3(-1, 0, 1), glm::vec3(-1, 1, 1) },
-	{ glm::vec3(-1, 0, -1), glm::vec3(-1, 1, -1) },
-	{ glm::vec3(-1, 0, 1), glm::vec3(-1, 0, -1) },
-	{ glm::vec3(-1, 1, 1), glm::vec3(-1, 1, -1) },
-
-	// near
-	{ glm::vec3(-1, 0, -1), glm::vec3(-1, 1, -1) },
-	{ glm::vec3(1, 0, -1), glm::vec3(1, 1, -1) },
-	{ glm::vec3(-1, 0, -1), glm::vec3(1, 0, -1) }, //? glm::vec3(1, 0, 1)
-	{ glm::vec3(-1, 1, -1), glm::vec3(1, 1, -1) },
-
-	// right
-	{ glm::vec3(1, 0, -1), glm::vec3(1, 1, -1) },
-	{ glm::vec3(1, 0, 1), glm::vec3(1, 1, 1) },
-	{ glm::vec3(1, 0, -1), glm::vec3(1, 0, 1) },
-	{ glm::vec3(1, 1, -1), glm::vec3(1, 1, 1) },
-
-	// far
-	{ glm::vec3(1, 0, 1), glm::vec3(1, 1, 1) },
-	{ glm::vec3(-1, 0, 1), glm::vec3(-1, 1, 1) },
-	{ glm::vec3(1, 0, 1), glm::vec3(-1, 0, 1) },
-	{ glm::vec3(1, 1, 1), glm::vec3(-1, 1, 1) },
-
-	// top tri1
-	{ glm::vec3(-1, 1, -1), glm::vec3(0, 1.5f, -1) },
-	{ glm::vec3(0, 1.5f, -1), glm::vec3(1, 1, -1) },
-	{ glm::vec3(1, 1, -1), glm::vec3(-1, 1, -1) },
-
-	// top tri2
-	{ glm::vec3(-1, 1, 1), glm::vec3(0, 1.5f, 1) },
-	{ glm::vec3(0, 1.5f, 1), glm::vec3(1, 1, 1) },
-	{ glm::vec3(1, 1, 1), glm::vec3(-1, 1, 1) },
-
-	// top left
-	{ glm::vec3(1, 1, -1), glm::vec3(1, 1, 1) }, //ERROR
-	{ glm::vec3(0, 1.5f, -1), glm::vec3(0, 1.5f, 1) },
-	{ glm::vec3(-1, 1, -1), glm::vec3(0, 1.5f, -1) }, //28
-	{ glm::vec3(-1, 1, 1), glm::vec3(0, 1.5f, 1) }, //29
-
-	// top right
-	{ glm::vec3(1, 1, -1), glm::vec3(1, 1, 1) },
-	{ glm::vec3(0, 1.5f, -1), glm::vec3(0, 1.5f, 1) },
-	{ glm::vec3(1, 1, -1), glm::vec3(0, 1.5f, -1) }, //32
-	{ glm::vec3(1, 1, 1), glm::vec3(0, 1.5f, 1) } //33
-};
-const int num_lines = sizeof(house) / sizeof(house[0]);
-
-glm::vec3 projected_verts[num_lines][2];
-
-void draw_triangle_unfilled(HDC hdc, int x0, int y0, int x1, int y1, int x2, int y2)
-{
-	POINT pt;
-	MoveToEx(hdc, x0, y0, &pt);
-	LineTo(hdc, x1, y1);
-	LineTo(hdc, x2, y2);
-	LineTo(hdc, x0, y0);
-	MoveToEx(hdc, pt.x, pt.y, &pt);
-}
-
-void draw_triangles_with_indices(HDC hdc, glm::vec3 *p_coords, int *p_indices, size_t indices_count)
-{
-	for (size_t i = 0; i < indices_count; i += 3) {
-
-		// draw each triangle
-		glm::vec3 prepared_verts[3];
-		int x0, y0, x1, y1, x2, y2;
-		float half_screen_width = rect.right / 2.f;
-		float half_screen_height = rect.bottom / 2.f;
-		for (size_t j = 0; j < 3; j++) {
-			glm::vec4 vec = glm::vec4(
-				p_coords[p_indices[i + j]].x,
-				p_coords[p_indices[i + j]].y,
-				p_coords[p_indices[i + j]].z,
-				1.f
-			);
-
-			glm::vec4 vec_projected = view * vec * projection;
-			if (vec_projected.w != 0.f) {
-				vec_projected.x /= vec_projected.w;
-				vec_projected.y /= vec_projected.w;
-				vec_projected.z /= vec_projected.w;
-			}
-			prepared_verts[j] = glm::vec3(vec_projected.x, vec_projected.y, vec_projected.z);
-
-			prepared_verts[j].x *= half_screen_width;
-			prepared_verts[j].y *= -half_screen_height;
-
-			prepared_verts[j].x += half_screen_width;
-			prepared_verts[j].y += half_screen_height;
-		}
-
-		x0 = (int)prepared_verts[0].x;
-		y0 = (int)prepared_verts[0].y;
-		x1 = (int)prepared_verts[1].x;
-		y1 = (int)prepared_verts[1].y;
-		x2 = (int)prepared_verts[2].x;
-		y2 = (int)prepared_verts[2].y;
-		draw_triangle_unfilled(hdc, x0, y0, x1, y1, x2, y2);
-		//Sleep(1000);
-	}
-}
-
-glm::mat4x4 mat_identity = glm::mat4x4(
-	glm::vec4(1.f, 0.f, 0.f, 0.f),
-	glm::vec4(0.f, 1.f, 0.f, 0.f),
-	glm::vec4(0.f, 0.f, 1.f, 0.f),
-	glm::vec4(0.f, 0.f, 0.f, 1.f)
-);
+glm::mat4x4 mat_identity = glm::mat4x4(1.f);
 
 HPEN pen_red;
 HPEN pen_blue;
 
-void rotate_model()
+glm::vec3 verts[] = {
+  /* bottom */
+  glm::vec3(-1, -1, -1),
+  glm::vec3(-1, -1, 1),
+  glm::vec3(1, -1, 1),
+  glm::vec3(1, -1, -1),
+
+  /* top */
+  glm::vec3(-1, 1, -1),
+  glm::vec3(-1, 1, 1),
+  glm::vec3(1, 1, 1),
+  glm::vec3(1, 1, -1),
+
+  /* roof */
+  glm::vec3(-1, 1.5f, 0),
+  glm::vec3(1, 1.5f, 0)
+};
+
+unsigned int indices[] = {
+  /* bottom */
+  0, 1,
+  1, 2,
+  2, 3,
+  3, 0,
+
+  /* top */
+  4, 5,
+  5, 6,
+  6, 7,
+  7, 4,
+
+  /* vertical */
+  0, 4,
+  1, 5,
+  2, 6,
+  3, 7,
+
+  /* roof */
+  4, 8,
+  8, 5,
+  7, 9,
+  9, 6,
+  8, 9
+};
+
+unsigned int parallels[] = {
+  /* Z */
+  0, 1,
+  3, 2,
+
+  /* X */
+  0, 3,
+  1, 2,
+
+  /* Y */
+  0, 4,
+  3, 7,
+
+  /* roof -Z */
+  5, 8,
+  6, 9,
+
+  /* roof +Z */
+  4, 8,
+  7, 9
+};
+
+struct transform_s
 {
-	for (size_t i = 0; i < sizeof(house) / sizeof(house[0]); i++) {
-		for (size_t j = 0; j < 2; j++) {
-			glm::vec4 vec = glm::vec4(house[i][j].x, house[i][j].y, house[i][j].z, 1.f);
-			glm::mat4x4 mat = glm::rotate(mat_identity, -90.f, glm::vec3(1.f, 0.f, 0.f));
-			mat = glm::rotate(mat, 89.f, glm::vec3(0.f, 1.f, 0.f));
-			vec = mat * vec;
-			house[i][j] = glm::vec3(vec.x, vec.y, vec.z);
-		}
-	}
-}
+  glm::mat4x4 world; /* complex matrix */
+  glm::mat4x4 model; /* model transforms */
+  glm::mat4x4 view; /* view transforms */
+  glm::mat4x4 projection; /* projection */
+
+  glm::vec3 origin;
+  glm::vec3 angles;
+  glm::vec3 viewpoint;
+
+  transform_s() {
+    world = glm::mat4x4(1.f);
+    model = glm::mat4x4(1.f);
+    view = glm::mat4x4(1.f);
+    projection = glm::mat4x4(1.f);
+  }
+  ~transform_s() {}
+};
+
+class draw_viewport
+{
+private:
+  const transform_s &t;
+  const RECT  &rect;
+  HBITMAP    h_bitmap;
+  HDC        h_memdc;
+  SIZE       viewport_size;
+
+  void to_screen(glm::vec2 &dst_screen_coord, glm::vec3 model_coord) {
+    float hsw = viewport_size.cx / 2.f;
+    float hsh = viewport_size.cy / 2.f;
+    glm::vec4 gcoord = t.projection * t.model * glm::vec4(model_coord, 1.f);
+    if (gcoord.w > 0.f) {
+      gcoord.x /= gcoord.w;
+      gcoord.y /= gcoord.w;
+      gcoord.z /= gcoord.w;
+    }
+    gcoord.x *= hsw;
+    gcoord.y *= -hsh;
+    gcoord.x += hsw;
+    gcoord.y += hsh;
+    dst_screen_coord.x = gcoord.x;
+    dst_screen_coord.y = gcoord.y;
+  }
+
+  void test_rects_draw() {
+    RECT rct;
+    rct.left = 0;
+    rct.top = 0;
+    rct.right = rct.left + 100;
+    rct.bottom = rct.top + 100;
+    FillRect(h_memdc, &rct, (HBRUSH)GetStockObject(LTGRAY_BRUSH));
+
+    rct.left = 100;
+    rct.top = 100;
+    rct.right = rct.left + 100;
+    rct.bottom = rct.top + 100;
+    FillRect(h_memdc, &rct, (HBRUSH)GetStockObject(LTGRAY_BRUSH));
+  }
+
+public:
+  /*
+   _transform - transformations
+   r - drawing rect in screen coords
+  */
+  draw_viewport(const transform_s &_transform, RECT &r) : t(_transform), rect(r) {
+    h_bitmap = NULL;
+    h_memdc = NULL;
+  }
+  ~draw_viewport() {}
+
+  void begin_frame(HDC hdc) {
+    viewport_size.cx = labs(rect.right - rect.left);
+    viewport_size.cy = labs(rect.bottom - rect.top);
+    h_memdc = CreateCompatibleDC(hdc);
+    h_bitmap = CreateCompatibleBitmap(hdc, viewport_size.cx, viewport_size.cy);
+    SelectObject(h_memdc, h_bitmap);
+    printf("begin_frame  l(%d) t(%d) r(%d) b(%d)\n", rect.left, rect.top, rect.right, rect.bottom);
+  }
+
+  void end_frame(HDC hdc) {
+    if (!BitBlt(hdc, rect.left, rect.top, viewport_size.cx, viewport_size.cy, h_memdc, 0, 0, SRCCOPY))
+      printf("BitBlt Failed\n");
+
+    if (h_memdc) {
+      DeleteDC(h_memdc);
+      h_memdc = NULL;
+    }
+
+    if (h_bitmap) {
+      DeleteObject(h_bitmap);
+      h_bitmap = NULL;
+    }
+  }
+
+  void clear(HBRUSH brush) {
+    RECT norm_rect;
+    norm_rect.left = 0;
+    norm_rect.top = 0;
+    norm_rect.right = viewport_size.cx;
+    norm_rect.bottom = viewport_size.cy;
+    FillRect(h_memdc, &norm_rect, brush);
+  }
+
+  void draw_line(const glm::vec2 &pt1, const glm::vec2 &pt2)
+  {
+    MoveToEx(h_memdc, (int)pt1.x, (int)pt1.y, NULL);
+    LineTo(h_memdc, (int)pt2.x, (int)pt2.y);
+  }
+
+  void draw_triangles_indexed(const glm::vec3 *p_verts, const unsigned int *p_indices, size_t num_indices)
+  {
+    glm::vec2 vert[2];
+    size_t num_tris = num_indices / 3;
+    for (size_t i = 0; i < num_tris; i++) {
+      for (size_t j = 0; j < 3; j++) {
+        to_screen(vert[0], p_verts[p_indices[i + j + 0]]);
+        to_screen(vert[1], p_verts[p_indices[i + (j + 1) % 3]]);
+        draw_line(vert[0], vert[1]);
+      }
+    }
+  }
+
+  void draw_triangles(const glm::vec3 *p_verts, size_t num_verts)
+  {
+    glm::vec2 vert[2];
+    size_t num_tris = num_verts / 3;
+    for (size_t i = 0; i < num_tris; i++) {
+      for (size_t j = 0; j < 3; j++) {
+        to_screen(vert[0], p_verts[i + j + 0]);
+        to_screen(vert[1], p_verts[i + (j + 1) % 3]);
+        draw_line(vert[0], vert[1]);
+      }
+    }
+  }
+
+  void draw_tri(const glm::vec3 *p_verts)
+  {
+    glm::vec2 p1, p2;
+    for (size_t j = 0; j < 3; j++) {
+      to_screen(p1, p_verts[j]);
+      to_screen(p2, p_verts[(j + 1) % 3]);
+      draw_line(p1, p2);
+    }
+  }
+
+  void draw_lines_indexed(const glm::vec3 *p_verts, const unsigned int *p_indices, size_t num_indices)
+  {
+    glm::vec2 p1, p2;
+    for (size_t i = 0; i < num_indices - 1; i += 2) {
+      to_screen(p1, p_verts[p_indices[i]]);
+      to_screen(p2, p_verts[p_indices[i + 1]]);
+      draw_line(p1, p2);
+    }
+  }
+};
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -265,57 +311,6 @@ void draw_line(HDC hdc, int x0, int y0, int x1, int y1)
 	MoveToEx(hdc, x0, y0, &pt);
 	LineTo(hdc, x1, y1);
 	MoveToEx(hdc, pt.x, pt.y, &pt);
-}
-
-inline glm::vec3 project_vertex(glm::vec3 &vert_in)
-{
-	float half_screen_width = rect.right / 2.f;
-	float half_screen_height = rect.bottom / 2.f;
-	glm::vec4 vec = glm::vec4(vert_in.x, vert_in.y, vert_in.z, 1.f);
-	glm::vec4 vec_projected = view * vec * projection;
-	if (vec_projected.w != 0.f) {
-		vec_projected.x /= vec_projected.z;
-		vec_projected.y /= vec_projected.z;
-		vec_projected.z /= vec_projected.z;
-	}
-	
-	return glm::vec3(
-		(vec_projected.x * half_screen_width) + half_screen_width,
-		(vec_projected.y * half_screen_height) + half_screen_height,
-		vec_projected.z
-	);
-}
-
-inline glm::vec3 perspective_trimetric_project(glm::vec3 &in, glm::vec3 &begin, float theta, float phi, float pz)
-{
-	glm::vec4 in_col = glm::vec4(in.x, in.y, in.z, 1.f);
-	glm::mat4x4 mat = mat_identity;
-	theta = glm::radians(theta);
-	phi = glm::radians(phi);
-	mat = glm::rotate(mat, theta, glm::vec3(0.f, 1.f, 0.f)); //Ry
-	mat = glm::rotate(mat, phi, glm::vec3(1.f, 0.f, 0.f)); //Rx
-	mat = mat * glm::mat4x4(
-		glm::vec4(1.f, 0.f, 0.f, 0.f),
-		glm::vec4(0.f, 1.f, 0.f, 0.f),
-		glm::vec4(0.f, 0.f, -(1.f / pz), 0.f),
-		glm::vec4(0.f, 0.f, 0.f, 1.f)
-	);
-
-	glm::vec4 out = glm::translate(mat_identity, begin) * in_col * mat;
-	if (out.w != 0.f) {
-		out.x /= out.w;
-		out.y /= out.w;
-		out.z /= out.w;
-	}
-
-	float scale = 0.5;
-	float half_screen_width = rect.right / 2.f;
-	float half_screen_height = rect.bottom / 2.f;
-	return glm::vec3(
-		(out.x * half_screen_width) + half_screen_width,
-		(out.y * -half_screen_height) + half_screen_height,
-		out.z
-	);
 }
 
 glm::vec3 perspective_trimetric_project2(glm::vec3 in, glm::vec3 &begin, float _theta, float _phi, float _rho) {
@@ -425,23 +420,6 @@ void paint_scene(HDC hdc, HWND hwnd)
 		projected_verts[i][1] = v1;
 		draw_line(hdc, v0.x, v0.y, v1.x, v1.y);
 	}
-#ifdef MATRIX_PRINT
-	printf("\\end{bmatrix}\n");
-
-
-	printf(" --- transformated ---\n\\begin{bmatrix}\n");
-	for (size_t i = 0; i < num_lines; i++) {
-		printf(
-			"%.2f && %.2f && %.2f\\\\\n"
-			"%.2f && %.2f && %.2f\\\\\n",
-			projected_verts[i][0].x, projected_verts[i][0].y, projected_verts[i][0].z,
-			projected_verts[i][1].x, projected_verts[i][1].y, projected_verts[i][1].z
-		);
-	}
-	printf("\\end{bmatrix}\n");
-#endif
-	SelectObject(hdc, pen_blue);
-
 
 	/* Z */
 	glm::vec2 endpos;
@@ -545,12 +523,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
 	case WM_SIZE:
-		//GetClientRect(hWnd, &rect);
-		//if (rect.bottom == 0)
-		//	rect.bottom = 1;
-
-		//projection = glm::perspective(45.f, rect.right / (float)rect.bottom, 0.0001f, 1000.f);
-		InvalidateRect(hWnd, NULL, FALSE);
+		//InvalidateRect(hWnd, NULL, FALSE);
 		break;
 
 	case WM_MOUSEWHEEL: {

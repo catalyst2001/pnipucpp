@@ -1,4 +1,6 @@
-﻿#include <stdio.h>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <math.h>
 #include <Windows.h>
 
 /* math lib */
@@ -35,6 +37,57 @@ bool register_classes() {
   }
   return true;
 }
+
+class logmessages
+{
+  FILE *fp;
+  char buf[1024];
+
+public:
+  logmessages(bool b_use_logging, const char *p_filename) : fp(nullptr) {
+    if (b_use_logging) {
+      fp = fopen(p_filename, "wt");
+      log_put_line("~~~~~~~~~~~~~~ log opened ~~~~~~~~~~~~~~");
+    }
+  }
+
+  ~logmessages() {
+    if (fp) {
+      log_put_line("~~~~~~~~~~~~~~ log closed ~~~~~~~~~~~~~~");
+      fflush(fp);
+      fclose(fp);
+      fp = nullptr;
+    }
+  }
+
+  inline void log_put_line(const char *p_text) {
+    if (fp) {
+      fprintf(fp, "%s\n", p_text);
+    }
+  }
+
+  inline bool is_enabled() { return fp != nullptr; }
+
+  void latex_print_mat4x4_with_equal_varname(const char *p_math_var_name, const glm::mat4x4 &mat) {
+    if (!is_enabled())
+      return;
+
+    snprintf(buf, sizeof(buf),
+      "%s = \\begin{bmatrix}"
+      "%.2f & %.2f & %.2f & %.2f \\\\ "
+      "%.2f & %.2f & %.2f & %.2f \\\\ "
+      "%.2f & %.2f & %.2f & %.2f \\\\ "
+      "%.2f & %.2f & %.2f & %.2f "
+      "\\end{bmatrix}\\\\",
+      p_math_var_name,
+      mat[0][0], mat[0][1], mat[0][2], mat[0][3],
+      mat[1][0], mat[1][1], mat[1][2], mat[1][3],
+      mat[2][0], mat[2][1], mat[2][2], mat[2][3],
+      mat[3][0], mat[3][1], mat[3][2], mat[3][3]
+    );
+    log_put_line(buf);
+  }
+};
 
 struct transform_s
 {
@@ -75,11 +128,26 @@ private:
       gcoord.z /= gcoord.w;
     }
     gcoord.x *= hsw;
-    gcoord.y *= hsh;
+    gcoord.y *= -hsh;
     gcoord.x += hsw;
     gcoord.y += hsh;
     dst_screen_coord.x = gcoord.x;
     dst_screen_coord.y = gcoord.y;
+  }
+
+  void test_rects_draw() {
+    RECT rct;
+    rct.left = 0;
+    rct.top = 0;
+    rct.right = rct.left + 100;
+    rct.bottom = rct.top + 100;
+    FillRect(h_memdc, &rct, (HBRUSH)GetStockObject(LTGRAY_BRUSH));
+
+    rct.left = 100;
+    rct.top = 100;
+    rct.right = rct.left + 100;
+    rct.bottom = rct.top + 100;
+    FillRect(h_memdc, &rct, (HBRUSH)GetStockObject(LTGRAY_BRUSH));
   }
 
 public:
@@ -99,8 +167,7 @@ public:
     h_memdc = CreateCompatibleDC(hdc);
     h_bitmap = CreateCompatibleBitmap(hdc, viewport_size.cx, viewport_size.cy);
     SelectObject(h_memdc, h_bitmap);
-    //FillRect(h_memdc, &rect, (HBRUSH)GetStockObject(GRAY_BRUSH));
-    printf("l(%d) t(%d) r(%d) b(%d)\n", rect.left, rect.top, rect.right, rect.bottom);
+    printf("begin_frame  l(%d) t(%d) r(%d) b(%d)\n", rect.left, rect.top, rect.right, rect.bottom);
   }
 
   void end_frame(HDC hdc) {
@@ -124,7 +191,7 @@ public:
     norm_rect.top = 0;
     norm_rect.right = viewport_size.cx;
     norm_rect.bottom = viewport_size.cy;
-    FillRect(h_memdc, &rect, brush);
+    FillRect(h_memdc, &norm_rect, brush);
   }
 
   void draw_line(const glm::vec2 &pt1, const glm::vec2 &pt2)
@@ -171,14 +238,11 @@ public:
 
   void draw_lines_indexed(const glm::vec3 *p_verts, const unsigned int *p_indices, size_t num_indices)
   {
-    glm::vec2 vert[2];
-    size_t num_lines = num_indices / 2;
-    for (size_t i = 0; i < num_lines; i++) {
-      for (size_t j = 0; j < 2; j++) {
-        to_screen(vert[0], p_verts[p_indices[i + j + 0]]);
-        to_screen(vert[1], p_verts[p_indices[i + j + 1]]);
-        draw_line(vert[0], vert[1]);
-      }
+    glm::vec2 p1, p2;
+    for (size_t i = 0; i < num_indices - 1; i += 2) {
+      to_screen(p1, p_verts[p_indices[i]]);
+      to_screen(p2, p_verts[p_indices[i + 1]]);
+      draw_line(p1, p2);
     }
   }
 };
@@ -186,8 +250,10 @@ public:
 HWND        h_wnd;
 HWND        h_viewport;
 transform_s transform;
+float       eyes_distance;
 HBRUSH      h_background;
 HBRUSH      h_background2;
+logmessages logger(true, "matrices.txt");
 
 int main()
 {
@@ -213,20 +279,19 @@ int main()
     return 1;
   }
 
-  h_wnd = CreateWindowExA(0, MAIN_WINDOW_CLASS, "Lab3 - Stereopair controls", WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME,
-    xpos + viewport_width, ypos, control_width, viewport_height, HWND_DESKTOP, (HMENU)NULL, NULL, NULL);
-  if (!h_wnd) {
-    printf("failed to create window. LastError=%d\n", GetLastError());
-    return 1;
-  }
-
-  ShowWindow(h_wnd, SW_SHOW);
-  UpdateWindow(h_wnd); 
-  ShowWindow(h_viewport, SW_SHOW);
-  UpdateWindow(h_viewport);
+  //h_wnd = CreateWindowExA(WS_EX_TOPMOST, MAIN_WINDOW_CLASS, "Lab3 - Stereopair controls", WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME,
+  //  xpos + viewport_width, ypos, control_width, viewport_height, HWND_DESKTOP, (HMENU)NULL, NULL, NULL);
+  //if (!h_wnd) {
+  //  printf("failed to create window. LastError=%d\n", GetLastError());
+  //  return 1;
+  //}
 
   h_background = CreateSolidBrush(RGB(255, 0, 0));
   h_background2 = CreateSolidBrush(RGB(0, 0, 255));
+  //ShowWindow(h_wnd, SW_SHOW);
+  //UpdateWindow(h_wnd); 
+  ShowWindow(h_viewport, SW_SHOW);
+  UpdateWindow(h_viewport);
 
   MSG msg;
   while (GetMessageA(&msg, NULL, 0, 0)) {
@@ -236,30 +301,230 @@ int main()
   return 0;
 }
 
-void draw_scene(HDC hdc, const RECT &rect)
+glm::vec3 verts[] = {
+  /* bottom */
+  glm::vec3(-1, -1, -1),
+  glm::vec3(-1, -1, 1),
+  glm::vec3(1, -1, 1),
+  glm::vec3(1, -1, -1),
+
+  /* top */
+  glm::vec3(-1, 1, -1),
+  glm::vec3(-1, 1, 1),
+  glm::vec3(1, 1, 1),
+  glm::vec3(1, 1, -1),
+
+  /* roof */
+  glm::vec3(-1, 1.5f, 0),
+  glm::vec3(1, 1.5f, 0)
+};
+
+unsigned int indices[] = {
+  /* bottom */
+  0, 1,
+  1, 2,
+  2, 3,
+  3, 0,
+
+  /* top */
+  4, 5,
+  5, 6,
+  6, 7,
+  7, 4,
+
+  /* vertical */
+  0, 4,
+  1, 5,
+  2, 6,
+  3, 7,
+
+  /* roof */
+  4, 8,
+  8, 5,
+  7, 9,
+  9, 6,
+  8, 9
+};
+
+unsigned int parallels[] = {
+  /* Z */
+  0, 1,
+  3, 2,
+
+  /* X */
+  0, 3,
+  1, 2,
+
+  /* Y */
+  0, 4,
+  3, 7,
+
+  /* roof -Z */
+  5, 8,
+  6, 9,
+
+  /* roof +Z */
+  4, 8,
+  7, 9
+};
+
+float F = 10.f;
+float d = 0.1f;
+float z = 0.f;
+float eyesd = 5.f;
+
+// z = 0;
+// F/20 = d/2
+// -F/20 = -d/2
+float solve_equation(float z, float d)
+{
+  // d = z + (F / 10)
+  // F = 10d + z
+  return 10.f * d + z;
+}
+
+void draw_scene(HDC hdc, RECT &rect)
 {
   RECT left_eye, right_eye;
+  float F = solve_equation(z, d);
+  //printf("%f a=%f\n", F, atanf(d / F));
+
+  glm::mat4x4 translate_matrix;
+  glm::mat4x4 rotate_x_mat;
+  glm::mat4x4 rotate_y_mat;
+  glm::mat4x4 complex_mat;
+
+  /* compute transformations */
+  if (rect.bottom == 0)
+    rect.bottom = 1;
+
+  //float aspect_ratio = (float)(rect.right >> 1) / (float)rect.bottom;
+
+  logger.log_put_line("*** begin eye 1 ***");
+
+  transform.projection = glm::mat4x4(
+    glm::vec4(1.f, 0.f, 0.f, 0.f),
+    glm::vec4(0.f, 1.f, 0.f, 0.f),
+    glm::vec4(0.f, 0.f, 0.f, -1.f/F),
+    glm::vec4(eyesd /20.f, 0.f, 0.f, 1.f)
+  );
+  logger.latex_print_mat4x4_with_equal_varname("P", transform.projection);
+
+  translate_matrix = glm::translate(glm::mat4x4(1.f), glm::vec3(0.f, 0.f, -2.f));
+  logger.latex_print_mat4x4_with_equal_varname("T", translate_matrix);
+
+  rotate_x_mat = glm::rotate(glm::mat4x4(1.f), glm::radians(transform.angles.x), glm::vec3(1.f, 0.f, 0.f));
+  logger.latex_print_mat4x4_with_equal_varname("Rx", rotate_x_mat);
+
+  rotate_y_mat = glm::rotate(glm::mat4x4(1.f), glm::radians(transform.angles.y), glm::vec3(0.f, 1.f, 0.f));
+  logger.latex_print_mat4x4_with_equal_varname("Ry", rotate_y_mat);
+
+  complex_mat = translate_matrix * rotate_x_mat * rotate_y_mat;
+  logger.latex_print_mat4x4_with_equal_varname("CM = Rx * Ry * T * P", complex_mat);
+  transform.model = complex_mat;
+
+  /* left eye */
   left_eye.left = 0;
   left_eye.top = 0;
   left_eye.right = rect.right >> 1;
   left_eye.bottom = rect.bottom;
+  draw_viewport left(transform, left_eye);
+  left.begin_frame(hdc);
+  left.clear((HBRUSH)(COLOR_WINDOW + 1));
+  left.draw_lines_indexed(verts, indices, sizeof(indices) / sizeof(indices[0]));
+  left.end_frame(hdc);
+  logger.log_put_line("*** end eye 1 ***\n\n");
 
+  logger.log_put_line("*** begin eye 2 ***");
+  transform.projection = glm::mat4x4(
+    glm::vec4(1.f, 0.f, 0.f, 0.f),
+    glm::vec4(0.f, 1.f, 0.f, 0.f),
+    glm::vec4(0.f, 0.f, 0.f, -1.f / F),
+    glm::vec4(-eyesd /20.f, 0.f, 0.f, 1.f)
+  );
+  logger.latex_print_mat4x4_with_equal_varname("P", transform.projection);
+
+  translate_matrix = glm::translate(glm::mat4x4(1.f), glm::vec3(0.f, 0.f, -2.f));
+  logger.latex_print_mat4x4_with_equal_varname("T", translate_matrix);
+
+  rotate_x_mat = glm::rotate(glm::mat4x4(1.f), glm::radians(transform.angles.x), glm::vec3(1.f, 0.f, 0.f));
+  logger.latex_print_mat4x4_with_equal_varname("Rx", rotate_x_mat);
+
+  rotate_y_mat = glm::rotate(glm::mat4x4(1.f), glm::radians(transform.angles.y), glm::vec3(0.f, 1.f, 0.f));
+  logger.latex_print_mat4x4_with_equal_varname("Ry", rotate_y_mat);
+
+  complex_mat = translate_matrix * rotate_x_mat * rotate_y_mat;
+  logger.latex_print_mat4x4_with_equal_varname("CM = Rx * Ry * T * P", complex_mat);
+  transform.model = complex_mat;
+
+  /* right eye */
   right_eye.left = left_eye.right;
   right_eye.top = 0;
   right_eye.right = rect.right;
   right_eye.bottom = rect.bottom;
+  draw_viewport right(transform, right_eye);
+  right.begin_frame(hdc);
+  right.clear((HBRUSH)(COLOR_WINDOW + 1));
+  right.draw_lines_indexed(verts, indices, sizeof(indices) / sizeof(indices[0]));
+  right.end_frame(hdc);
+  logger.log_put_line("*** end eye 2 ***\n\n");
+}
 
-  draw_viewport left_eye_drawer(transform, left_eye);
-  left_eye_drawer.begin_frame(hdc);
-  left_eye_drawer.clear(h_background);
+const float move_scale = 1.f;
+const float rot_scale = 1.5f;
 
-  left_eye_drawer.end_frame(hdc);
+void handle_keys(int key)
+{
+  switch (key)
+  {
+  case 'W':
+    transform.origin.z += move_scale;
+    break;
 
-  draw_viewport right_eye_drawer(transform, right_eye);
-  right_eye_drawer.begin_frame(hdc);
-  left_eye_drawer.clear(h_background2);
+  case 'A':
+    transform.origin.x -= move_scale;
+    break;
 
-  right_eye_drawer.end_frame(hdc);
+  case 'S':
+    transform.origin.z -= move_scale;
+    break;
+
+  case 'D':
+    transform.origin.x += move_scale;
+    break;
+
+  case VK_DOWN:
+    transform.angles.x -= rot_scale;
+    break;
+
+  case VK_UP:
+    transform.angles.x += rot_scale;
+    break;
+
+  case VK_LEFT:
+    transform.angles.y -= rot_scale;
+    break;
+
+  case VK_RIGHT:
+    transform.angles.y += rot_scale;
+    break;
+
+  case VK_HOME:
+    d += 0.001f;
+    break;
+
+  case VK_END:
+    d -= 0.001f;
+    break;
+
+  case VK_PRIOR:
+    eyesd += 0.1f;
+    break;
+
+  case VK_NEXT:
+    eyesd -= 0.1f;
+    break;
+  }
 }
 
 LRESULT CALLBACK draw_viewport_wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -279,6 +544,11 @@ LRESULT CALLBACK draw_viewport_wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
     EndPaint(hwnd, &ps);
     break;
   }
+
+  case WM_KEYDOWN:
+    handle_keys(wparam);
+    InvalidateRect(hwnd, NULL, TRUE);
+    break;
 
   default:
     return DefWindowProcA(hwnd, msg, wparam, lparam);
