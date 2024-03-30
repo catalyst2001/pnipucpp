@@ -66,6 +66,12 @@ public:
     }
   }
 
+  inline void log_put(const char *p_string) {
+    if (fp) {
+      fputs(p_string, fp);
+    }
+  }
+
   inline bool is_enabled() { return fp != nullptr; }
 
   void latex_print_mat4x4_with_equal_varname(const char *p_math_var_name, const glm::mat4x4 &mat) {
@@ -86,6 +92,21 @@ public:
       mat[3][0], mat[3][1], mat[3][2], mat[3][3]
     );
     log_put_line(buf);
+  }
+
+  void latex_print_vertices(const glm::vec3 *p_src, size_t count) {
+    if (!is_enabled())
+      return;
+
+    /* begin latex matrix header */
+    fputs("\\begin{bmatrix}", fp);
+    for (size_t i = 0; i < count; i++) {
+      const glm::vec3 *p_vert = &p_src[i];
+
+      /* x y z w ('\\' or '') */
+      fprintf(fp, "%.2f & %.2f & %.2f & %.2f %s ", p_vert->x, p_vert->y, p_vert->z, 1.f, (i+1 < count) ? "\\\\" : "");
+    }
+    fputs("\\end{bmatrix}\n", fp);
   }
 };
 
@@ -118,7 +139,7 @@ private:
   HDC        h_memdc;
   SIZE       viewport_size;
 
-  void to_screen(glm::vec2 &dst_screen_coord, glm::vec3 model_coord) {
+  void to_screen(glm::vec3 &dst_screen_coord, glm::vec3 model_coord) {
     float hsw = viewport_size.cx / 2.f;
     float hsh = viewport_size.cy / 2.f;
     glm::vec4 gcoord = t.projection * t.model * glm::vec4(model_coord, 1.f);
@@ -133,6 +154,7 @@ private:
     gcoord.y += hsh;
     dst_screen_coord.x = gcoord.x;
     dst_screen_coord.y = gcoord.y;
+    dst_screen_coord.z = gcoord.z;
   }
 
   void test_rects_draw() {
@@ -194,7 +216,7 @@ public:
     FillRect(h_memdc, &norm_rect, brush);
   }
 
-  void draw_line(const glm::vec2 &pt1, const glm::vec2 &pt2)
+  void draw_line(const glm::vec3 &pt1, const glm::vec3 &pt2)
   {
     MoveToEx(h_memdc, (int)pt1.x, (int)pt1.y, NULL);
     LineTo(h_memdc, (int)pt2.x, (int)pt2.y);
@@ -202,7 +224,7 @@ public:
 
   void draw_triangles_indexed(const glm::vec3 *p_verts, const unsigned int *p_indices, size_t num_indices)
   {
-    glm::vec2 vert[2];
+    glm::vec3 vert[2];
     size_t num_tris = num_indices / 3;
     for (size_t i = 0; i < num_tris; i++) {
       for (size_t j = 0; j < 3; j++) {
@@ -215,7 +237,7 @@ public:
 
   void draw_triangles(const glm::vec3 *p_verts, size_t num_verts)
   {
-    glm::vec2 vert[2];
+    glm::vec3 vert[2];
     size_t num_tris = num_verts / 3;
     for (size_t i = 0; i < num_tris; i++) {
       for (size_t j = 0; j < 3; j++) {
@@ -228,7 +250,7 @@ public:
 
   void draw_tri(const glm::vec3 *p_verts)
   {
-    glm::vec2 p1, p2;
+    glm::vec3 p1, p2;
     for (size_t j = 0; j < 3; j++) {
       to_screen(p1, p_verts[j]);
       to_screen(p2, p_verts[(j + 1) % 3]);
@@ -236,9 +258,15 @@ public:
     }
   }
 
+  void project_vertices_to_screen(glm::vec3 *p_dst, const glm::vec3 *p_src, size_t count)
+  {
+    for (size_t i = 0; i < count; i++)
+      to_screen(p_dst[i], p_src[i]);
+  }
+
   void draw_lines_indexed(const glm::vec3 *p_verts, const unsigned int *p_indices, size_t num_indices)
   {
-    glm::vec2 p1, p2;
+    glm::vec3 p1, p2;
     for (size_t i = 0; i < num_indices - 1; i += 2) {
       to_screen(p1, p_verts[p_indices[i]]);
       to_screen(p2, p_verts[p_indices[i + 1]]);
@@ -318,6 +346,8 @@ glm::vec3 verts[] = {
   glm::vec3(-1, 1.5f, 0),
   glm::vec3(1, 1.5f, 0)
 };
+
+glm::vec3 proj_verts[sizeof(verts) / sizeof(verts[0])]; /* for project vertices */
 
 unsigned int indices[] = {
   /* bottom */
@@ -400,7 +430,7 @@ void draw_scene(HDC hdc, RECT &rect)
 
   //float aspect_ratio = (float)(rect.right >> 1) / (float)rect.bottom;
 
-  logger.log_put_line("*** begin eye 1 ***");
+  logger.log_put_line("*** BEGIN eye 1 ***");
 
   transform.projection = glm::mat4x4(
     glm::vec4(1.f, 0.f, 0.f, 0.f),
@@ -430,12 +460,25 @@ void draw_scene(HDC hdc, RECT &rect)
   left_eye.bottom = rect.bottom;
   draw_viewport left(transform, left_eye);
   left.begin_frame(hdc);
+
+  /* print src verts for LEFT EYE */
+  logger.latex_print_vertices(verts, sizeof(verts) / sizeof(verts[0]));
+  logger.log_put(" * CM = "); // in latex: [src verts mat] * CM = 
+
+  /* project verts for LEFT EYE */
+  left.project_vertices_to_screen(proj_verts, verts, sizeof(verts) / sizeof(verts[0]));
+  
+  /* print projected vertices for LEFT EYE */
+  logger.latex_print_vertices(proj_verts, sizeof(proj_verts) / sizeof(proj_verts[0]));
+
   left.clear((HBRUSH)(COLOR_WINDOW + 1));
   left.draw_lines_indexed(verts, indices, sizeof(indices) / sizeof(indices[0]));
   left.end_frame(hdc);
-  logger.log_put_line("*** end eye 1 ***\n\n");
+  logger.log_put_line("*** END eye 1 ***\n\n");
 
-  logger.log_put_line("*** begin eye 2 ***");
+
+  // ------------------------------------------------------------------------------------------------------------------
+  logger.log_put_line("*** BEGIN eye 2 ***");
   transform.projection = glm::mat4x4(
     glm::vec4(1.f, 0.f, 0.f, 0.f),
     glm::vec4(0.f, 1.f, 0.f, 0.f),
@@ -464,10 +507,21 @@ void draw_scene(HDC hdc, RECT &rect)
   right_eye.bottom = rect.bottom;
   draw_viewport right(transform, right_eye);
   right.begin_frame(hdc);
+
+  /* print src verts for RIGHT EYE */
+  logger.latex_print_vertices(verts, sizeof(verts) / sizeof(verts[0]));
+  logger.log_put(" * CM = "); // in latex: [src verts mat] * CM = 
+
+  /* project verts for RIGHT EYE */
+  left.project_vertices_to_screen(proj_verts, verts, sizeof(verts) / sizeof(verts[0]));
+
+  /* print projected vertices for RIGHT EYE */
+  logger.latex_print_vertices(proj_verts, sizeof(proj_verts) / sizeof(proj_verts[0]));
+
   right.clear((HBRUSH)(COLOR_WINDOW + 1));
   right.draw_lines_indexed(verts, indices, sizeof(indices) / sizeof(indices[0]));
   right.end_frame(hdc);
-  logger.log_put_line("*** end eye 2 ***\n\n");
+  logger.log_put_line("*** END eye 2 ***\n\n");
 }
 
 const float move_scale = 1.f;
@@ -494,11 +548,11 @@ void handle_keys(int key)
     break;
 
   case VK_DOWN:
-    transform.angles.x -= rot_scale;
+    transform.angles.x += rot_scale;
     break;
 
   case VK_UP:
-    transform.angles.x += rot_scale;
+    transform.angles.x -= rot_scale;
     break;
 
   case VK_LEFT:

@@ -1,88 +1,11 @@
-﻿  main.cpp
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(322): warning C4101: rez: неиспользованная локальная переменная
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(419): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(447): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(448): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(449): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(460): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(461): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(462): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(472): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(473): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(474): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(485): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(486): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(487): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(497): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(498): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(499): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: промежуточный каталог (Release\) содержит файлы, которые используются совместно с другим проектом (lab3_cg_k2.vcxproj).  Это может привести к ошибкам очистки и перестроения.
+  main.cpp
+d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(399): warning C4101: rez: неиспользованная локальная переменная
+d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(475): warning C4101: v0: неиспользованная локальная переменная
+d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(476): warning C4101: v1: неиспользованная локальная переменная
   Создание кода
-  0 of 69 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  3 of 75 functions ( 4.0%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    2 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
-  lab3_cg_k2.vcxproj -> D:\GITHUB\pnipucpp\Release\lab3_cg_k2.exe
+  lab3_cg_k2.vcxproj -> D:\GITHUB\pnipucpp\Release\lab3_trimproj.exe
