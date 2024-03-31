@@ -4,23 +4,35 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <vector>
+
 HINSTANCE g_instance;
 HWND h_wnd;
 
-glm::vec2 angles = glm::vec2(/*-96.f, 89.f*/);
 POINT curr_cursor, last_cursor;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
 RECT rect, oldrect;
-glm::mat4x4 view;
-glm::mat4x4 projection;
-float dist = -10.f;
 
+//p: 181.000153   q: 15.599987   r: -0.500000
+//p: -21.600180   q : 40.899914   r : -0.500000
 
-glm::mat4x4 mat_identity = glm::mat4x4(1.f);
+#if 0
+#define P_ANGLE (180.f)
+#define Q_ANGLE (15.f)
+#define R_ANGLE (-0.5f)
+#else
+#define P_ANGLE (-20.f)
+#define Q_ANGLE (40.f)
+#define R_ANGLE (-0.5f)
+#endif
 
+float p = P_ANGLE, q = Q_ANGLE, r = R_ANGLE;
+
+HPEN pen_black;
 HPEN pen_red;
 HPEN pen_blue;
+HPEN dash_pen;
 
 class logmessages
 {
@@ -122,6 +134,8 @@ private:
   HBITMAP    h_bitmap;
   HDC        h_memdc;
   SIZE       viewport_size;
+  HBRUSH     h_old_brush;
+  HPEN       h_old_pen;
 
   void to_screen(glm::vec3 &dst_screen_coord, glm::vec3 model_coord) {
     float hsw = viewport_size.cx / 2.f;
@@ -167,12 +181,47 @@ public:
   }
   ~draw_viewport() {}
 
+  void to_screen_project(glm::vec3 &dst_screen_coord, const glm::mat4x4 &proj, glm::vec4 gomcoord) {
+    float hsw = viewport_size.cx / 2.f;
+    float hsh = viewport_size.cy / 2.f;
+    glm::vec4 gcoord = proj * gomcoord;
+    if (gcoord.w > 0.f) {
+      gcoord.x /= gcoord.w;
+      gcoord.y /= gcoord.w;
+      gcoord.z /= gcoord.w;
+    }
+    gcoord.x *= hsw;
+    gcoord.y *= -hsh;
+    gcoord.x += hsw;
+    gcoord.y += hsh;
+    dst_screen_coord.x = gcoord.x;
+    dst_screen_coord.y = gcoord.y;
+    dst_screen_coord.z = gcoord.z;
+  }
+
+  void push_brush(HBRUSH hbrush) {
+    h_old_brush = (HBRUSH)SelectObject(h_memdc, hbrush);
+  }
+
+  void pop_brush() {
+    SelectObject(h_memdc, h_old_brush);
+  }
+
+  void push_pen(HPEN hpen) {
+    h_old_pen = (HPEN)SelectObject(h_memdc, hpen);
+  }
+
+  void pop_pen() {
+    SelectObject(h_memdc, h_old_pen);
+  }
+
   void begin_frame(HDC hdc) {
     viewport_size.cx = labs(rect.right - rect.left);
     viewport_size.cy = labs(rect.bottom - rect.top);
     h_memdc = CreateCompatibleDC(hdc);
     h_bitmap = CreateCompatibleBitmap(hdc, viewport_size.cx, viewport_size.cy);
     SelectObject(h_memdc, h_bitmap);
+    SetBkMode(h_memdc, TRANSPARENT);
     printf("begin_frame  l(%d) t(%d) r(%d) b(%d)\n", rect.left, rect.top, rect.right, rect.bottom);
   }
 
@@ -200,7 +249,23 @@ public:
     FillRect(h_memdc, &norm_rect, brush);
   }
 
-  void draw_line(const glm::vec3 &pt1, const glm::vec3 &pt2)
+  static glm::vec3 gcoord_to_NDC(glm::vec4 p1)
+  {
+    if (p1.w > FLT_EPSILON) {
+      p1.x /= p1.w;
+      p1.y /= p1.w;
+      p1.z /= p1.w;
+    }
+    return glm::vec3(p1.x, p1.y, p1.z);
+  }
+
+  void draw_line_2d(const glm::vec2 &pt1, const glm::vec2 &pt2)
+  {
+    MoveToEx(h_memdc, (int)pt1.x, (int)pt1.y, NULL);
+    LineTo(h_memdc, (int)pt2.x, (int)pt2.y);
+  }
+
+  void draw_line_2d(const glm::vec3 &pt1, const glm::vec3 &pt2)
   {
     MoveToEx(h_memdc, (int)pt1.x, (int)pt1.y, NULL);
     LineTo(h_memdc, (int)pt2.x, (int)pt2.y);
@@ -214,7 +279,7 @@ public:
       for (size_t j = 0; j < 3; j++) {
         to_screen(vert[0], p_verts[p_indices[i + j + 0]]);
         to_screen(vert[1], p_verts[p_indices[i + (j + 1) % 3]]);
-        draw_line(vert[0], vert[1]);
+        draw_line_2d(vert[0], vert[1]);
       }
     }
   }
@@ -227,7 +292,7 @@ public:
       for (size_t j = 0; j < 3; j++) {
         to_screen(vert[0], p_verts[i + j + 0]);
         to_screen(vert[1], p_verts[i + (j + 1) % 3]);
-        draw_line(vert[0], vert[1]);
+        draw_line_2d(vert[0], vert[1]);
       }
     }
   }
@@ -238,7 +303,7 @@ public:
     for (size_t j = 0; j < 3; j++) {
       to_screen(p1, p_verts[j]);
       to_screen(p2, p_verts[(j + 1) % 3]);
-      draw_line(p1, p2);
+      draw_line_2d(p1, p2);
     }
   }
 
@@ -254,8 +319,19 @@ public:
     for (size_t i = 0; i < num_indices - 1; i += 2) {
       to_screen(p1, p_verts[p_indices[i]]);
       to_screen(p2, p_verts[p_indices[i + 1]]);
-      draw_line(p1, p2);
+      draw_line_2d(p1, p2);
     }
+  }
+
+  void text_print(int x, int y, const char *p_format, ...)
+  {
+    va_list argptr;
+    char buffer[1024];
+    va_start(argptr, p_format);
+    vsprintf_s(buffer, sizeof(buffer), p_format, argptr);
+    va_end(argptr);
+
+    TextOutA(h_memdc, x, y, buffer, strlen(buffer));
   }
 };
 
@@ -279,6 +355,10 @@ glm::vec3 verts[] = {
   glm::vec3(-1, 1.5f, 0),
   glm::vec3(1, 1.5f, 0)
 };
+
+const size_t num_verts = sizeof(verts) / sizeof(verts[0]);
+glm::vec4 gcoords[num_verts];
+glm::vec3 projected[num_verts];
 
 unsigned int indices[] = {
   /* bottom */
@@ -307,27 +387,152 @@ unsigned int indices[] = {
   8, 9
 };
 
-unsigned int parallels[] = {
+unsigned int parallels[][2] = {
   /* Z */
-  0, 1,
-  3, 2,
-
-  /* X */
-  0, 3,
-  1, 2,
+  { 0, 1 },
+  { 3, 2 },
+  { 7, 6 },
+  { 4, 5 },
 
   /* Y */
-  0, 4,
-  3, 7,
+  { 0, 4 },
+  { 3, 7 },
+  { 2, 6 },
+  { 1, 5 },
+
+  /* X */
+  { 0, 3 },
+  { 1, 2 },
+  { 5, 6 },
+  { 4, 7 },
 
   /* roof -Z */
-  5, 8,
-  6, 9,
+  { 5, 8 },
+  { 6, 9 },
 
   /* roof +Z */
-  4, 8,
-  7, 9
+  { 4, 8 },
+  { 7, 9 }
 };
+
+float scale = 0.5f;
+
+inline glm::vec4 to_gomogen_coord(const glm::mat4x4 &SRc, const glm::vec3 &in)
+{
+  glm::vec4 coord = SRc * glm::vec4(in, 1.f);
+  //if (coord.w > FLT_EPSILON) {
+  //  coord.x /= coord.w;
+  //  coord.y /= coord.w;
+  //  coord.z /= coord.w;
+  //}
+  return coord;
+}
+
+int z_compare(void const *a, void const *b)
+{
+  glm::vec4 *p_src = (glm::vec4 *)a;
+  glm::vec4 *p_to_compare = (glm::vec4 *)b;
+  if (p_src->z < p_to_compare->z)
+    return -1;
+
+  return 1;
+}
+
+void print_coords(const char *p_label, glm::vec4 *p_src, size_t count)
+{
+  printf("--- %s:\n", p_label);
+  for (size_t i = 0; i < count; i++) {
+    glm::vec4 *p_cd = &p_src[i];
+    printf("   %f %f %f %f\n", p_cd->x, p_cd->y, p_cd->z, p_cd->w);
+  }
+  printf("\n\n");
+}
+
+void draw_vanishing_points(draw_viewport &viewport)
+{
+  size_t i;
+  glm::mat4x4 rx = glm::rotate(glm::mat4x4(1.f), glm::radians(p), glm::vec3(1.f, 0.f, 0.f));
+  glm::mat4x4 ry = glm::rotate(glm::mat4x4(1.f), glm::radians(q + 90.f), glm::vec3(0.f, 1.f, 0.f));
+  glm::mat4x4 SRc = ry * rx; //scale-rotatex-rotatey complex matrix
+
+  glm::mat4x4 projection = glm::mat4x4(
+    glm::vec4(scale, 0.f, 0.f, 0.f),
+    glm::vec4(0.f, scale, 0.f, 0.f),
+    glm::vec4(0.f, 0.f, scale, r),
+    glm::vec4(0.f, 0.f, 0.f, 1.f)
+  );
+
+  /* transform all vertices to gomogen coords */
+  for (size_t i = 0; i < (sizeof(gcoords) / sizeof(gcoords[0])); i++)
+    gcoords[i] = to_gomogen_coord(SRc, verts[i]);
+
+  /* sort Z */
+  print_coords("without qsort Z", gcoords, num_verts);
+  qsort(gcoords, num_verts, sizeof(glm::vec4), &z_compare);
+  print_coords("with qsort Z", gcoords, num_verts);
+
+  /* draw 4 points */
+  for (size_t i = 0; i < 4; i++) {
+    glm::vec4 *p_curgcoord = &gcoords[i];
+    glm::vec3 c2d1;
+    glm::vec3 c2d2;
+    viewport.to_screen_project(c2d2, projection, gcoords[i]);
+    viewport.to_screen_project(c2d1, projection, glm::vec4(p_curgcoord->x, p_curgcoord->y, p_curgcoord->z, 100.00001f)); //INFINITY w=0
+    viewport.draw_line_2d(c2d1, c2d2);
+  }
+}
+
+glm::vec3 perspective_trimetric_old(glm::vec3 in, glm::vec3 &begin, float _theta, float _phi, float _rho) {
+  float rez;
+  float deg2rad = atanf(1.f) / 45.f;
+
+  float th = _theta * deg2rad;
+  float ph = (_phi + 90) * deg2rad;
+  float costh = cosf(th);
+  float sinth = sinf(th);
+  float cosph = cosf(ph);
+  float sinph = sinf(ph);
+
+  float v11 = -sinth;
+  float v12 = -cosph * costh;
+  float v13 = -sinph * costh;
+  float v21 = costh;
+  float v22 = -cosph * sinth;
+  float v23 = -sinph * sinth;
+  float v32 = sinph;
+  float v33 = -cosph;
+  float v43 = _rho;
+
+  // 
+  // -sinth, -cosph * costh, 0               0
+  // 0       1               -sinph * sinth  0
+  // 0       sinph           -cosph          _rho
+  // 0       0               0               1
+  // 
+
+  float xe = v11 * in.x + v21 * in.y;
+  float ye = v12 * in.x + v22 * in.y + v32 * in.z;
+  float ze = v13 * in.x + v23 * in.y + v33 * in.z + v43;
+
+  float half_screen_width = rect.right / 2.f;
+  float half_screen_height = rect.bottom / 2.f;
+  float pX = 45 * _rho * xe / ze + half_screen_width - (2 * begin.y);
+  float pY = 45 * _rho * ye / ze + half_screen_height - (2 * begin.z);
+  return glm::vec3(pX, pY, 1.f);
+}
+
+glm::mat4x4 trimetric_project_matrix(float p, float q, float r)
+{
+  glm::mat4x4 projection = glm::mat4x4(
+    glm::vec4(scale, 0.f,   0.f,   0.f),
+    glm::vec4(0.f,   scale, 0.f,   0.f),
+    glm::vec4(0.f,   0.f,   scale, r),
+    glm::vec4(0.f,   0.f,   0.f,   1.f)
+  );
+  glm::mat4x4 rx = glm::rotate(glm::mat4x4(1.f), glm::radians(p), glm::vec3(1.f, 0.f, 0.f));
+  glm::mat4x4 ry = glm::rotate(glm::mat4x4(1.f), glm::radians(q + 90.f), glm::vec3(0.f, 1.f, 0.f));
+  return projection * ry * rx;
+}
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -354,22 +559,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	INT height = 600;
 	INT xpos = (GetSystemMetrics(SM_CXSCREEN) / 2) - (width / 2);
 	INT ypos = (GetSystemMetrics(SM_CYSCREEN) / 2) - (height / 2);
-	h_wnd = CreateWindowExA(0, wcex.lpszClassName, "lab3", WS_OVERLAPPEDWINDOW, xpos, ypos, width, height, NULL, NULL, hInstance, NULL);
+	h_wnd = CreateWindowExA(0, wcex.lpszClassName, "lab3 trimetric projection", WS_OVERLAPPEDWINDOW, xpos, ypos, width, height, NULL, NULL, hInstance, NULL);
 	if (!h_wnd) {
 		MessageBoxA(HWND_DESKTOP, "Couldn't create window", "Critical error", MB_OK | MB_ICONERROR);
 		return 2;
 	}
 
-	GetClientRect(h_wnd, &rect);
-	projection = glm::perspective(45.f, rect.right / (float)rect.bottom, 0.0001f, 1000.f);
-
-	view = glm::translate(mat_identity, glm::vec3(0, 0, dist));
-	view = glm::rotate(view, 45.f, glm::vec3(1.f, 1.f, 0.f));
-
-	pen_red = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
+  pen_black = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
+	pen_red = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
 	pen_blue = CreatePen(PS_SOLID, 1, RGB(200, 200, 200));
-
-	//rotate_model();
+  dash_pen = CreatePen(PS_DASH, 1, RGB(200, 200, 200));
 
 	ShowWindow(h_wnd, SW_SHOW);
 	UpdateWindow(h_wnd);
@@ -379,7 +578,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		TranslateMessage(&msg);
 		DispatchMessageA(&msg);
 	}
-    return 0;
+  return 0;
 }
 
 void clear_color_buffer(HDC hdc)
@@ -393,45 +592,6 @@ void draw_line(HDC hdc, int x0, int y0, int x1, int y1)
 	MoveToEx(hdc, x0, y0, &pt);
 	LineTo(hdc, x1, y1);
 	MoveToEx(hdc, pt.x, pt.y, &pt);
-}
-
-glm::vec3 perspective_trimetric_project2(glm::vec3 in, glm::vec3 &begin, float _theta, float _phi, float _rho) {
-	float rez;
-	float deg2rad = atanf(1.f) / 45.f;
-
-	float th = _theta * deg2rad;
-	float ph = (_phi + 90) * deg2rad;
-	float costh = cosf(th);
-	float sinth = sinf(th);
-	float cosph = cosf(ph);
-	float sinph = sinf(ph);
-
-	float v11 = -sinth;
-	float v12 = -cosph * costh;
-	float v13 = -sinph * costh;
-	float v21 = costh;
-	float v22 = -cosph * sinth;
-	float v23 = -sinph * sinth;
-	float v32 = sinph;
-	float v33 = -cosph;
-	float v43 = _rho;
-
-	// 
-	// -sinth, -cosph * costh, 0               0
-	// 0       1               -sinph * sinth  0
-	// 0       sinph           -cosph          _rho
-	// 0       0               0               1
-	// 
-
-	float xe = v11 * in.x + v21 * in.y;
-	float ye = v12 * in.x + v22 * in.y + v32 * in.z;
-	float ze = v13 * in.x + v23 * in.y + v33 * in.z + v43;
-
-	float half_screen_width = rect.right / 2.f;
-	float half_screen_height = rect.bottom / 2.f;
-	float pX = 45 * _rho * xe / ze + half_screen_width - (2 * begin.y);
-	float pY = 45 * _rho * ye / ze + half_screen_height - (2 * begin.z);
-	return glm::vec3(pX, pY, 1.f);
 }
 
 bool cross_lines(glm::vec2 &dst, glm::vec2 &line1b, glm::vec2 &line1e, glm::vec2 &line2b, glm::vec2 &line2e) {
@@ -459,17 +619,6 @@ bool cross_lines(glm::vec2 &dst, glm::vec2 &line1b, glm::vec2 &line1e, glm::vec2
 	return true;
 }
 
-void text_print(HDC hdc, int x, int y, const char *p_format, ...)
-{
-	va_list argptr;
-	char buffer[1024];
-	va_start(argptr, p_format);
-	vsprintf_s(buffer, sizeof(buffer), p_format, argptr);
-	va_end(argptr);
-
-	TextOutA(hdc, x, y, buffer, strlen(buffer));
-}
-
 void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
 {
 	glm::vec3 v0;
@@ -478,94 +627,119 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
 
   /* draw scene */
   transform_s transform;
-  transform.projection = glm::perspective(45.f, rect.right / (float)rect.bottom, 0.1f, 1000.f);
-  transform.model = view;
+  transform.projection = trimetric_project_matrix(p, q, r);
+  transform.model = glm::mat4x4(1.f);
   draw_viewport viewport(transform, rect);
   viewport.begin_frame(hdc);
   viewport.clear((HBRUSH)(COLOR_WINDOW + 1));
-  
+  viewport.project_vertices_to_screen(projected, verts, num_verts);
 
+  //draw_vanishing_points(viewport);
+  if (fabsf(r) > 0.0001f) {
+    viewport.push_pen(dash_pen);
+
+    /* Z */
+    glm::vec2 endpos;
+    int vanishing_points = 0;
+    glm::vec2 line1b = glm::vec2(projected[parallels[0][0]].x, projected[parallels[0][0]].y);
+    glm::vec2 line1e = glm::vec2(projected[parallels[0][1]].x, projected[parallels[0][1]].y);
+    glm::vec2 line2a = glm::vec2(projected[parallels[1][0]].x, projected[parallels[1][0]].y);
+    glm::vec2 line2b = glm::vec2(projected[parallels[1][1]].x, projected[parallels[1][1]].y);
+    if (cross_lines(endpos, line1b, line1e, line2a, line2b)) {
+      viewport.draw_line_2d(line1b, endpos);
+      viewport.draw_line_2d(line2a, endpos);
+      viewport.draw_line_2d(glm::vec2(projected[parallels[2][0]].x, projected[parallels[2][0]].y), endpos);
+      viewport.draw_line_2d(glm::vec2(projected[parallels[3][0]].x, projected[parallels[3][0]].y), endpos);
+      viewport.text_print(endpos.x, endpos.y, "Z ( %.2f %.2f )", endpos.x, endpos.y);
+      vanishing_points++;
+    }
+
+    /* Y */
+    line1b = glm::vec2(projected[parallels[4][0]].x, projected[parallels[4][0]].y);
+    line1e = glm::vec2(projected[parallels[4][1]].x, projected[parallels[4][1]].y);
+    line2a = glm::vec2(projected[parallels[5][0]].x, projected[parallels[5][0]].y);
+    line2b = glm::vec2(projected[parallels[5][1]].x, projected[parallels[5][1]].y);
+    if (cross_lines(endpos, line1b, line1e, line2a, line2b)) {
+      viewport.draw_line_2d(line1b, endpos);
+      viewport.draw_line_2d(line2a, endpos);
+      viewport.draw_line_2d(glm::vec2(projected[parallels[6][0]].x, projected[parallels[6][0]].y), endpos);
+      viewport.draw_line_2d(glm::vec2(projected[parallels[7][0]].x, projected[parallels[7][0]].y), endpos);
+      viewport.text_print(endpos.x, endpos.y, "Y ( %.2f %.2f )", endpos.x, endpos.y);
+      vanishing_points++;
+    }
+
+    /* X */
+    line1b = glm::vec2(projected[parallels[8][0]].x, projected[parallels[8][0]].y);
+    line1e = glm::vec2(projected[parallels[8][1]].x, projected[parallels[8][1]].y);
+    line2a = glm::vec2(projected[parallels[9][0]].x, projected[parallels[9][0]].y);
+    line2b = glm::vec2(projected[parallels[9][1]].x, projected[parallels[9][1]].y);
+    if (cross_lines(endpos, line1b, line1e, line2a, line2b)) {
+      viewport.draw_line_2d(line1b, endpos);
+      viewport.draw_line_2d(line2a, endpos);
+      viewport.draw_line_2d(glm::vec2(projected[parallels[10][0]].x, projected[parallels[10][0]].y), endpos);
+      viewport.draw_line_2d(glm::vec2(projected[parallels[11][0]].x, projected[parallels[11][0]].y), endpos);
+      viewport.text_print(endpos.x, endpos.y, "X ( %.2f %.2f )", endpos.x, endpos.y);
+      vanishing_points++;
+    }
+
+    /* crysha left */
+    line1b = glm::vec2(projected[parallels[12][0]].x, projected[parallels[12][0]].y);
+    line1e = glm::vec2(projected[parallels[12][1]].x, projected[parallels[12][1]].y);
+    line2a = glm::vec2(projected[parallels[13][0]].x, projected[parallels[13][0]].y);
+    line2b = glm::vec2(projected[parallels[13][1]].x, projected[parallels[13][1]].y);
+    if (cross_lines(endpos, line1b, line1e, line2a, line2b)) {
+      viewport.draw_line_2d(line1b, endpos);
+      viewport.draw_line_2d(line2b, endpos);
+      viewport.text_print(endpos.x, endpos.y, "( %.2f %.2f )", endpos.x, endpos.y);
+      vanishing_points++;
+    }
+
+    /* crysha left */
+    line1b = glm::vec2(projected[parallels[14][0]].x, projected[parallels[14][0]].y);
+    line1e = glm::vec2(projected[parallels[14][1]].x, projected[parallels[14][1]].y);
+    line2a = glm::vec2(projected[parallels[15][0]].x, projected[parallels[15][0]].y);
+    line2b = glm::vec2(projected[parallels[15][1]].x, projected[parallels[15][1]].y);
+    if (cross_lines(endpos, line1b, line1e, line2a, line2b)) {
+      viewport.draw_line_2d(line1b, endpos);
+      viewport.draw_line_2d(line2b, endpos);
+      viewport.text_print(endpos.x, endpos.y, "( %.2f %.2f )", endpos.x, endpos.y);
+      vanishing_points++;
+    }
+    viewport.pop_pen();
+
+    /* scene distortion factor */
+    glm::vec3 distortion_factor;
+
+    auto projected_line_length = [](int line_start_idx, int line_end_idx) -> float {
+      return glm::length(
+        glm::vec2(projected[line_start_idx].x, projected[line_start_idx].y) - glm::vec2(projected[line_end_idx].x, projected[line_end_idx].y)
+      );
+    };
+
+    auto source_line_length = [](int line_start_idx, int line_end_idx) -> float {
+      float line_length = glm::length(verts[line_start_idx] - verts[line_end_idx]);
+      if (fabsf(line_length) < FLT_EPSILON)
+        line_length = 1.f;
+
+      return line_length;
+    };
+
+    distortion_factor.x = projected_line_length(0, 3) / source_line_length(0, 3);
+    distortion_factor.y = projected_line_length(0, 4) / source_line_length(0, 4);
+    distortion_factor.z = projected_line_length(0, 1) / source_line_length(0, 1);
+
+    viewport.text_print(10, 10, "vanishing points count %d", vanishing_points);
+    viewport.text_print(10, 30, "distortion  x: %f y: %f z: %f", distortion_factor.x, distortion_factor.y, distortion_factor.z);
+    viewport.text_print(10, 50, "scene distortion: %f", sqrtf(powf(distortion_factor.x, 2.f) + powf(distortion_factor.y, 2.f) + powf(distortion_factor.z, 2.f)));
+  }
+
+  viewport.push_pen(pen_black);
   viewport.draw_lines_indexed(verts, indices, sizeof(indices) / sizeof(indices[0]));
+  viewport.pop_pen();
 
-
-	/* Z */
-	//glm::vec2 endpos;
-	//int vanishing_points = 0;
-	//glm::vec2 line1b = glm::vec2(projected_verts[0][0].x, projected_verts[0][0].y);
-	//glm::vec2 line1e = glm::vec2(projected_verts[0][1].x, projected_verts[0][1].y);
-	//glm::vec2 line2b = glm::vec2(projected_verts[1][0].x, projected_verts[1][0].y);
-	//glm::vec2 line2e = glm::vec2(projected_verts[1][1].x, projected_verts[1][1].y);
-	//if (cross_lines(endpos, line1b, line1e, line2b, line2e)) {
-	//	draw_line(hdc, line1b.x, line1b.y, endpos.x, endpos.y);
-	//	draw_line(hdc, line2b.x, line2b.y, endpos.x, endpos.y);
-	//	text_print(hdc, endpos.x, endpos.y, "Z (%d %d)", (int)endpos.x, (int)endpos.y);
-	//	vanishing_points++;
-	//}
-
-
-	///* Y */
-	//line1b = glm::vec2(projected_verts[16][0].x, projected_verts[16][0].y);
-	//line1e = glm::vec2(projected_verts[16][1].x, projected_verts[16][1].y);
-	//line2b = glm::vec2(projected_verts[17][0].x, projected_verts[17][0].y);
-	//line2e = glm::vec2(projected_verts[17][1].x, projected_verts[17][1].y);
-	//if (cross_lines(endpos, line1b, line1e, line2b, line2e)) {
-	//	draw_line(hdc, line1b.x, line1b.y, endpos.x, endpos.y);
-	//	draw_line(hdc, line2b.x, line2b.y, endpos.x, endpos.y);
-	//	text_print(hdc, endpos.x, endpos.y, "Y (%d %d)", (int)endpos.x, (int)endpos.y);
-	//	vanishing_points++;
-	//}
-
-	///* X */
-	//line1b = glm::vec2(projected_verts[2][0].x, projected_verts[2][0].y);
-	//line1e = glm::vec2(projected_verts[2][1].x, projected_verts[2][1].y);
-	//line2b = glm::vec2(projected_verts[3][0].x, projected_verts[3][0].y);
-	//line2e = glm::vec2(projected_verts[3][1].x, projected_verts[3][1].y);
-	//if (cross_lines(endpos, line1b, line1e, line2b, line2e)) {
-	//	draw_line(hdc, line1b.x, line1b.y, endpos.x, endpos.y);
-	//	draw_line(hdc, line2b.x, line2b.y, endpos.x, endpos.y);
-	//	text_print(hdc, endpos.x, endpos.y, "X (%d %d)", (int)endpos.x, (int)endpos.y);
-	//	vanishing_points++;
-	//}
-
-
-	///* crysha left */
-	//line1b = glm::vec2(projected_verts[28][0].x, projected_verts[28][0].y);
-	//line1e = glm::vec2(projected_verts[28][1].x, projected_verts[28][1].y);
-	//line2b = glm::vec2(projected_verts[29][0].x, projected_verts[29][0].y);
-	//line2e = glm::vec2(projected_verts[29][1].x, projected_verts[29][1].y);
-	//if (cross_lines(endpos, line1b, line1e, line2b, line2e)) {
-	//	draw_line(hdc, line1b.x, line1b.y, endpos.x, endpos.y);
-	//	draw_line(hdc, line2b.x, line2b.y, endpos.x, endpos.y);
-	//	text_print(hdc, endpos.x, endpos.y, "(%d %d)", (int)endpos.x, (int)endpos.y);
-	//	vanishing_points++;
-	//}
-
-	///* crysha left */
-	//line1b = glm::vec2(projected_verts[32][0].x, projected_verts[32][0].y);
-	//line1e = glm::vec2(projected_verts[32][1].x, projected_verts[32][1].y);
-	//line2b = glm::vec2(projected_verts[33][0].x, projected_verts[33][0].y);
-	//line2e = glm::vec2(projected_verts[33][1].x, projected_verts[33][1].y);
-	//if (cross_lines(endpos, line1b, line1e, line2b, line2e)) {
-	//	draw_line(hdc, line1b.x, line1b.y, endpos.x, endpos.y);
-	//	draw_line(hdc, line2b.x, line2b.y, endpos.x, endpos.y);
-	//	text_print(hdc, endpos.x, endpos.y, "(%d %d)", (int)endpos.x, (int)endpos.y);
-	//	vanishing_points++;
-	//}
-
-	///* scene distortion factor */
-
-	//glm::vec3 distortion_factor;
-	//distortion_factor.x = glm::length(glm::vec2(projected_verts[2][1].x, projected_verts[2][1].y) - glm::vec2(projected_verts[2][0].x, projected_verts[2][0].y)) / glm::length(glm::vec2(house[2][1].x, house[2][1].y) - glm::vec2(house[2][0].x, house[2][0].y));
-	//distortion_factor.y = glm::length(glm::vec2(projected_verts[16][1].x, projected_verts[16][1].y) - glm::vec2(projected_verts[16][0].x, projected_verts[16][0].y)) / glm::length(glm::vec2(house[16][1].x, house[16][1].y) - glm::vec2(house[16][0].x, house[16][0].y));
-	//distortion_factor.z = glm::length(glm::vec2(projected_verts[0][1].x, projected_verts[0][1].y) - glm::vec2(projected_verts[0][0].x, projected_verts[0][0].y)) / (glm::length(glm::vec2(house[0][1].x, house[0][1].y) - glm::vec2(house[0][0].x, house[0][0].y)) + 1.f);
-
-	//text_print(hdc, 10, 10, "vanishing points count %d", vanishing_points);
-	//text_print(hdc, 10, 30, "distortion  x: %f y: %f z: %f", distortion_factor.x, distortion_factor.y, distortion_factor.z);
-	//text_print(hdc, 10, 50, "scene distortion: %f", sqrtf(powf(distortion_factor.x, 2.f) + powf(distortion_factor.y, 2.f) + powf(distortion_factor.z, 2.f)));
-	//
-	//text_print(hdc, 10, 80, "theta %f", angles.y);
-	//text_print(hdc, 10, 100, "phi %f", angles.x);
-	//text_print(hdc, 10, 120, "z %f", dist);
+	viewport.text_print(10, 80, "angle p=%f", p);
+	viewport.text_print(10, 100, "angle q=%f", q);
+	viewport.text_print(10, 120, "angle r=%f", r);
 
   viewport.end_frame(hdc);
 }
@@ -590,24 +764,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
 	case WM_SIZE:
-		//InvalidateRect(hWnd, NULL, FALSE);
+	  InvalidateRect(hWnd, NULL, FALSE);
 		break;
 
 	case WM_MOUSEWHEEL: {
 		SHORT zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
-		if (zDelta < 0)
-			dist -= 0.5f;
-		else dist += 0.5f;
 
-		//view = glm::translate(mat_identity, glm::vec3(0, 0, dist));
-		//view = glm::rotate(view, glm::radians(angles.x), glm::vec3(1, 0, 0));
-		//view = glm::rotate(view, glm::radians(angles.y), glm::vec3(0, 1, 0));
+    if (!buttons[VK_CONTROL]) {
+      if (zDelta < 0)
+        r -= 0.01f;
+      else r += 0.01f;
+    }
+    else
+    {
+      if (zDelta < 0)
+        scale -= 0.01f;
+      else scale += 0.01f;
+    }
+    printf("p: %f   q: %f   r: %f\n", p, q, r);
 		InvalidateRect(hWnd, NULL, FALSE);
 		break;
 	}
 
 	case WM_PAINT: {
-    printf("REPAINT\n");
 		PAINTSTRUCT ps;
 		GetClientRect(h_wnd, &rect);
     if (!rect.bottom)
@@ -622,8 +801,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_MOUSEMOVE:
 		if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
-			printf("MOUSEMOVE\n");
-
 			curr_cursor.x = LOWORD(lParam);
 			curr_cursor.y = HIWORD(lParam);
 
@@ -631,9 +808,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			diffpt.y = curr_cursor.x - last_cursor.x;
 			diffpt.x = curr_cursor.y - last_cursor.y;
 			if (diffpt.x || diffpt.y) {
-				angles.x += diffpt.x * -0.1f;
-				angles.y += diffpt.y * 0.1f;
-				printf("angle %f %f\n", angles.x, angles.y);			
+				p += diffpt.x * -0.1f;
+				q += diffpt.y * 0.1f;
+				printf("p: %f   q: %f   r: %f\n", p, q, r);			
 			}
 			last_cursor = curr_cursor;
 
@@ -652,9 +829,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		last_cursor = curr_cursor;
 		break;
 
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
+  case WM_DESTROY:
+      PostQuitMessage(0);
+      break;
 
 	case WM_KEYDOWN:
 		buttons[wParam] = true;
