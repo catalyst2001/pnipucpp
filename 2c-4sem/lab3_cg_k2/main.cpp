@@ -524,9 +524,9 @@ glm::vec3 perspective_trimetric_old(glm::vec3 in, glm::vec3 &begin, float _theta
 glm::mat4x4 trimetric_project_matrix(float p, float q, float r)
 {
   glm::mat4x4 projection = glm::mat4x4(
-    glm::vec4(scale, 0.f,   0.f,   0.f),
-    glm::vec4(0.f,   scale, 0.f,   0.f),
-    glm::vec4(0.f,   0.f,   scale, r),
+    glm::vec4(1.f, 0.f,   0.f,   0.f),
+    glm::vec4(0.f, 1.f, 0.f,   0.f),
+    glm::vec4(0.f,   0.f, 1.f, r),
     glm::vec4(0.f,   0.f,   0.f,   1.f)
   );
   glm::mat4x4 rx = glm::rotate(glm::mat4x4(1.f), glm::radians(p), glm::vec3(1.f, 0.f, 0.f));
@@ -628,7 +628,8 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
   /* draw scene */
   transform_s transform;
   transform.projection = trimetric_project_matrix(p, q, r);
-  transform.model = glm::mat4x4(1.f);
+  //transform.model = glm::mat4x4(1.f);
+  transform.model = glm::scale(glm::mat4x4(1.f), glm::vec3(scale, scale, scale));
   draw_viewport viewport(transform, rect);
   viewport.begin_frame(hdc);
   viewport.clear((HBRUSH)(COLOR_WINDOW + 1));

@@ -1,4 +1,14 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+﻿/**
+* Deryabin K.
+* 
+* Changelog:
+*  Edited: 12.04.2024 (OK)
+* 
+* 
+*
+*/
+
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <math.h>
 #include <Windows.h>
@@ -411,6 +421,15 @@ float solve_equation(float z, float d)
   // d = z + (F / 10)
   // F = 10d + z
   return 10.f * d + z;
+}
+
+void mat4x4_print(const glm::mat4x4 &mat)
+{
+  printf("------------------\n");
+  for (size_t i = 0; i < 4; i++) {
+    printf("%.2f %.2f %.2f %.2f\n", mat[i][0], mat[i][1], mat[i][2], mat[i][3]);
+  }
+  printf("------------------\n");
 }
 
 void draw_scene(HDC hdc, RECT &rect)

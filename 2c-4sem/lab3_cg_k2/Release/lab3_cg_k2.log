@@ -1,37 +1,36 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: промежуточный каталог (Release\) содержит файлы, которые используются совместно с другим проектом (lab3_cg_k2.vcxproj).  Это может привести к ошибкам очистки и перестроения.
-  main.cpp
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(453): warning C4101: i: неиспользованная локальная переменная
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(486): warning C4101: rez: неиспользованная локальная переменная
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(653): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+﻿  main.cpp
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(453): warning C4101: i: неиспользованная локальная переменная
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(486): warning C4101: rez: неиспользованная локальная переменная
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(654): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
           with
           [
               T=float
           ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(667): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(668): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
           with
           [
               T=float
           ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(681): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(682): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
           with
           [
               T=float
           ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(693): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(694): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
           with
           [
               T=float
           ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(705): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(706): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
           with
           [
               T=float
           ]
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(624): warning C4101: v0: неиспользованная локальная переменная
-d:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(625): warning C4101: v1: неиспользованная локальная переменная
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(624): warning C4101: v0: неиспользованная локальная переменная
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(625): warning C4101: v1: неиспользованная локальная переменная
   Создание кода
-  3 of 91 functions ( 3.3%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+  5 of 93 functions ( 5.4%) were compiled, the rest were copied from previous compilation.
+    2 functions were new in current compilation
+    8 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
-  lab3_cg_k2.vcxproj -> D:\GITHUB\pnipucpp\Release\lab3_trimproj.exe
+  lab3_cg_k2.vcxproj -> E:\GitHub\pnipucpp\Release\lab3_trimproj.exe
