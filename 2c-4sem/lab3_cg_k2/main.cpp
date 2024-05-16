@@ -3,36 +3,34 @@
 #include <stdio.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 #include <vector>
 
-HINSTANCE g_instance;
-HWND h_wnd;
+#if 1
+#define P_ANGLE (-7.200f)
+#define Q_ANGLE (21.300f)
+#define R_VAL (-0.210f)
+#else
+#define P_ANGLE (0.1f)
+#define Q_ANGLE (0.1f)
+#define R_VAL (0.f)
+#endif
 
-POINT curr_cursor, last_cursor;
+float     p = P_ANGLE, q = Q_ANGLE, r = R_VAL;
+HPEN      pen_black;
+HPEN      pen_red;
+HPEN      pen_blue;
+HPEN      dash_pen;
+HINSTANCE g_instance;
+HWND      h_wnd;
+POINT     curr_cursor, last_cursor;
+RECT      rect, oldrect;
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
-RECT rect, oldrect;
 
 //p: 181.000153   q: 15.599987   r: -0.500000
 //p: -21.600180   q : 40.899914   r : -0.500000
 
-#if 0
-#define P_ANGLE (180.f)
-#define Q_ANGLE (15.f)
-#define R_ANGLE (-0.5f)
-#else
-#define P_ANGLE (-20.f)
-#define Q_ANGLE (40.f)
-#define R_ANGLE (-0.5f)
-#endif
-
-float p = P_ANGLE, q = Q_ANGLE, r = R_ANGLE;
-
-HPEN pen_black;
-HPEN pen_red;
-HPEN pen_blue;
-HPEN dash_pen;
 
 class logmessages
 {
@@ -56,6 +54,17 @@ public:
     }
   }
 
+  inline void log_put_linef(const char *p_format, ...) {
+    if (!is_enabled())
+      return;
+
+    va_list argptr;
+    va_start(argptr, p_format);
+    vsnprintf_s(buf, sizeof(buf), p_format, argptr);
+    va_end(argptr);
+    fprintf(fp, "%s\n", buf);
+  }
+
   inline void log_put_line(const char *p_text) {
     if (fp) {
       fprintf(fp, "%s\n", p_text);
@@ -76,10 +85,10 @@ public:
 
     snprintf(buf, sizeof(buf),
       "%s = \\begin{bmatrix}"
-      "%.2f & %.2f & %.2f & %.2f \\\\ "
-      "%.2f & %.2f & %.2f & %.2f \\\\ "
-      "%.2f & %.2f & %.2f & %.2f \\\\ "
-      "%.2f & %.2f & %.2f & %.2f "
+      "%.3f & %.3f & %.3f & %.3f \\\\ "
+      "%.3f & %.3f & %.3f & %.3f \\\\ "
+      "%.3f & %.3f & %.3f & %.3f \\\\ "
+      "%.3f & %.3f & %.3f & %.3f "
       "\\end{bmatrix}\\\\",
       p_math_var_name,
       mat[0][0], mat[0][1], mat[0][2], mat[0][3],
@@ -100,47 +109,27 @@ public:
       const glm::vec3 *p_vert = &p_src[i];
 
       /* x y z w ('\\' or '') */
-      fprintf(fp, "%.2f & %.2f & %.2f & %.2f %s ", p_vert->x, p_vert->y, p_vert->z, 1.f, (i + 1 < count) ? "\\\\" : "");
+      fprintf(fp, "%.3f & %.3f & %.3f & %.3f %s ", p_vert->x, p_vert->y, p_vert->z, 1.f, (i + 1 < count) ? "\\\\" : "");
     }
     fputs("\\end{bmatrix}\n", fp);
   }
 };
 
-struct transform_s
-{
-  glm::mat4x4 world; /* complex matrix */
-  glm::mat4x4 model; /* model transforms */
-  glm::mat4x4 view; /* view transforms */
-  glm::mat4x4 projection; /* projection */
-
-  glm::vec3 origin;
-  glm::vec3 angles;
-  glm::vec3 viewpoint;
-
-  transform_s() {
-    world = glm::mat4x4(1.f);
-    model = glm::mat4x4(1.f);
-    view = glm::mat4x4(1.f);
-    projection = glm::mat4x4(1.f);
-  }
-  ~transform_s() {}
-};
-
 class draw_viewport
 {
 private:
-  const transform_s &t;
-  const RECT  &rect;
-  HBITMAP    h_bitmap;
-  HDC        h_memdc;
-  SIZE       viewport_size;
-  HBRUSH     h_old_brush;
-  HPEN       h_old_pen;
+  const RECT        rect;
+  const glm::mat4x4 world;
+  HBITMAP           h_bitmap;
+  HDC               h_memdc;
+  SIZE              viewport_size;
+  HBRUSH            h_old_brush;
+  HPEN              h_old_pen;
 
   void to_screen(glm::vec3 &dst_screen_coord, glm::vec3 model_coord) {
     float hsw = viewport_size.cx / 2.f;
     float hsh = viewport_size.cy / 2.f;
-    glm::vec4 gcoord = t.projection * t.model * glm::vec4(model_coord, 1.f);
+    glm::vec4 gcoord = world * glm::vec4(model_coord, 1.f);
     if (gcoord.w > 0.f) {
       gcoord.x /= gcoord.w;
       gcoord.y /= gcoord.w;
@@ -175,7 +164,7 @@ public:
    _transform - transformations
    r - drawing rect in screen coords
   */
-  draw_viewport(const transform_s &_transform, RECT &r) : t(_transform), rect(r) {
+  draw_viewport(const glm::mat4x4 &worldmat, const RECT &r) : world(worldmat), rect(r) {
     h_bitmap = NULL;
     h_memdc = NULL;
   }
@@ -335,9 +324,6 @@ public:
   }
 };
 
-logmessages logger(true, "matrices.txt");
-
-
 glm::vec3 verts[] = {
   /* bottom */
   glm::vec3(-1, -1, -1),
@@ -357,8 +343,13 @@ glm::vec3 verts[] = {
 };
 
 const size_t num_verts = sizeof(verts) / sizeof(verts[0]);
-glm::vec4 gcoords[num_verts];
-glm::vec3 projected[num_verts];
+glm::vec4    gcoords[num_verts];
+glm::vec3    projected[num_verts];
+logmessages  logger(true, "matrices.txt");
+glm::vec3    origin;
+glm::vec3    angles;
+glm::vec3    viewpoint;
+float        scale = 0.5f;
 
 unsigned int indices[] = {
   /* bottom */
@@ -415,8 +406,6 @@ unsigned int parallels[][2] = {
   { 7, 9 }
 };
 
-float scale = 0.5f;
-
 inline glm::vec4 to_gomogen_coord(const glm::mat4x4 &SRc, const glm::vec3 &in)
 {
   glm::vec4 coord = SRc * glm::vec4(in, 1.f);
@@ -456,10 +445,10 @@ void draw_vanishing_points(draw_viewport &viewport)
   glm::mat4x4 SRc = ry * rx; //scale-rotatex-rotatey complex matrix
 
   glm::mat4x4 projection = glm::mat4x4(
-    glm::vec4(scale, 0.f, 0.f, 0.f),
-    glm::vec4(0.f, scale, 0.f, 0.f),
-    glm::vec4(0.f, 0.f, scale, r),
-    glm::vec4(0.f, 0.f, 0.f, 1.f)
+    glm::vec4(scale, 0.f,   0.f,   0.f),
+    glm::vec4(0.f,   scale, 0.f,   0.f),
+    glm::vec4(0.f,   0.f,   scale, r  ),
+    glm::vec4(0.f,   0.f,   0.f,   1.f)
   );
 
   /* transform all vertices to gomogen coords */
@@ -523,15 +512,32 @@ glm::vec3 perspective_trimetric_old(glm::vec3 in, glm::vec3 &begin, float _theta
 
 glm::mat4x4 trimetric_project_matrix(float p, float q, float r)
 {
+  logger.log_put_line("==== trimetric_project_matrix ====");
+  logger.log_put_linef("  angle p=%.3f", p);
+  logger.log_put_linef("  angle q=%.3f", q);
+  logger.log_put_linef("  r=%.3f", r);
+  logger.log_put("\n");
+
   glm::mat4x4 projection = glm::mat4x4(
-    glm::vec4(1.f, 0.f,   0.f,   0.f),
-    glm::vec4(0.f, 1.f, 0.f,   0.f),
-    glm::vec4(0.f,   0.f, 1.f, r),
+    glm::vec4(1.f,   0.f,   0.f,   0.f),
+    glm::vec4(0.f,   1.f,   0.f,   0.f),
+    glm::vec4(0.f,   0.f,   0.f,   r),
     glm::vec4(0.f,   0.f,   0.f,   1.f)
   );
+  logger.latex_print_mat4x4_with_equal_varname("P", projection);
+
   glm::mat4x4 rx = glm::rotate(glm::mat4x4(1.f), glm::radians(p), glm::vec3(1.f, 0.f, 0.f));
+  logger.latex_print_mat4x4_with_equal_varname("Rx", rx);
+
   glm::mat4x4 ry = glm::rotate(glm::mat4x4(1.f), glm::radians(q + 90.f), glm::vec3(0.f, 1.f, 0.f));
-  return projection * ry * rx;
+  logger.latex_print_mat4x4_with_equal_varname("Ry", ry);
+
+  glm::mat4x4 complex_mat = projection * ry * rx;
+
+  logger.log_put_line("Tproj = P * Rx * Ry");
+  logger.latex_print_mat4x4_with_equal_varname("Tproj", complex_mat);
+  logger.log_put_line("==== trimetric_project_matrix end ====");
+  return complex_mat;
 }
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -625,15 +631,26 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
 	glm::vec3 v1;
 	glm::vec3 begin(0.f, 0.f, 0.f);
 
+  logger.log_put_line("=============== paint_scene Begin ===============");
+
   /* draw scene */
-  transform_s transform;
-  transform.projection = trimetric_project_matrix(p, q, r);
-  //transform.model = glm::mat4x4(1.f);
-  transform.model = glm::scale(glm::mat4x4(1.f), glm::vec3(scale, scale, scale));
-  draw_viewport viewport(transform, rect);
+  glm::mat4x4 scale_mat =  glm::scale(glm::mat4x4(1.f), glm::vec3(scale, scale, scale));
+  logger.latex_print_mat4x4_with_equal_varname("Scl", scale_mat);
+
+  glm::mat4x4 projection = trimetric_project_matrix(p, q, r);
+
+  glm::mat4x4 complex_matrix = projection * scale_mat;
+  logger.log_put_line("CM = Tproj * Scl");
+  logger.latex_print_mat4x4_with_equal_varname("CM", complex_matrix);
+
+  draw_viewport viewport(complex_matrix, rect);
   viewport.begin_frame(hdc);
   viewport.clear((HBRUSH)(COLOR_WINDOW + 1));
   viewport.project_vertices_to_screen(projected, verts, num_verts);
+
+  logger.latex_print_vertices(verts, sizeof(verts) / sizeof(verts[0]));
+  logger.log_put(" * CM = ");
+  logger.latex_print_vertices(projected, sizeof(projected) / sizeof(projected[0]));
 
   //draw_vanishing_points(viewport);
   if (fabsf(r) > 0.0001f) {
@@ -728,20 +745,22 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     distortion_factor.x = projected_line_length(0, 3) / source_line_length(0, 3);
     distortion_factor.y = projected_line_length(0, 4) / source_line_length(0, 4);
     distortion_factor.z = projected_line_length(0, 1) / source_line_length(0, 1);
+    float scene_distortion = sqrtf(powf(distortion_factor.x, 2.f) + powf(distortion_factor.y, 2.f) + powf(distortion_factor.z, 2.f));
 
     viewport.text_print(10, 10, "vanishing points count %d", vanishing_points);
     viewport.text_print(10, 30, "distortion  x: %f y: %f z: %f", distortion_factor.x, distortion_factor.y, distortion_factor.z);
-    viewport.text_print(10, 50, "scene distortion: %f", sqrtf(powf(distortion_factor.x, 2.f) + powf(distortion_factor.y, 2.f) + powf(distortion_factor.z, 2.f)));
+    viewport.text_print(10, 50, "scene distortion: %f", scene_distortion);
   }
 
   viewport.push_pen(pen_black);
   viewport.draw_lines_indexed(verts, indices, sizeof(indices) / sizeof(indices[0]));
   viewport.pop_pen();
 
-	viewport.text_print(10, 80, "angle p=%f", p);
-	viewport.text_print(10, 100, "angle q=%f", q);
-	viewport.text_print(10, 120, "angle r=%f", r);
+  viewport.text_print(10, 80, "angle p=%.2f°", p);
+  viewport.text_print(10, 100, "angle q=%.2f°", q);
+  viewport.text_print(10, 120, "r=%.2f", r);
 
+  logger.log_put_line("=============== paint_scene End ===============");
   viewport.end_frame(hdc);
 }
 

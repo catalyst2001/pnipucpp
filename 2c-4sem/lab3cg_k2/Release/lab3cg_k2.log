@@ -1,10 +1,1 @@
-﻿  main.cpp
-d:\github\pnipucpp\2c-4sem\cgcommon\euler_camera.h(117): warning C4244: инициализация: преобразование "LONG" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\cgcommon\euler_camera.h(118): warning C4244: инициализация: преобразование "LONG" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\cgcommon\euler_camera.h(139): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\cgcommon\euler_camera.h(140): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
-d:\github\pnipucpp\2c-4sem\cgcommon\euler_camera.h(141): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
-  Создание кода
-  All 46 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Создание кода завершено
-  lab3cg_k2.vcxproj -> D:\GITHUB\pnipucpp\Release\lab3cg_k2.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\VC\VCTargets\Microsoft.Cpp.WindowsSDK.targets(46,5): error MSB8036: не удалось найти Windows SDK версии 10.0.22000.0. Установите нужную версию Windows SDK или измените версию SDK на страницах свойств проекта либо щелкнув правой кнопкой мыши решение и выбрав "Изменить целевую платформу решения".

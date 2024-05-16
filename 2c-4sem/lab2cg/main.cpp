@@ -400,6 +400,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	int posx, posy;
 	INITCOMMONCONTROLSEX iccex;
 
+  //SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+
 	DBG_INIT();
 
 	iccex.dwSize = sizeof(INITCOMMONCONTROLSEX);
@@ -560,6 +562,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	GLfloat g_LighAttenuation1 = 0.0f;
 	GLfloat g_LighAttenuation2 = 0.0f;
 	
+  glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -575,16 +578,19 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	glClearColor(0.5f, 0.5f, 0.5f, 1.5f);
 	glShadeModel(GL_FLAT);
 
-    MSG msg;
+   MSG msg;
 	while (1) {
 		get_time_milliseconds(&curr_time);
 		if (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE)) {
+      if (msg.message == WM_QUIT)
+        break;
+
 			TranslateMessage(&msg);
 			DispatchMessageA(&msg);
+      continue;
 		}
 
-		if (msg.message == WM_QUIT)
-			break;
+
 
 		/* DRAW SCENE */
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);

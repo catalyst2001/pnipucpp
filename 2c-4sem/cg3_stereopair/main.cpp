@@ -3,9 +3,6 @@
 * 
 * Changelog:
 *  Edited: 12.04.2024 (OK)
-* 
-* 
-*
 */
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -70,6 +67,15 @@ public:
     }
   }
 
+  inline void log_put_linef(const char *p_format, ...) {
+    char buf[1024];
+    va_list argptr;
+    va_start(argptr, p_format);
+    vsnprintf_s(buf, sizeof(buf), p_format, argptr);
+    va_end(argptr);
+    fprintf(fp, "%s\n", buf);
+  }
+
   inline void log_put_line(const char *p_text) {
     if (fp) {
       fprintf(fp, "%s\n", p_text);
@@ -90,10 +96,10 @@ public:
 
     snprintf(buf, sizeof(buf),
       "%s = \\begin{bmatrix}"
-      "%.2f & %.2f & %.2f & %.2f \\\\ "
-      "%.2f & %.2f & %.2f & %.2f \\\\ "
-      "%.2f & %.2f & %.2f & %.2f \\\\ "
-      "%.2f & %.2f & %.2f & %.2f "
+      "%.3f & %.3f & %.3f & %.3f \\\\ "
+      "%.3f & %.3f & %.3f & %.3f \\\\ "
+      "%.3f & %.3f & %.3f & %.3f \\\\ "
+      "%.3f & %.3f & %.3f & %.3f "
       "\\end{bmatrix}\\\\",
       p_math_var_name,
       mat[0][0], mat[0][1], mat[0][2], mat[0][3],
@@ -114,36 +120,16 @@ public:
       const glm::vec3 *p_vert = &p_src[i];
 
       /* x y z w ('\\' or '') */
-      fprintf(fp, "%.2f & %.2f & %.2f & %.2f %s ", p_vert->x, p_vert->y, p_vert->z, 1.f, (i+1 < count) ? "\\\\" : "");
+      fprintf(fp, "%.3f & %.3f & %.3f & %.3f %s ", p_vert->x, p_vert->y, p_vert->z, 1.f, (i+1 < count) ? "\\\\" : "");
     }
     fputs("\\end{bmatrix}\n", fp);
   }
 };
 
-struct transform_s
-{
-  glm::mat4x4 world; /* complex matrix */
-  glm::mat4x4 model; /* model transforms */
-  glm::mat4x4 view; /* view transforms */
-  glm::mat4x4 projection; /* projection */
-
-  glm::vec3 origin;
-  glm::vec3 angles;
-  glm::vec3 viewpoint;
-
-  transform_s() {
-    world = glm::mat4x4(1.f);
-    model = glm::mat4x4(1.f);
-    view = glm::mat4x4(1.f);
-    projection = glm::mat4x4(1.f);
-  }
-  ~transform_s() {}
-};
-
 class draw_viewport
 {
 private:
-  const transform_s &t;
+  const glm::mat4x4 &world;
   const RECT  &rect;
   HBITMAP    h_bitmap;
   HDC        h_memdc;
@@ -152,7 +138,8 @@ private:
   void to_screen(glm::vec3 &dst_screen_coord, glm::vec3 model_coord) {
     float hsw = viewport_size.cx / 2.f;
     float hsh = viewport_size.cy / 2.f;
-    glm::vec4 gcoord = t.projection * t.model * glm::vec4(model_coord, 1.f);
+    //glm::vec4 gcoord = t.projection * t.model * glm::vec4(model_coord, 1.f);  changed 14.05.24
+    glm::vec4 gcoord = world * glm::vec4(model_coord, 1.f);
     if (gcoord.w > 0.f) {
       gcoord.x /= gcoord.w;
       gcoord.y /= gcoord.w;
@@ -187,7 +174,7 @@ public:
    _transform - transformations
    r - drawing rect in screen coords
   */
-  draw_viewport(const transform_s &_transform, RECT &r) : t(_transform), rect(r) {
+  draw_viewport(const glm::mat4x4 &worldmat, RECT &r) : world(worldmat), rect(r) {
     h_bitmap = NULL;
     h_memdc = NULL;
   }
@@ -287,7 +274,9 @@ public:
 
 HWND        h_wnd;
 HWND        h_viewport;
-transform_s transform;
+glm::vec3   origin;
+glm::vec3   angles;
+glm::vec3   viewpoint;
 float       eyes_distance;
 HBRUSH      h_background;
 HBRUSH      h_background2;
@@ -295,6 +284,8 @@ logmessages logger(true, "matrices.txt");
 
 int main()
 {
+  angles = glm::vec3(17.77f, -24.07f, 0.f);
+
   printf("registering window classes\n");
   if (!register_classes()) {
     printf("failed to register classes");
@@ -408,17 +399,16 @@ unsigned int parallels[] = {
   7, 9
 };
 
-float F = 10.f;
-float d = 0.1f;
+float F = 20.f;
+//float d = 0.1f;
 float z = 0.f;
-float eyesd = 5.f;
+float eyesd = 0.10f;
 
 // z = 0;
 // F/20 = d/2
 // -F/20 = -d/2
 float solve_equation(float z, float d)
 {
-  // d = z + (F / 10)
   // F = 10d + z
   return 10.f * d + z;
 }
@@ -435,13 +425,15 @@ void mat4x4_print(const glm::mat4x4 &mat)
 void draw_scene(HDC hdc, RECT &rect)
 {
   RECT left_eye, right_eye;
-  float F = solve_equation(z, d);
-  //printf("%f a=%f\n", F, atanf(d / F));
+  float F = solve_equation(z, eyesd);
+  printf("z = %f  eyesd=%f   F=%f   a=%f\n",
+    z, eyesd, F, glm::degrees(atanf(glm::radians(eyesd / F))));
 
   glm::mat4x4 translate_matrix;
   glm::mat4x4 rotate_x_mat;
   glm::mat4x4 rotate_y_mat;
   glm::mat4x4 complex_mat;
+  glm::mat4x4 projection;
 
   /* compute transformations */
   if (rect.bottom == 0)
@@ -449,35 +441,42 @@ void draw_scene(HDC hdc, RECT &rect)
 
   //float aspect_ratio = (float)(rect.right >> 1) / (float)rect.bottom;
 
-  logger.log_put_line("*** BEGIN eye 1 ***");
+  logger.log_put_line("++++++++++++++++++++++ BEGIN EYES DATA ++++++++++++++++++++++");
+  logger.log_put_linef("z = %.2f", z);
+  logger.log_put_linef("d = %.2f", eyesd);
+  logger.log_put_linef("F = %.2f\n\n", F);
 
-  transform.projection = glm::mat4x4(
+  logger.log_put_linef("rx = %.2f (%2.f deg)", glm::radians(angles.x), angles.x);
+  logger.log_put_linef("ry = %.2f (%2.f deg)\n\n", glm::radians(angles.y), angles.y);
+
+  logger.log_put_line("LEFT EYE:");
+
+  projection = glm::mat4x4(
     glm::vec4(1.f, 0.f, 0.f, 0.f),
     glm::vec4(0.f, 1.f, 0.f, 0.f),
     glm::vec4(0.f, 0.f, 0.f, -1.f/F),
-    glm::vec4(eyesd /20.f, 0.f, 0.f, 1.f)
+    glm::vec4(F /20.f, 0.f, 0.f, 1.f)
   );
-  logger.latex_print_mat4x4_with_equal_varname("P", transform.projection);
+  logger.latex_print_mat4x4_with_equal_varname("P", projection);
 
   translate_matrix = glm::translate(glm::mat4x4(1.f), glm::vec3(0.f, 0.f, -2.f));
   logger.latex_print_mat4x4_with_equal_varname("T", translate_matrix);
 
-  rotate_x_mat = glm::rotate(glm::mat4x4(1.f), glm::radians(transform.angles.x), glm::vec3(1.f, 0.f, 0.f));
+  rotate_x_mat = glm::rotate(glm::mat4x4(1.f), glm::radians(angles.x), glm::vec3(1.f, 0.f, 0.f));
   logger.latex_print_mat4x4_with_equal_varname("Rx", rotate_x_mat);
 
-  rotate_y_mat = glm::rotate(glm::mat4x4(1.f), glm::radians(transform.angles.y), glm::vec3(0.f, 1.f, 0.f));
+  rotate_y_mat = glm::rotate(glm::mat4x4(1.f), glm::radians(angles.y), glm::vec3(0.f, 1.f, 0.f));
   logger.latex_print_mat4x4_with_equal_varname("Ry", rotate_y_mat);
 
-  complex_mat = translate_matrix * rotate_x_mat * rotate_y_mat;
+  complex_mat = projection * translate_matrix * rotate_x_mat * rotate_y_mat;
   logger.latex_print_mat4x4_with_equal_varname("CM = Rx * Ry * T * P", complex_mat);
-  transform.model = complex_mat;
 
   /* left eye */
   left_eye.left = 0;
   left_eye.top = 0;
   left_eye.right = rect.right >> 1;
   left_eye.bottom = rect.bottom;
-  draw_viewport left(transform, left_eye);
+  draw_viewport left(complex_mat, left_eye);
   left.begin_frame(hdc);
 
   /* print src verts for LEFT EYE */
@@ -493,38 +492,37 @@ void draw_scene(HDC hdc, RECT &rect)
   left.clear((HBRUSH)(COLOR_WINDOW + 1));
   left.draw_lines_indexed(verts, indices, sizeof(indices) / sizeof(indices[0]));
   left.end_frame(hdc);
-  logger.log_put_line("*** END eye 1 ***\n\n");
+  logger.log_put_line("END LEFT EYE\n\n");
 
 
   // ------------------------------------------------------------------------------------------------------------------
-  logger.log_put_line("*** BEGIN eye 2 ***");
-  transform.projection = glm::mat4x4(
+  logger.log_put_line("BEGIN RIGHT EYE:");
+  projection = glm::mat4x4(
     glm::vec4(1.f, 0.f, 0.f, 0.f),
     glm::vec4(0.f, 1.f, 0.f, 0.f),
     glm::vec4(0.f, 0.f, 0.f, -1.f / F),
-    glm::vec4(-eyesd /20.f, 0.f, 0.f, 1.f)
+    glm::vec4(-F /20.f, 0.f, 0.f, 1.f)
   );
-  logger.latex_print_mat4x4_with_equal_varname("P", transform.projection);
+  logger.latex_print_mat4x4_with_equal_varname("P", projection);
 
   translate_matrix = glm::translate(glm::mat4x4(1.f), glm::vec3(0.f, 0.f, -2.f));
   logger.latex_print_mat4x4_with_equal_varname("T", translate_matrix);
 
-  rotate_x_mat = glm::rotate(glm::mat4x4(1.f), glm::radians(transform.angles.x), glm::vec3(1.f, 0.f, 0.f));
+  rotate_x_mat = glm::rotate(glm::mat4x4(1.f), glm::radians(angles.x), glm::vec3(1.f, 0.f, 0.f));
   logger.latex_print_mat4x4_with_equal_varname("Rx", rotate_x_mat);
 
-  rotate_y_mat = glm::rotate(glm::mat4x4(1.f), glm::radians(transform.angles.y), glm::vec3(0.f, 1.f, 0.f));
+  rotate_y_mat = glm::rotate(glm::mat4x4(1.f), glm::radians(angles.y), glm::vec3(0.f, 1.f, 0.f));
   logger.latex_print_mat4x4_with_equal_varname("Ry", rotate_y_mat);
 
-  complex_mat = translate_matrix * rotate_x_mat * rotate_y_mat;
+  complex_mat = projection * translate_matrix * rotate_x_mat * rotate_y_mat;
   logger.latex_print_mat4x4_with_equal_varname("CM = Rx * Ry * T * P", complex_mat);
-  transform.model = complex_mat;
 
   /* right eye */
   right_eye.left = left_eye.right;
   right_eye.top = 0;
   right_eye.right = rect.right;
   right_eye.bottom = rect.bottom;
-  draw_viewport right(transform, right_eye);
+  draw_viewport right(complex_mat, right_eye);
   right.begin_frame(hdc);
 
   /* print src verts for RIGHT EYE */
@@ -540,7 +538,8 @@ void draw_scene(HDC hdc, RECT &rect)
   right.clear((HBRUSH)(COLOR_WINDOW + 1));
   right.draw_lines_indexed(verts, indices, sizeof(indices) / sizeof(indices[0]));
   right.end_frame(hdc);
-  logger.log_put_line("*** END eye 2 ***\n\n");
+  logger.log_put_line("END RIGHT EYE\n\n");
+  logger.log_put_line("-------------- END EYES DATA ----------------");
 }
 
 const float move_scale = 1.f;
@@ -550,52 +549,52 @@ void handle_keys(int key)
 {
   switch (key)
   {
-  case 'W':
-    transform.origin.z += move_scale;
-    break;
+  //case 'W':
+  //  origin.z += move_scale;
+  //  break;
 
-  case 'A':
-    transform.origin.x -= move_scale;
-    break;
+  //case 'A':
+  //  origin.x -= move_scale;
+  //  break;
 
-  case 'S':
-    transform.origin.z -= move_scale;
-    break;
+  //case 'S':
+  //  origin.z -= move_scale;
+  //  break;
 
-  case 'D':
-    transform.origin.x += move_scale;
-    break;
+  //case 'D':
+  //  origin.x += move_scale;
+  //  break;
 
   case VK_DOWN:
-    transform.angles.x += rot_scale;
+    angles.x += rot_scale;
     break;
 
   case VK_UP:
-    transform.angles.x -= rot_scale;
+    angles.x -= rot_scale;
     break;
 
   case VK_LEFT:
-    transform.angles.y -= rot_scale;
+    angles.y -= rot_scale;
     break;
 
   case VK_RIGHT:
-    transform.angles.y += rot_scale;
+    angles.y += rot_scale;
     break;
 
-  case VK_HOME:
-    d += 0.001f;
+  //case VK_HOME:
+  //  z += 0.01f;
+  //  break;
+
+  //case VK_END:
+  //  z -= 0.01f;
+  //  break;
+
+  case VK_ADD:
+    eyesd += 0.0001f;
     break;
 
-  case VK_END:
-    d -= 0.001f;
-    break;
-
-  case VK_PRIOR:
-    eyesd += 0.1f;
-    break;
-
-  case VK_NEXT:
-    eyesd -= 0.1f;
+  case VK_SUBTRACT:
+    eyesd -= 0.0001f;
     break;
   }
 }
