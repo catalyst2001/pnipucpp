@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
-#if 1
+#if 0
 #define P_ANGLE (-7.200f)
 #define Q_ANGLE (21.300f)
 #define R_VAL (-0.210f)
@@ -302,6 +302,18 @@ public:
       to_screen(p_dst[i], p_src[i]);
   }
 
+  void project_vertices(glm::vec3 *p_dst, const glm::vec3 *p_src, size_t count) {
+    for (size_t i = 0; i < count; i++) {
+      glm::vec4 gcoord = world * glm::vec4(p_src[i], 1.f);
+      if (gcoord.w > 0.f) {
+        gcoord.x /= gcoord.w;
+        gcoord.y /= gcoord.w;
+        gcoord.z /= gcoord.w;
+      }
+      p_dst[i] = gcoord;
+    }
+  }
+
   void draw_lines_indexed(const glm::vec3 *p_verts, const unsigned int *p_indices, size_t num_indices)
   {
     glm::vec3 p1, p2;
@@ -345,6 +357,7 @@ glm::vec3 verts[] = {
 const size_t num_verts = sizeof(verts) / sizeof(verts[0]);
 glm::vec4    gcoords[num_verts];
 glm::vec3    projected[num_verts];
+glm::vec3    projected_clip[num_verts];
 logmessages  logger(true, "matrices.txt");
 glm::vec3    origin;
 glm::vec3    angles;
@@ -625,6 +638,24 @@ bool cross_lines(glm::vec2 &dst, glm::vec2 &line1b, glm::vec2 &line1e, glm::vec2
 	return true;
 }
 
+template<typename type>
+type min(const type &a, const type &b)
+{
+  if (a < b)
+    return a;
+
+  return b;
+}
+
+template<typename type>
+type max(const type &a, const type &b)
+{
+  if (a > b)
+    return a;
+
+  return b;
+}
+
 void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
 {
 	glm::vec3 v0;
@@ -647,6 +678,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
   viewport.begin_frame(hdc);
   viewport.clear((HBRUSH)(COLOR_WINDOW + 1));
   viewport.project_vertices_to_screen(projected, verts, num_verts);
+  viewport.project_vertices(projected_clip, verts, num_verts);
 
   logger.latex_print_vertices(verts, sizeof(verts) / sizeof(verts[0]));
   logger.log_put(" * CM = ");
@@ -728,23 +760,38 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     /* scene distortion factor */
     glm::vec3 distortion_factor;
 
+    /* transform with projection */
+    //for (size_t i = 0; i < num_verts; i++)
+    //  projected[i] = complex_matrix * glm::vec4(verts[i], 1.f);
+
     auto projected_line_length = [](int line_start_idx, int line_end_idx) -> float {
       return glm::length(
-        glm::vec2(projected[line_start_idx].x, projected[line_start_idx].y) - glm::vec2(projected[line_end_idx].x, projected[line_end_idx].y)
+        glm::vec2(projected_clip[line_start_idx].x, projected_clip[line_start_idx].y) - glm::vec2(projected_clip[line_end_idx].x, projected_clip[line_end_idx].y)
       );
     };
 
     auto source_line_length = [](int line_start_idx, int line_end_idx) -> float {
       float line_length = glm::length(verts[line_start_idx] - verts[line_end_idx]);
-      if (fabsf(line_length) < FLT_EPSILON)
+      if (fabsf(line_length) < FLT_EPSILON) // check division by zero
         line_length = 1.f;
 
       return line_length;
     };
 
+    /* distortion factor from parallel lines */
     distortion_factor.x = projected_line_length(0, 3) / source_line_length(0, 3);
     distortion_factor.y = projected_line_length(0, 4) / source_line_length(0, 4);
     distortion_factor.z = projected_line_length(0, 1) / source_line_length(0, 1);
+    printf("distortion_factor:  %.3f %.3f %.3f\n", distortion_factor.x, distortion_factor.y, distortion_factor.z);
+
+    /* distortion factor from matrix */
+    glm::vec3 distortion_factor_from_mat;
+    distortion_factor_from_mat.x = complex_matrix[0][3];
+    distortion_factor_from_mat.y = complex_matrix[1][3];
+    distortion_factor_from_mat.z = complex_matrix[2][3];
+    printf("distortion_factor_from_mat:  %.3f %.3f %.3f\n", distortion_factor_from_mat.x, distortion_factor_from_mat.y, distortion_factor_from_mat.z);
+
+
     float scene_distortion = sqrtf(powf(distortion_factor.x, 2.f) + powf(distortion_factor.y, 2.f) + powf(distortion_factor.z, 2.f));
 
     viewport.text_print(10, 10, "vanishing points count %d", vanishing_points);
