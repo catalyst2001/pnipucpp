@@ -49,6 +49,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cg3_stereopair", "2c-4sem\c
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "check_distortion", "check_distortion\check_distortion.vcxproj", "{749D2352-878B-43C5-B849-98389F40A7A9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cross_lines_test", "cross_lines_test\cross_lines_test.vcxproj", "{49FE3FB5-5ACC-47EC-BA73-DD72701CAF23}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -153,6 +155,14 @@ Global
 		{749D2352-878B-43C5-B849-98389F40A7A9}.Release|x64.Build.0 = Release|x64
 		{749D2352-878B-43C5-B849-98389F40A7A9}.Release|x86.ActiveCfg = Release|Win32
 		{749D2352-878B-43C5-B849-98389F40A7A9}.Release|x86.Build.0 = Release|Win32
+		{49FE3FB5-5ACC-47EC-BA73-DD72701CAF23}.Debug|x64.ActiveCfg = Debug|x64
+		{49FE3FB5-5ACC-47EC-BA73-DD72701CAF23}.Debug|x64.Build.0 = Debug|x64
+		{49FE3FB5-5ACC-47EC-BA73-DD72701CAF23}.Debug|x86.ActiveCfg = Debug|Win32
+		{49FE3FB5-5ACC-47EC-BA73-DD72701CAF23}.Debug|x86.Build.0 = Debug|Win32
+		{49FE3FB5-5ACC-47EC-BA73-DD72701CAF23}.Release|x64.ActiveCfg = Release|x64
+		{49FE3FB5-5ACC-47EC-BA73-DD72701CAF23}.Release|x64.Build.0 = Release|x64
+		{49FE3FB5-5ACC-47EC-BA73-DD72701CAF23}.Release|x86.ActiveCfg = Release|Win32
+		{49FE3FB5-5ACC-47EC-BA73-DD72701CAF23}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
