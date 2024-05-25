@@ -29,4 +29,15 @@
       <Filter>Файлы ресурсов</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="proj.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="rx.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="ry.bmp">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

@@ -74,6 +74,13 @@ void test()
   );
 }
 
+float edit_get_float(HWND h_control)
+{
+  char buf[128];
+  GetWindowTextA(h_control, buf, sizeof(buf));
+  return (float)atof(buf);
+}
+
 template<const size_t dimi, const size_t dimj>
 class matrix_control
 {
@@ -97,7 +104,7 @@ public:
   float get_value(const size_t i, const size_t j) {
     char strval[64];
     GetWindowTextA(h_controls[i][j], strval, sizeof(strval));
-    return atof(strval);
+    return (float)atof(strval);
   }
 
   void set_value(const size_t i, const size_t j, float val) {
@@ -145,7 +152,7 @@ public:
   float get_value(const size_t i) {
     char strval[64];
     GetWindowTextA(h_controls[i], strval, sizeof(strval));
-    return atof(strval);
+    return (float)atof(strval);
   }
 
   void set_value(const size_t i, float val) {
@@ -181,6 +188,8 @@ HWND h_scroll_xangle;
 HWND h_scroll_yangle;
 HWND h_anglex_text;
 HWND h_angley_text;
+HWND h_edit_anglex;
+HWND h_edit_angley;
 matrix_control<4, 4> mat_proj;
 matrix_control<4, 4> mat_rotx;
 matrix_control<4, 4> mat_roty;
@@ -191,7 +200,7 @@ vec4_control<3> length_orts;
 vec4_control<3> dist_coeffs;
 
 glm::mat4x4 proj, rotx, roty, complex_mat;
-float anglex = 45.f, angley = 0.f;
+float anglex = 0.f, angley = 0.f;
 
 void static_set_text(HWND h_control, const char *p_format, ...)
 {
@@ -243,13 +252,19 @@ const int coeffs_ids[] = { IDC_EDIT95, IDC_EDIT96, IDC_EDIT97 };
 
 #define ZERO_CHECK(x) if(x < 0.00001f) x = 1.f;
 
+//TODO: добавить проверку на то что инпут пуст, чтобы брать значения из трекбара
+bool is_edit_empty(HWND h_control)
+{
+  char sym;
+  GetWindowTextA(h_control, &sym, sizeof(sym));
+  return !sym;
+}
+
 void compute()
 {
   glm::vec4 src_orts[3], dst_orts[3];
 
-  
   static_set_text(h_anglex_text, "angle X %.3f deg (%.3f rad)", anglex, glm::radians(anglex));
-  SetWindowTextA(h_angley_text, "142112412412");
   static_set_text(h_angley_text, "angle Y %.3f deg (%.3f rad)", angley, glm::radians(angley));
 
   rotx = glm::rotate(glm::mat4x4(1.f), anglex, glm::vec3(1.f, 0.f, 0.f));
@@ -260,7 +275,8 @@ void compute()
   proj = mat_proj.get_value();
   rotx = mat_rotx.get_value();
   roty = mat_roty.get_value();
-  complex_mat = proj * roty * rotx;
+  complex_mat = roty * rotx * proj;
+  print_mat4x4(complex_mat);
   mat_complex.set_value(complex_mat);
 
   /* get orts */
@@ -322,6 +338,19 @@ LPARAM CALLBACK proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
   switch (msg)
   {
+  case WM_COMMAND: {
+    int id = LOWORD(wparam);
+    if (id == IDOK) {
+      printf("OK\n");
+      compute();
+    }
+    break;
+  }
+
+  case WM_CLOSE:
+    PostQuitMessage(0);
+    break;
+
   case WM_HSCROLL:
     anglex = (float)SendMessageA(h_scroll_xangle, TBM_GETPOS, (WPARAM)0, (LPARAM)0);
     //printf("anglex: %f\n", anglex);
@@ -362,7 +391,8 @@ void init_interface()
   SendMessageA(h_scroll_yangle, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)0);
   h_anglex_text = GetDlgItem(h_dialog, IDC_STATIC39);
   h_angley_text = GetDlgItem(h_dialog, IDC_STATIC40);
-  SetWindowTextA(h_anglex_text, "asdasdasdasdasd");
+  h_edit_anglex = GetDlgItem(h_dialog, IDC_EDIT98);
+  h_edit_angley = GetDlgItem(h_dialog, IDC_EDIT99);
   init();
   ShowWindow(h_dialog, SW_SHOW);
   UpdateWindow(h_dialog);

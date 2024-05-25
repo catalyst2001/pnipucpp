@@ -163,6 +163,11 @@
   <ItemGroup>
     <ResourceCompile Include="check_distortion.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="proj.bmp" />
+    <Image Include="rx.bmp" />
+    <Image Include="ry.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
