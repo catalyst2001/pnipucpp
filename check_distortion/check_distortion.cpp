@@ -250,19 +250,26 @@ const int transformed_orts_length_ids[] = { IDC_EDIT89, IDC_EDIT90, IDC_EDIT91 }
 const int orts_length_ids[] = { IDC_EDIT92, IDC_EDIT93, IDC_EDIT94 };
 const int coeffs_ids[] = { IDC_EDIT95, IDC_EDIT96, IDC_EDIT97 };
 
-#define ZERO_CHECK(x) if(x < 0.00001f) x = 1.f;
+#define EPSILON (0.00001f)
+
+#define ZERO_CHECK(x) if(x < EPSILON) x = 1.f;
 
 //TODO: добавить проверку на то что инпут пуст, чтобы брать значения из трекбара
 bool is_edit_empty(HWND h_control)
 {
-  char sym;
-  GetWindowTextA(h_control, &sym, sizeof(sym));
-  return !sym;
+  char sym[64];
+  GetWindowTextA(h_control, sym, sizeof(sym));
+  return !sym[0];
 }
 
 void compute()
 {
   glm::vec4 src_orts[3], dst_orts[3];
+
+  if (!is_edit_empty(h_edit_anglex))
+    anglex = edit_get_float(h_edit_anglex);
+  if (!is_edit_empty(h_edit_angley))
+    angley = edit_get_float(h_edit_angley);
 
   static_set_text(h_anglex_text, "angle X %.3f deg (%.3f rad)", anglex, glm::radians(anglex));
   static_set_text(h_angley_text, "angle Y %.3f deg (%.3f rad)", angley, glm::radians(angley));
@@ -275,7 +282,7 @@ void compute()
   proj = mat_proj.get_value();
   rotx = mat_rotx.get_value();
   roty = mat_roty.get_value();
-  complex_mat = roty * rotx * proj;
+  complex_mat = proj * roty * rotx;
   print_mat4x4(complex_mat);
   mat_complex.set_value(complex_mat);
 
@@ -287,7 +294,22 @@ void compute()
   /* transform */
   for (size_t i = 0; i < 3; i++)
     dst_orts[i] = complex_mat * src_orts[i];
+
+  /* print not normalized */
+  for (size_t i = 0; i < 3; i++) {
+    glm::vec4 &rort = dst_orts[i];
+    printf("nn %.3f %.3f %.3f %.3f\n", rort.x, rort.y, rort.z, rort.w);
+  }
   
+  /* normalize orts if w != 0 */
+  for (size_t i = 0; i < 3; i++) {
+    glm::vec4 &rort = dst_orts[i];
+    if (rort.w > EPSILON) {
+      rort /= rort.w;
+    }
+    printf("%zd transformed ort %.3f %.3f %.3f %.3f\n", i, rort.x, rort.y, rort.z, rort.w);
+  }
+
   /* set transformed orts */
   orttx.set_value(dst_orts[0]);
   ortty.set_value(dst_orts[1]);
@@ -468,6 +490,17 @@ int main()
   //  src_len, projected_len, dist1
   //);
   //test();
-  init_interface();
+  //init_interface();
+
+  glm::mat4x4 mat = glm::translate(glm::mat4x4(1.f), glm::vec3(0.f, 0.f, 10.f));
+  float *p_value = (float *)glm::value_ptr(mat);
+  for (size_t i = 0; i < 4; i++) {
+    for (size_t j = 0; j < 4; j++) {
+      printf("%f ", p_value[i * 4 + j]);
+    }
+    printf("\n");
+  }
+
+
   return 0;
 }
