@@ -613,29 +613,31 @@ void draw_line(HDC hdc, int x0, int y0, int x1, int y1)
 	MoveToEx(hdc, pt.x, pt.y, &pt);
 }
 
-bool cross_lines(glm::vec2 &dst, glm::vec2 &line1b, glm::vec2 &line1e, glm::vec2 &line2b, glm::vec2 &line2e) {
-	float n;
-	if (line1e.y - line1b.y != 0) {  // a(y)
-		float q = (line1e.x - line1b.x) / (line1b.y - line1e.y);
-		float sn = (line2b.x - line2e.x) + (line2b.y - line2e.y) * q;
-		if (!sn)
-			return false;  // c(x) + c(y)*q
+int lines_intersection(glm::vec2 &dst_pt,
+  const glm::vec2 &l1b, const glm::vec2 &l1e,
+  const glm::vec2 &l2b, const glm::vec2 &l2e) {
 
-		float fn = (line2b.x - line1b.x) + (line2b.y - line1b.y) * q;   // b(x) + b(y)*q
-		n = fn / sn;
-	}
-	else {
-		if (!(line2b.y - line2e.y))
-			return false; // b(y)
+  // compute 1-st equation odds
+  float A1 = l1e.y - l1b.y;
+  float B1 = l1b.x - l1e.x;
+  float C1 = A1 * l1b.x + B1 * l1b.y;
 
-		n = (line2b.y - line1b.y) / (line2b.y - line2e.y);   // c(y)/b(y)
-	}
-	//idx0 = line2b.x + (-b(x))*n
-	//idline1b.x = line2b.y +(-b(y))*n
+  // compute 2-st equation odds
+  float A2 = l2e.y - l2b.y;
+  float B2 = l2b.x - l2e.x;
+  float C2 = A2 * l2b.x + B2 * l2b.y;
 
-	dst.x = line2b.x + (line2e.x - line2b.x) * n;
-	dst.y = line2b.y + (line2e.y - line2b.y) * n;
-	return true;
+  // system determinant
+  float det = A1 * B2 - A2 * B1;
+
+  // are the lines parallel?
+  if (fabsf(det) < FLT_EPSILON)
+    return false;
+
+  // calculating the coordinates of the intersection point
+  dst_pt.x = (B2 * C1 - B1 * C2) / det;
+  dst_pt.y = (A1 * C2 - A2 * C1) / det;
+  return true;
 }
 
 template<typename type>
@@ -695,7 +697,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     glm::vec2 line1e = glm::vec2(projected[parallels[0][1]].x, projected[parallels[0][1]].y);
     glm::vec2 line2a = glm::vec2(projected[parallels[1][0]].x, projected[parallels[1][0]].y);
     glm::vec2 line2b = glm::vec2(projected[parallels[1][1]].x, projected[parallels[1][1]].y);
-    if (cross_lines(endpos, line1b, line1e, line2a, line2b)) {
+    if (lines_intersection(endpos, line1b, line1e, line2a, line2b)) {
       viewport.draw_line_2d(line1b, endpos);
       viewport.draw_line_2d(line2a, endpos);
       viewport.draw_line_2d(glm::vec2(projected[parallels[2][0]].x, projected[parallels[2][0]].y), endpos);
@@ -709,7 +711,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     line1e = glm::vec2(projected[parallels[4][1]].x, projected[parallels[4][1]].y);
     line2a = glm::vec2(projected[parallels[5][0]].x, projected[parallels[5][0]].y);
     line2b = glm::vec2(projected[parallels[5][1]].x, projected[parallels[5][1]].y);
-    if (cross_lines(endpos, line1b, line1e, line2a, line2b)) {
+    if (lines_intersection(endpos, line1b, line1e, line2a, line2b)) {
       viewport.draw_line_2d(line1b, endpos);
       viewport.draw_line_2d(line2a, endpos);
       viewport.draw_line_2d(glm::vec2(projected[parallels[6][0]].x, projected[parallels[6][0]].y), endpos);
@@ -723,7 +725,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     line1e = glm::vec2(projected[parallels[8][1]].x, projected[parallels[8][1]].y);
     line2a = glm::vec2(projected[parallels[9][0]].x, projected[parallels[9][0]].y);
     line2b = glm::vec2(projected[parallels[9][1]].x, projected[parallels[9][1]].y);
-    if (cross_lines(endpos, line1b, line1e, line2a, line2b)) {
+    if (lines_intersection(endpos, line1b, line1e, line2a, line2b)) {
       viewport.draw_line_2d(line1b, endpos);
       viewport.draw_line_2d(line2a, endpos);
       viewport.draw_line_2d(glm::vec2(projected[parallels[10][0]].x, projected[parallels[10][0]].y), endpos);
@@ -737,7 +739,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     line1e = glm::vec2(projected[parallels[12][1]].x, projected[parallels[12][1]].y);
     line2a = glm::vec2(projected[parallels[13][0]].x, projected[parallels[13][0]].y);
     line2b = glm::vec2(projected[parallels[13][1]].x, projected[parallels[13][1]].y);
-    if (cross_lines(endpos, line1b, line1e, line2a, line2b)) {
+    if (lines_intersection(endpos, line1b, line1e, line2a, line2b)) {
       viewport.draw_line_2d(line1b, endpos);
       viewport.draw_line_2d(line2b, endpos);
       viewport.text_print(endpos.x, endpos.y, "( %.2f %.2f )", endpos.x, endpos.y);
@@ -749,7 +751,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     line1e = glm::vec2(projected[parallels[14][1]].x, projected[parallels[14][1]].y);
     line2a = glm::vec2(projected[parallels[15][0]].x, projected[parallels[15][0]].y);
     line2b = glm::vec2(projected[parallels[15][1]].x, projected[parallels[15][1]].y);
-    if (cross_lines(endpos, line1b, line1e, line2a, line2b)) {
+    if (lines_intersection(endpos, line1b, line1e, line2a, line2b)) {
       viewport.draw_line_2d(line1b, endpos);
       viewport.draw_line_2d(line2b, endpos);
       viewport.text_print(endpos.x, endpos.y, "( %.2f %.2f )", endpos.x, endpos.y);

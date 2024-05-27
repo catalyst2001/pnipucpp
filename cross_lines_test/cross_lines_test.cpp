@@ -3,43 +3,41 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-struct segment {
-  glm::vec2 begin;
-  glm::vec2 end;
-};
+int lines_intersection(glm::vec2 &dst_pt,
+  const glm::vec2 &l1b, const glm::vec2 &l1e,
+  const glm::vec2 &l2b, const glm::vec2 &l2e) {
 
-bool cross_lines(glm::vec2 &dst, glm::vec2 &line1b, glm::vec2 &line1e, glm::vec2 &line2b, glm::vec2 &line2e) {
-  float n;
-  if (line1e.y - line1b.y != 0) {  // a(y)
-    float q = (line1e.x - line1b.x) / (line1b.y - line1e.y);
-    float sn = (line2b.x - line2e.x) + (line2b.y - line2e.y) * q;
-    if (!sn)
-      return false;  // c(x) + c(y)*q
+  // compute 1-st equation odds
+  float A1 = l1e.y - l1b.y;
+  float B1 = l1b.x - l1e.x;
+  float C1 = A1 * l1b.x + B1 * l1b.y;
 
-    float fn = (line2b.x - line1b.x) + (line2b.y - line1b.y) * q;   // b(x) + b(y)*q
-    n = fn / sn;
-  }
-  else {
-    if (!(line2b.y - line2e.y))
-      return false; // b(y)
+  // compute 2-st equation odds
+  float A2 = l2e.y - l2b.y;
+  float B2 = l2b.x - l2e.x;
+  float C2 = A2 * l2b.x + B2 * l2b.y;
 
-    n = (line2b.y - line1b.y) / (line2b.y - line2e.y);   // c(y)/b(y)
-  }
-  dst.x = line2b.x + (line2e.x - line2b.x) * n;
-  dst.y = line2b.y + (line2e.y - line2b.y) * n;
+  // system determinant
+  float det = A1 * B2 - A2 * B1;
+
+  // are the lines parallel?
+  if (fabsf(det) < FLT_EPSILON)
+    return false;
+
+  // calculating the coordinates of the intersection point
+  dst_pt.x = (B2 * C1 - B1 * C2) / det;
+  dst_pt.y = (A1 * C2 - A2 * C1) / det;
   return true;
-}
-
-
-bool cross_lines(const segment &seg1, const segment &seg2)
-{
-
 }
 
 int main()
 {
-
-
-
+  glm::vec2 intersection;
+  glm::vec2 start(0.f, 0.f);
+  glm::vec2 end1(1.f, 10.f);
+  glm::vec2 end2(10.f, 1.f);
+  if (lines_intersection(intersection, start, end1, start, end2)) {
+    printf("lines intersection in point (%f %f)\n", intersection.x, intersection.y);
+  }
   return 0;
 }
