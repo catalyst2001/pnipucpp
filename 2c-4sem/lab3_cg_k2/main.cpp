@@ -5,17 +5,17 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
-#if 0
-#define P_ANGLE (-7.200f)
-#define Q_ANGLE (21.300f)
-#define R_VAL (-0.210f)
+#if 1
+#define X_ANGLE (51.000f)
+#define Y_ANGLE (56.000f)
+#define R_VAL (-1.7f)
 #else
-#define P_ANGLE (0.1f)
-#define Q_ANGLE (0.1f)
-#define R_VAL (0.f)
+#define X_ANGLE (0.1f)
+#define Y_ANGLE (0.1f)
+#define R_VAL (-1.20)
 #endif
 
-float     p = P_ANGLE, q = Q_ANGLE, r = R_VAL;
+float     rot_x = X_ANGLE, rot_y = Y_ANGLE, r = R_VAL;
 HPEN      pen_black;
 HPEN      pen_red;
 HPEN      pen_blue;
@@ -453,8 +453,8 @@ void print_coords(const char *p_label, glm::vec4 *p_src, size_t count)
 void draw_vanishing_points(draw_viewport &viewport)
 {
   size_t i;
-  glm::mat4x4 rx = glm::rotate(glm::mat4x4(1.f), glm::radians(p), glm::vec3(1.f, 0.f, 0.f));
-  glm::mat4x4 ry = glm::rotate(glm::mat4x4(1.f), glm::radians(q + 90.f), glm::vec3(0.f, 1.f, 0.f));
+  glm::mat4x4 rx = glm::rotate(glm::mat4x4(1.f), glm::radians(rot_x), glm::vec3(1.f, 0.f, 0.f));
+  glm::mat4x4 ry = glm::rotate(glm::mat4x4(1.f), glm::radians(rot_y + 90.f), glm::vec3(0.f, 1.f, 0.f));
   glm::mat4x4 SRc = ry * rx; //scale-rotatex-rotatey complex matrix
 
   glm::mat4x4 projection = glm::mat4x4(
@@ -534,7 +534,7 @@ glm::mat4x4 trimetric_project_matrix(float p, float q, float r)
   glm::mat4x4 projection = glm::mat4x4(
     glm::vec4(1.f,   0.f,   0.f,   0.f),
     glm::vec4(0.f,   1.f,   0.f,   0.f),
-    glm::vec4(0.f,   0.f,   0.f,   r),
+    glm::vec4(0.f,   0.f,   0.f,   -1.f / r),
     glm::vec4(0.f,   0.f,   0.f,   1.f)
   );
   logger.latex_print_mat4x4_with_equal_varname("P", projection);
@@ -615,7 +615,8 @@ void draw_line(HDC hdc, int x0, int y0, int x1, int y1)
 
 int lines_intersection(glm::vec2 &dst_pt,
   const glm::vec2 &l1b, const glm::vec2 &l1e,
-  const glm::vec2 &l2b, const glm::vec2 &l2e) {
+  const glm::vec2 &l2b, const glm::vec2 &l2e)
+{
 
   // compute 1-st equation odds
   float A1 = l1e.y - l1b.y;
@@ -639,6 +640,98 @@ int lines_intersection(glm::vec2 &dst_pt,
   dst_pt.y = (A1 * C2 - A2 * C1) / det;
   return true;
 }
+
+int lines_intersection_debug(glm::vec2 &dst_pt,
+  const glm::vec2 &l1b, const glm::vec2 &l1e,
+  const glm::vec2 &l2b, const glm::vec2 &l2e, const char *p_tag)
+{
+  bool b_ret;
+  logger.log_put_linef("=============== lines_intersection_debug(%s) BEGIN ===============", p_tag);
+  logger.log_put_linef(
+    "\nlines:\n"
+    "x1, y1 - begin 1 line\n"
+    "x2, y2 - end 1 line\n"
+    "x3, y3 - begin 2 line\n"
+    "x4, y4 - end 2 line\n"
+    "x1 = %.3f\n"
+    "y1 = %.3f\n"
+    "x2 = %.3f\n"
+    "y2 = %.3f\n"
+    "x3 = %.3f\n"
+    "y3 = %.3f\n"
+    "x4 = %.3f\n"
+    "y4 = %.3f\n",
+    l1b.x, l1b.y,
+    l1e.x, l1e.y,
+    l2b.x, l2b.y,
+    l2e.x, l2e.y
+  );
+
+  // compute 1-st equation odds
+  float A1 = l1e.y - l1b.y;
+  float B1 = l1b.x - l1e.x;
+  float C1 = A1 * l1b.x + B1 * l1b.y;
+  logger.log_put_line("\n//compute 1-st equation odds");
+  logger.log_put_line(
+    "A1 = y2 - y1\n"
+    "B1 = x1 - x2\n"
+    "C1 = A1 * x1 + B1 * y1\n"
+  );
+  logger.log_put_linef("A1 = %.3f - %.3f = %.3f", l1e.y, l1b.y, A1);
+  logger.log_put_linef("B1 = %.3f - %.3f = %.3f", l1b.x, l1e.x, B1);
+  logger.log_put_linef("C1 = %.3f * %.3f + %.3f * %.3f = %.3f", A1, l1b.x, B1, l1b.y, C1);
+
+  // compute 2-st equation odds
+  float A2 = l2e.y - l2b.y;
+  float B2 = l2b.x - l2e.x;
+  float C2 = A2 * l2b.x + B2 * l2b.y;
+  logger.log_put_line("\n//compute 2-st equation odds");
+  logger.log_put_line(
+    "A2 = y4 - y3\n"
+    "B2 = x3 - x4\n"
+    "C2 = A2 * x3 + B2 * y3\n"
+  );
+  logger.log_put_linef("A2 = %.3f - %.3f = %.3f", l2e.y, l2b.y, A2);
+  logger.log_put_linef("B2 = %.3f - %.3f = %.3f", l2b.x, l2e.x, B2);
+  logger.log_put_linef("C2 = %.3f * %.3f + %.3f * %.3f = %.3f", A2, l2b.x, B2, l2b.y, C2);
+
+  // system determinant
+  float det = A1 * B2 - A2 * B1;
+  logger.log_put_line("\n//system determinant");
+  logger.log_put_linef("det = %.3f * %.3f - %.3f * %.3f = %.3f", A1, B2, A2, B1, det);
+
+  // are the lines parallel?
+  if (fabsf(det) > FLT_EPSILON) {
+    logger.log_put_line("\ndet != 0");
+
+    // calculating the coordinates of the intersection point
+    dst_pt.x = (B2 * C1 - B1 * C2) / det;
+    logger.log_put_linef(
+      "x = (B2 * C1 - B1 * C2) / det\n"
+      "x = \\frac{%.3f * %.3f - %.3f * %.3f}{%.3f} = %.3f", 
+      B2, C1, B1, C2, det, dst_pt.x
+      );
+
+    dst_pt.y = (A1 * C2 - A2 * C1) / det;
+    logger.log_put_linef(
+      "y = (A1 * C2 - A2 * C1) / det\n"
+      "y = \\frac{%.3f * %.3f - %.3f * %.3f}{%.3f} = %.3f",
+      A1, C2, A2, C1, det, dst_pt.y
+    );
+
+    b_ret = true; // intersect exists
+  }
+  logger.log_put_linef("=============== lines_intersection_debug(%s) END ===============", p_tag);
+  return b_ret;
+}
+
+#if defined (_DEBUG)
+#define lines_intersection_tagged(d, l11, l12, l21, l22, tag)\
+  lines_intersection_debug(d, l11, l12, l21, l22, tag)
+#else
+#define lines_intersection_tagged(d, l11, l12, l21, l22, tag)\
+  lines_intersection(d, l11, l12, l21, l22)
+#endif
 
 template<typename type>
 type min(const type &a, const type &b)
@@ -670,7 +763,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
   glm::mat4x4 scale_mat =  glm::scale(glm::mat4x4(1.f), glm::vec3(scale, scale, scale));
   logger.latex_print_mat4x4_with_equal_varname("Scl", scale_mat);
 
-  glm::mat4x4 projection = trimetric_project_matrix(p, q, r);
+  glm::mat4x4 projection = trimetric_project_matrix(rot_x, rot_y, r);
 
   glm::mat4x4 complex_matrix = projection * scale_mat;
   logger.log_put_line("CM = Tproj * Scl");
@@ -687,7 +780,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
   logger.latex_print_vertices(projected, sizeof(projected) / sizeof(projected[0]));
 
   //draw_vanishing_points(viewport);
-  if (fabsf(r) > 0.0001f) {
+  //if (fabsf(r) > 0.0001f) {
     viewport.push_pen(dash_pen);
 
     /* Z */
@@ -697,7 +790,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     glm::vec2 line1e = glm::vec2(projected[parallels[0][1]].x, projected[parallels[0][1]].y);
     glm::vec2 line2a = glm::vec2(projected[parallels[1][0]].x, projected[parallels[1][0]].y);
     glm::vec2 line2b = glm::vec2(projected[parallels[1][1]].x, projected[parallels[1][1]].y);
-    if (lines_intersection(endpos, line1b, line1e, line2a, line2b)) {
+    if (lines_intersection_tagged(endpos, line1b, line1e, line2a, line2b, "Z")) {
       viewport.draw_line_2d(line1b, endpos);
       viewport.draw_line_2d(line2a, endpos);
       viewport.draw_line_2d(glm::vec2(projected[parallels[2][0]].x, projected[parallels[2][0]].y), endpos);
@@ -711,7 +804,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     line1e = glm::vec2(projected[parallels[4][1]].x, projected[parallels[4][1]].y);
     line2a = glm::vec2(projected[parallels[5][0]].x, projected[parallels[5][0]].y);
     line2b = glm::vec2(projected[parallels[5][1]].x, projected[parallels[5][1]].y);
-    if (lines_intersection(endpos, line1b, line1e, line2a, line2b)) {
+    if (lines_intersection_tagged(endpos, line1b, line1e, line2a, line2b, "Y")) {
       viewport.draw_line_2d(line1b, endpos);
       viewport.draw_line_2d(line2a, endpos);
       viewport.draw_line_2d(glm::vec2(projected[parallels[6][0]].x, projected[parallels[6][0]].y), endpos);
@@ -725,7 +818,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     line1e = glm::vec2(projected[parallels[8][1]].x, projected[parallels[8][1]].y);
     line2a = glm::vec2(projected[parallels[9][0]].x, projected[parallels[9][0]].y);
     line2b = glm::vec2(projected[parallels[9][1]].x, projected[parallels[9][1]].y);
-    if (lines_intersection(endpos, line1b, line1e, line2a, line2b)) {
+    if (lines_intersection_tagged(endpos, line1b, line1e, line2a, line2b, "X")) {
       viewport.draw_line_2d(line1b, endpos);
       viewport.draw_line_2d(line2a, endpos);
       viewport.draw_line_2d(glm::vec2(projected[parallels[10][0]].x, projected[parallels[10][0]].y), endpos);
@@ -739,7 +832,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     line1e = glm::vec2(projected[parallels[12][1]].x, projected[parallels[12][1]].y);
     line2a = glm::vec2(projected[parallels[13][0]].x, projected[parallels[13][0]].y);
     line2b = glm::vec2(projected[parallels[13][1]].x, projected[parallels[13][1]].y);
-    if (lines_intersection(endpos, line1b, line1e, line2a, line2b)) {
+    if (lines_intersection_tagged(endpos, line1b, line1e, line2a, line2b, "roof left")) {
       viewport.draw_line_2d(line1b, endpos);
       viewport.draw_line_2d(line2b, endpos);
       viewport.text_print(endpos.x, endpos.y, "( %.2f %.2f )", endpos.x, endpos.y);
@@ -751,7 +844,7 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     line1e = glm::vec2(projected[parallels[14][1]].x, projected[parallels[14][1]].y);
     line2a = glm::vec2(projected[parallels[15][0]].x, projected[parallels[15][0]].y);
     line2b = glm::vec2(projected[parallels[15][1]].x, projected[parallels[15][1]].y);
-    if (lines_intersection(endpos, line1b, line1e, line2a, line2b)) {
+    if (lines_intersection_tagged(endpos, line1b, line1e, line2a, line2b, "roof right")) {
       viewport.draw_line_2d(line1b, endpos);
       viewport.draw_line_2d(line2b, endpos);
       viewport.text_print(endpos.x, endpos.y, "( %.2f %.2f )", endpos.x, endpos.y);
@@ -781,33 +874,33 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     };
 
     /* distortion factor from parallel lines */
-    distortion_factor.x = projected_line_length(0, 3) / source_line_length(0, 3);
-    distortion_factor.y = projected_line_length(0, 4) / source_line_length(0, 4);
-    distortion_factor.z = projected_line_length(0, 1) / source_line_length(0, 1);
-    printf("distortion_factor:  %.3f %.3f %.3f\n", distortion_factor.x, distortion_factor.y, distortion_factor.z);
+    //distortion_factor.x = projected_line_length(0, 3) / source_line_length(0, 3);
+    //distortion_factor.y = projected_line_length(0, 4) / source_line_length(0, 4);
+    //distortion_factor.z = projected_line_length(0, 1) / source_line_length(0, 1);
+    //printf("distortion_factor:  %.3f %.3f %.3f\n", distortion_factor.x, distortion_factor.y, distortion_factor.z);
 
     /* distortion factor from matrix */
-    glm::vec3 distortion_factor_from_mat;
-    distortion_factor_from_mat.x = complex_matrix[0][3];
-    distortion_factor_from_mat.y = complex_matrix[1][3];
-    distortion_factor_from_mat.z = complex_matrix[2][3];
-    printf("distortion_factor_from_mat:  %.3f %.3f %.3f\n", distortion_factor_from_mat.x, distortion_factor_from_mat.y, distortion_factor_from_mat.z);
+    distortion_factor.x = complex_matrix[0][3];
+    distortion_factor.y = complex_matrix[1][3];
+    distortion_factor.z = complex_matrix[2][3];
+    //printf("distortion_factor_from_mat:  %.3f %.3f %.3f\n", distortion_factor_from_mat.x, distortion_factor_from_mat.y, distortion_factor_from_mat.z);
 
 
-    float scene_distortion = sqrtf(powf(distortion_factor.x, 2.f) + powf(distortion_factor.y, 2.f) + powf(distortion_factor.z, 2.f));
+    float scene_distortion = sqrtf(distortion_factor.x*distortion_factor.x + distortion_factor.y*distortion_factor.y + distortion_factor.z*distortion_factor.z);
 
     viewport.text_print(10, 10, "vanishing points count %d", vanishing_points);
     viewport.text_print(10, 30, "distortion  x: %f y: %f z: %f", distortion_factor.x, distortion_factor.y, distortion_factor.z);
     viewport.text_print(10, 50, "scene distortion: %f", scene_distortion);
-  }
+  //}
 
   viewport.push_pen(pen_black);
   viewport.draw_lines_indexed(verts, indices, sizeof(indices) / sizeof(indices[0]));
   viewport.pop_pen();
 
-  viewport.text_print(10, 80, "angle p=%.2f°", p);
-  viewport.text_print(10, 100, "angle q=%.2f°", q);
+  viewport.text_print(10, 80, "angle x=%.2f°", rot_x);
+  viewport.text_print(10, 100, "angle y=%.2f°", rot_y);
   viewport.text_print(10, 120, "r=%.2f", r);
+  viewport.text_print(10, 140, "-1/r=%.2f", -1.f/r);
 
   logger.log_put_line("=============== paint_scene End ===============");
   viewport.end_frame(hdc);
@@ -850,7 +943,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         scale -= 0.01f;
       else scale += 0.01f;
     }
-    printf("p: %f   q: %f   r: %f\n", p, q, r);
+    printf("rot_x: %f   rot_y: %f   r: %f\n", rot_x, rot_y, r);
 		InvalidateRect(hWnd, NULL, FALSE);
 		break;
 	}
@@ -877,9 +970,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			diffpt.y = curr_cursor.x - last_cursor.x;
 			diffpt.x = curr_cursor.y - last_cursor.y;
 			if (diffpt.x || diffpt.y) {
-				p += diffpt.x * -0.1f;
-				q += diffpt.y * 0.1f;
-				printf("p: %f   q: %f   r: %f\n", p, q, r);			
+				rot_x += diffpt.x * -0.1f;
+				rot_y += diffpt.y * 0.1f;
+				printf("p: %f   q: %f   r: %f\n", rot_x, rot_y, r);			
 			}
 			last_cursor = curr_cursor;
 
