@@ -1,4 +1,5 @@
-﻿  main.cpp
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: промежуточный каталог (Debug\) содержит файлы, которые используются совместно с другим проектом (lab3_cg_k2.vcxproj).  Это может привести к ошибкам очистки и перестроения.
+  main.cpp
 e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(455): warning C4101: i: неиспользованная локальная переменная
 e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(488): warning C4101: rez: неиспользованная локальная переменная
 e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(798): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных

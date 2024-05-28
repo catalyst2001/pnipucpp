@@ -645,7 +645,7 @@ int lines_intersection_debug(glm::vec2 &dst_pt,
   const glm::vec2 &l1b, const glm::vec2 &l1e,
   const glm::vec2 &l2b, const glm::vec2 &l2e, const char *p_tag)
 {
-  bool b_ret;
+  bool b_ret = false;
   logger.log_put_linef("=============== lines_intersection_debug(%s) BEGIN ===============", p_tag);
   logger.log_put_linef(
     "\nlines:\n"
