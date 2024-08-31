@@ -2,31 +2,61 @@
   main.cpp
 e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(455): warning C4101: i: неиспользованная локальная переменная
 e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(488): warning C4101: rez: неиспользованная локальная переменная
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(798): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(816): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
           with
           [
               T=float
           ]
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(812): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(817): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
           with
           [
               T=float
           ]
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(826): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(818): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
           with
           [
               T=float
           ]
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(838): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(821): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
           with
           [
               T=float
           ]
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(850): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(822): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
           with
           [
               T=float
           ]
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(756): warning C4101: v0: неиспользованная локальная переменная
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(757): warning C4101: v1: неиспользованная локальная переменная
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(823): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(830): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(844): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(858): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(870): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(882): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(776): warning C4101: v0: неиспользованная локальная переменная
+e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(777): warning C4101: v1: неиспользованная локальная переменная
   lab3_cg_k2.vcxproj -> E:\GitHub\pnipucpp\Debug\lab3_trimproj.exe
