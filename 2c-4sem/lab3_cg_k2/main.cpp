@@ -751,6 +751,26 @@ type max(const type &a, const type &b)
   return b;
 }
 
+bool is_positive(const glm::vec2 &v)
+{
+  return v.x > 0.f && v.y > 0.f;
+}
+
+glm::vec2 center_of_line(const glm::vec2 &line_from, const glm::vec2 &line_to)
+{
+  glm::vec2 dst;
+  glm::vec2 pmin, pmax;
+  pmin.x = min(line_from.x, line_to.x);
+  pmin.y = min(line_from.y, line_to.y);
+  pmax.x = max(line_from.x, line_to.x);
+  pmax.y = max(line_from.y, line_to.y);
+  float half_x = fabsf(pmax.x - pmin.x) / 2.f;
+  float half_y = fabsf(pmax.y - pmin.y) / 2.f;
+  dst.x = pmax.x - half_x;
+  dst.y = pmax.y - half_y;
+  return dst;
+}
+
 void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
 {
 	glm::vec3 v0;
@@ -790,6 +810,18 @@ void paint_scene(HDC hdc, HWND hwnd, RECT &rect)
     glm::vec2 line1e = glm::vec2(projected[parallels[0][1]].x, projected[parallels[0][1]].y);
     glm::vec2 line2a = glm::vec2(projected[parallels[1][0]].x, projected[parallels[1][0]].y);
     glm::vec2 line2b = glm::vec2(projected[parallels[1][1]].x, projected[parallels[1][1]].y);
+
+    float length = glm::length(line1b - line1e);
+    glm::vec2 center = center_of_line(line1b, line1e);
+    viewport.text_print(center.x, center.y, "len %.3f", length);
+    viewport.text_print(line1b.x, line1b.y, "b %.3f %.3f", line1b.x, line1b.y);
+    viewport.text_print(line1e.x, line1e.y, "e %.3f %.3f", line1e.x, line1e.y);
+    length = glm::length(line2a - line2b);
+    center = center_of_line(line2a, line2b);
+    viewport.text_print(center.x, center.y, "len %.3f", length);
+    viewport.text_print(line2a.x, line2a.y, "b %.3f %.3f", line2a.x, line2a.y);
+    viewport.text_print(line2b.x, line2b.y, "e %.3f %.3f", line2b.x, line2b.y);
+    
     if (lines_intersection_tagged(endpos, line1b, line1e, line2a, line2b, "Z")) {
       viewport.draw_line_2d(line1b, endpos);
       viewport.draw_line_2d(line2a, endpos);
