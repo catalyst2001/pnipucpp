@@ -71,7 +71,8 @@ bool service_channels_check_queue(double current_time)
   size_t free_channel_idx;
   if (get_any_free_service_channel(free_channel_idx, current_time)) {
     if (!queue.empty()) {
-      int tank_num = queue.front(); queue.pop();
+      int tank_num = queue.front();
+      queue.pop();
       printf("Бак %.4d перешел в обслуживание на линию %zd из очереди\n", tank_num, free_channel_idx);
       return true;
     }
