@@ -8,6 +8,8 @@ using namespace tinyobj;
 
 INT Width, Height;
 
+#define DBG(x, ...) printf(x "\n", __VA_ARGS__)
+
 void fn_window_resize(HWND hWnd, int width, int height)
 {
 	if (!height)

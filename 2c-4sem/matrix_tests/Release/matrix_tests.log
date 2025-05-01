@@ -1,5 +1,29 @@
-﻿  renderer.c
+﻿  cmathlib.c
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(274,6): warning C4029: объявленный список формальных параметров отличается от объявления
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(437,13): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(438,13): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(439,13): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(440,13): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(441,13): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\cmathlib.c(442,13): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+  framebuffer.c
+  main.c
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\main.c(78,14): warning C4047: функция: "float (*)[4]" отличается по уровням косвенного обращения от "mat44_t (*)"
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\main.c(78,14): warning C4024: mat44_ident: различные типы для формального и фактического параметров 1
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\main.c(79,15): warning C4047: функция: "float (*)[4]" отличается по уровням косвенного обращения от "mat44_t (*)"
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\main.c(79,15): warning C4024: mat44_rotate: различные типы для формального и фактического параметров 1
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\main.c(80,18): warning C4047: функция: "float (*)[4]" отличается по уровням косвенного обращения от "mat44_t (*)"
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\main.c(80,18): warning C4024: mat44_translate: различные типы для формального и фактического параметров 1
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\main.c(80,36): warning C4133: функция: несовместимые типы - из "float [3]" в "const vec3_t *"
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\main.c(84,14): warning C4047: функция: "float (*)[4]" отличается по уровням косвенного обращения от "mat44_t (*)"
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\main.c(84,14): warning C4024: mat44_ident: различные типы для формального и фактического параметров 1
+  renderer.c
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\renderer.c(46,14): warning C4047: функция: "float (*)[4]" отличается по уровням косвенного обращения от "mat44_t (*)"
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\renderer.c(46,14): warning C4024: mat44_ident: различные типы для формального и фактического параметров 1
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\renderer.c(47,14): warning C4047: функция: "float (*)[4]" отличается по уровням косвенного обращения от "mat44_t (*)"
+D:\GITHUB\pnipucpp\2c-4sem\matrix_tests\renderer.c(47,14): warning C4024: mat44_ident: различные типы для формального и фактического параметров 1
   Создание кода
-  All 7 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Previous IPDB not found, fall back to full compilation.
+  All 28 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Создание кода завершено
   matrix_tests.vcxproj -> D:\GITHUB\pnipucpp\Release\matrix_tests.exe

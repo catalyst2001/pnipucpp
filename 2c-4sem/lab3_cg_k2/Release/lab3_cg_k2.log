@@ -1,37 +1,120 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: промежуточный каталог (Release\) содержит файлы, которые используются совместно с другим проектом (lab3_cg_k2.vcxproj).  Это может привести к ошибкам очистки и перестроения.
-  main.cpp
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(455): warning C4101: i: неиспользованная локальная переменная
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(488): warning C4101: rez: неиспользованная локальная переменная
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(703): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(717): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(731): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(743): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(755): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
-          with
-          [
-              T=float
-          ]
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(661): warning C4101: v0: неиспользованная локальная переменная
-e:\github\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(662): warning C4101: v1: неиспользованная локальная переменная
+﻿  main.cpp
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(455,10): warning C4101: i: неиспользованная локальная переменная
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(488,9): warning C4101: rez: неиспользованная локальная переменная
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(816,41): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(816,41): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(816,41): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(816,41): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(816,41): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(816,31): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(816,31): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(816,31): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(816,31): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(816,31): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(817,41): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(817,41): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(817,41): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(817,41): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(817,41): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(817,31): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(817,31): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(817,31): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(817,31): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(817,31): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(818,41): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(818,41): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(818,41): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(818,41): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(818,41): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(818,31): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(818,31): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(818,31): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(818,31): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(818,31): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(821,41): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(821,41): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(821,41): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(821,41): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(821,41): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(821,31): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(821,31): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(821,31): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(821,31): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(821,31): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(822,41): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(822,41): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(822,41): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(822,41): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(822,41): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(822,31): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(822,31): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(822,31): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(822,31): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(822,31): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(823,41): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(823,41): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(823,41): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(823,41): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(823,41): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(823,31): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(823,31): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(823,31): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(823,31): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(823,31): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(830,43): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(830,43): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(830,43): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(830,43): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(830,43): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(830,33): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(830,33): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(830,33): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(830,33): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(830,33): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(844,43): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(844,43): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(844,43): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(844,43): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(844,43): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(844,33): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(844,33): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(844,33): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(844,33): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(844,33): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(858,43): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(858,43): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(858,43): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(858,43): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(858,43): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(858,33): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(858,33): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(858,33): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(858,33): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(858,33): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(870,43): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(870,43): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(870,43): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(870,43): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(870,43): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(870,33): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(870,33): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(870,33): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(870,33): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(870,33): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(882,43): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(882,43): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(882,43): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(882,43): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(882,43): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(882,33): warning C4244: аргумент: преобразование "T" в "int", возможна потеря данных
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(882,33): warning C4244:         with
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(882,33): warning C4244:         [
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(882,33): warning C4244:             T=float
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(882,33): warning C4244:         ]
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(776,12): warning C4101: v0: неиспользованная локальная переменная
+D:\GITHUB\pnipucpp\2c-4sem\lab3_cg_k2\main.cpp(777,12): warning C4101: v1: неиспользованная локальная переменная
   Создание кода
-  3 of 103 functions ( 2.9%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    6 functions had inline decision re-evaluated but remain unchanged
+  Previous IPDB not found, fall back to full compilation.
+  All 97 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Создание кода завершено
-  lab3_cg_k2.vcxproj -> E:\GitHub\pnipucpp\Release\lab3_trimproj.exe
+  lab3_cg_k2.vcxproj -> D:\GITHUB\pnipucpp\Release\lab3_trimproj.exe

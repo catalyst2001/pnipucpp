@@ -490,7 +490,7 @@ int main()
   //  src_len, projected_len, dist1
   //);
   //test();
-  //init_interface();
+  init_interface();
 
   glm::mat4x4 mat = glm::translate(glm::mat4x4(1.f), glm::vec3(0.f, 0.f, 10.f));
   float *p_value = (float *)glm::value_ptr(mat);
